@@ -30,3 +30,22 @@
 *.exe
 *.out
 *.app
+
+# Log File
+*.log
+
+# Directories
+.vscode/
+backup/
+build/
+data/
+#lib/
+# reference/
+
+# Special Files
+.DS_Store
+
+# GTAGS
+GPATH
+GRTAGS
+GTAGS
