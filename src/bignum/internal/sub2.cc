@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 bignum_t sub2(const bignum_t& a, const bignum_t& b, bool* t) {
   my_assert(t, "%s", "t is nullptr.");
@@ -55,4 +56,5 @@ bignum_t sub2(const bignum_t& a, const bignum_t& b, bool* t) {
   return z;
 }
 
+} // namespace internal
 } // namespace mympz

@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 int cmp(const bignum_t& a, const bignum_t& b, bool push_front/*=false*/) {
   int res = 0, l = 0;
@@ -45,4 +46,5 @@ int cmp(const bignum_t& a, const bignum_t& b, bool push_front/*=false*/) {
   return res;
 }
 
+} // namespace internal
 } // namespace mympz

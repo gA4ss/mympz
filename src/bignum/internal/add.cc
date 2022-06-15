@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 bignum_t add(const bignum_t& a, const bignum_t& b, bool o) {
   bignum_t x, y, z;
@@ -48,4 +49,5 @@ bignum_t add(const bignum_t& a, const bignum_t& b, bool o) {
   return z;
 }
 
+} // namespace internal
 } // namespace mympz

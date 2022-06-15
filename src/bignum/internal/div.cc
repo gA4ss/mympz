@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 /*
  * a1表示a的首项系数，以此类推。B为某个进制。
@@ -160,4 +161,5 @@ division_result_t div(const bignum_t& a, const bignum_t& b) {
   return division_result_t(quotient, remainder);
 }
 
+} // namespace internal
 } // namespace mympz

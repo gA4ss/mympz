@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 /* 整数部分消减 true, 小数部分消减 false。
  * 保留最后一个0。
@@ -35,4 +36,5 @@ my::uinteger_t shrink_zero(bignum_t& a, bool reverse) {
   return ret;
 }
 
+} // namespace internal
 } // namespace mympz

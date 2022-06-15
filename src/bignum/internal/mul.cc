@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 /* 输入 : B进制n位多精度整数a,b; n是2的次幂。
  * 输出 : 乘积 c = a * b
@@ -57,4 +58,5 @@ bignum_t mul(const bignum_t& a, const bignum_t& b) {
   return z;
 }
 
+} // namespace internal
 } // namespace mympz

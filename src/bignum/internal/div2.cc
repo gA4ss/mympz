@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 division_result_t div2(const bignum_t& a, const bignum_t& b, my::uinteger_t precision) {
   if (a.empty() || b.empty()) {
@@ -91,4 +92,5 @@ division_result_t div2(const bignum_t& a, const bignum_t& b, my::uinteger_t prec
   return division_result_t(integer_park, quotient);
 }
 
+} // namespace internal
 } // namespace mympz

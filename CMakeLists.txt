@@ -50,6 +50,21 @@ endif(BUILD_TEST)
 # Library Build
 #
 add_library(${PROJECT_NAME} STATIC
+  ${SRC_DIRECTORY}/bignum/internal/shrink_zero.cc
+  ${SRC_DIRECTORY}/bignum/internal/string_to_bignum.cc
+  ${SRC_DIRECTORY}/bignum/internal/bignum_to_string.cc
+  ${SRC_DIRECTORY}/bignum/internal/nan.cc
+  ${SRC_DIRECTORY}/bignum/internal/zero.cc
+  ${SRC_DIRECTORY}/bignum/internal/is_nan.cc
+  ${SRC_DIRECTORY}/bignum/internal/is_zero.cc
+  ${SRC_DIRECTORY}/bignum/internal/cmp.cc
+  ${SRC_DIRECTORY}/bignum/internal/add.cc
+  ${SRC_DIRECTORY}/bignum/internal/add2.cc
+  ${SRC_DIRECTORY}/bignum/internal/sub.cc
+  ${SRC_DIRECTORY}/bignum/internal/sub2.cc
+  ${SRC_DIRECTORY}/bignum/internal/mul.cc
+  ${SRC_DIRECTORY}/bignum/internal/div.cc
+  ${SRC_DIRECTORY}/bignum/internal/div2.cc
   ${SRC_DIRECTORY}/bignum/shrink_zero.cc
   ${SRC_DIRECTORY}/bignum/string_to_bignum.cc
   ${SRC_DIRECTORY}/bignum/bignum_to_string.cc

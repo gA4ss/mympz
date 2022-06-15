@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 bignum_t add2(const bignum_t& a, const bignum_t& b, bool* o) {
   my_assert(o, "%s", "o is nullptr.");
@@ -43,4 +44,5 @@ bignum_t add2(const bignum_t& a, const bignum_t& b, bool* o) {
   return z;
 }
 
+} // namespace internal
 } // namespace mympz

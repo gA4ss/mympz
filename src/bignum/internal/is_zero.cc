@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 bool is_zero(const bignum_t& a) {
   if (a.empty())
@@ -13,4 +14,5 @@ bool is_zero(const bignum_t& a) {
   return true;
 }
 
+} // namespace internal
 } // namespace mympz

@@ -1,6 +1,7 @@
 #include <mympz/bignum.h>
 
 namespace mympz {
+namespace internal {
 
 static const unit_t kZeroCode = 48;
 std::string bignum_to_string(const bignum_t& a) {
@@ -15,4 +16,5 @@ std::string bignum_to_string(const bignum_t& a) {
   return res;
 }
 
+} // namespace internal
 } // namespace mympz

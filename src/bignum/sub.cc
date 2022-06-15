@@ -1,12 +1,12 @@
-#include <mynum/bignum.h>
+#include <mympz/bignum.h>
 
-namespace mynum {
+namespace mympz {
 
 bignum_t sub(bignum_t& a, bignum_t& b, bool t) {
   bignum_t x, y, z;
 
   if (a.empty() || b.empty()) {
-    operand_value_is_invalid_exception(
+    mympz_exception(
       "%s", "operand a or b is nan."
     );
   }
@@ -60,4 +60,4 @@ bignum_t sub(bignum_t& a, bignum_t& b, bool t) {
   return z;
 }
 
-} // namespace mynum
+} // namespace mympz
