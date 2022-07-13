@@ -16,73 +16,53 @@ namespace mympz {
 
 #if BIGNUM_SIZE == 64
 
-  typedef uint64_t  bnres_t;
-  typedef uint32_t  unit_t;
-  typedef int64_t   cunit_t;
-
-  #define kBigNumString       "4294967296"
+  typedef uint64_t  unit_t;
 
 #elif BIGNUM_SIZE == 32
 
-  typedef uint32_t  bnres_t;
-  typedef uint16_t  unit_t;
-  typedef int32_t   cunit_t;
+  typedef uint32_t  unit_t;
 
-  #define kBigNumString       "65536"
+#elif BIGNUM_SIZE == 16
+
+  typedef uint16_t  unit_t;
 
 #else
 
-  typedef uint16_t  bnres_t;
   typedef uint8_t   unit_t;
-  typedef int16_t   cunit_t;
-
-  #define kBigNumString       "256"
 
 #endif
 
-typedef std::deque<unit_t> bignum_t;
-typedef bignum_t::iterator bignum_iter_t;
-typedef bignum_t::reverse_iterator bignum_riter_t;
+typedef std::deque<unit_t> number_t;
+typedef struct __bignum_t {
+  number_t number;
+  int sign;
+} bignum_t;
+
 typedef std::pair<bignum_t, bignum_t> division_result_t;
 
-namespace internal {
+#define is_negative(x)       (x.sign < 0)
+#define is_positive(x)       (x.sign > 0)
 
-bignum_t cast(const bignum_t& a);
-my::uinteger_t shrink_zero(bignum_t& a, bool reverse=false);
-bignum_t string_to_bignum(const char* number=nullptr, int base=10, bool shrink_reverse=true);
-std::string bignum_to_string(const bignum_t& a);
-void nan(bignum_t& a);
-void zero(bignum_t& a);
-bool is_nan(const bignum_t& a);
-bool is_zero(const bignum_t& a);
-int cmp(const bignum_t& a, const bignum_t& b, bool push_front=false);
-bignum_t add(const bignum_t& a, const bignum_t& b, bool o=false);
-bignum_t add2(const bignum_t& a, const bignum_t& b, bool* o=nullptr);
-bignum_t sub(bignum_t& a, bignum_t& b, bool t=false);
-bignum_t sub2(const bignum_t& a, const bignum_t& b, bool* t=nullptr);
-bignum_t mul(const bignum_t& a, const bignum_t& b);
-division_result_t div(const bignum_t& a, const bignum_t& b);
-division_result_t div2(const bignum_t& a, const bignum_t& b, my::uinteger_t precision=16);
-bignum_t mod(const bignum_t& a, const bignum_t& b);
+#define size(x)              (x.number.size())
 
-} // namespace internal
+bignum_t create(int sign=1);
+bignum_t create(std::string str);
+bignum_t create(unit_t number, int sign=1);
+bignum_t create(const std::deque<unit_t>& number, int sign=1);
 
-my::uinteger_t shrink_zero(bignum_t& a, bool reverse=false);
-bignum_t string_to_bignum(const char* number=nullptr, int base=10, bool shrink_reverse=true);
-std::string bignum_to_string(const bignum_t& a);
-void nan(bignum_t& a);
-void zero(bignum_t& a);
-bool is_nan(const bignum_t& a);
-bool is_zero(const bignum_t& a);
-int cmp(const bignum_t& a, const bignum_t& b, bool push_front=false);
-bignum_t add(const bignum_t& a, const bignum_t& b, bool o=false);
-bignum_t add2(const bignum_t& a, const bignum_t& b, bool* o=nullptr);
-bignum_t sub(bignum_t& a, bignum_t& b, bool t=false);
-bignum_t sub2(const bignum_t& a, const bignum_t& b, bool* t=nullptr);
-bignum_t mul(const bignum_t& a, const bignum_t& b);
-division_result_t div(const bignum_t& a, const bignum_t& b);
-division_result_t div2(const bignum_t& a, const bignum_t& b, my::uinteger_t precision=16);
-bignum_t mod(const bignum_t& a, const bignum_t& b);
+
+void zero(bignum_t& x);
+bool is_zero(const bignum_t& x);
+
+void one(bignum_t& x, int sign=1);
+bool is_one(const bignum_t& x);
+
+bignum_t add(const bignum_t& x, const bignum_t& y);
+bignum_t sub(const bignum_t& x, const bignum_t& y);
+bignum_t uadd(const bignum_t& x, const bignum_t& y);
+bignum_t usub(const bignum_t& x, const bignum_t& y);
+
+std::string print_string(const bignum_t& x);
 
 } // namespace mympz
 
