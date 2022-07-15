@@ -2,6 +2,16 @@
 
 namespace mympz {
 
+/**
+  * @brief         创建大数类型
+  * @param[in]     sign         符号，默认是正数。
+  * @return        大数结构
+
+  * @par Sample
+  * @code
+  * 
+  * @endcode
+  */
 bignum_t create(int sign) {
   bignum_t x;
   x.sign = sign;
