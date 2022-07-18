@@ -4,9 +4,8 @@ namespace mympz {
 
 /**
   * @brief         将任意大数设置为1。
-  * @param[in]     x      要判断的大数。
-  * @param[in]     sign   符号，这里大于等于0都属于整数，小于0属于负数。
-  * @return        y = -1 或者 y = 1
+  * @param[in,out] x      要判断的大数。
+  * @param[in]     neg    是否是负数。
 
   * @par Sample
   * @code
@@ -15,8 +14,8 @@ namespace mympz {
   * std::cout << print_string(x) << std::endl;
   * @endcode
   */
-void one(bignum_t& x, int sign) {
-  x.sign = sign >= 0 ? 1 : -1;
+void one(bignum_t& x, int neg) {
+  x.neg = neg;
   x.number.clear();
   x.number.push_back(1);
 }

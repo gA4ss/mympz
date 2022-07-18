@@ -17,5 +17,11 @@ int main(int argc, char* argv[]) {
   std::cout << "0xFF * 0xFF = " << a * a << " " << std::hex << a * a << std::endl;
   std::cout << "0xFFFF * 0xFFFF = " << b * b << " " << std::hex << b * b << std::endl;
   std::cout << "0xFFFFFFFF * 0xFFFFFFFF = " << c * c << " " << std::hex << c * c << std::endl;
+  std::cout << std::endl;
+
+  std::cout << !(0x81 & 0x80) << std::endl;
+  std::cout << !!(0x81 & 0x80) << std::endl;
+  std::cout << !(0x79 & 0x80) << std::endl;
+  std::cout << !!(0x79 & 0x80) << std::endl;
   return 0;
 }

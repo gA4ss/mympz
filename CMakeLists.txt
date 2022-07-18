@@ -31,64 +31,51 @@ link_directories(/usr/local/lib)
 # Mympz public header file
 #
 set(MYMPZ_HEADERS
+  ${SRC_DIRECTORY}/mympz.h
   ${SRC_DIRECTORY}/exception.h
-  ${SRC_DIRECTORY}/bignum.h
 )
+
+#
+# Library Build
+#
+add_library(${PROJECT_NAME} STATIC
+  ${SRC_DIRECTORY}/create.cc
+  ${SRC_DIRECTORY}/calc.cc
+  ${SRC_DIRECTORY}/add.cc
+  ${SRC_DIRECTORY}/cmp.cc
+  ${SRC_DIRECTORY}/one.cc
+  ${SRC_DIRECTORY}/zero.cc
+  ${SRC_DIRECTORY}/print.cc
+)
+target_link_libraries(${PROJECT_NAME} my)
 
 #
 # Test Build
 #
 set(BUILD_TEST TRUE)
 if(BUILD_TEST)
-add_executable(test_bignum ${SRC_DIRECTORY}/test/test_bignum.cc)
-target_link_libraries(test_bignum mympz gtest pthread)
+add_executable(test_add ${SRC_DIRECTORY}/test/test_add.cc)
+target_link_libraries(test_add mympz gtest pthread)
+add_executable(test_overflow ${SRC_DIRECTORY}/test/test_overflow.cc)
+target_link_libraries(test_overflow)
 add_executable(test_size ${SRC_DIRECTORY}/test/test_size.cc)
 target_link_libraries(test_size)
+add_executable(test_macro ${SRC_DIRECTORY}/test/test_macro.cc)
+target_link_libraries(test_macro mympz)
+add_executable(test_compile ${SRC_DIRECTORY}/test/test_compile.cc)
+target_link_libraries(test_compile)
+add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
+target_link_libraries(test_create mympz gtest pthread)
+add_executable(test_deque ${SRC_DIRECTORY}/test/test_deque.cc)
+target_link_libraries(test_deque)
 endif(BUILD_TEST)
-
-#
-# Library Build
-#
-add_library(${PROJECT_NAME} STATIC
-  ${SRC_DIRECTORY}/bignum/internal/shrink_zero.cc
-  ${SRC_DIRECTORY}/bignum/internal/string_to_bignum.cc
-  ${SRC_DIRECTORY}/bignum/internal/bignum_to_string.cc
-  ${SRC_DIRECTORY}/bignum/internal/nan.cc
-  ${SRC_DIRECTORY}/bignum/internal/zero.cc
-  ${SRC_DIRECTORY}/bignum/internal/is_nan.cc
-  ${SRC_DIRECTORY}/bignum/internal/is_zero.cc
-  ${SRC_DIRECTORY}/bignum/internal/cmp.cc
-  ${SRC_DIRECTORY}/bignum/internal/add.cc
-  ${SRC_DIRECTORY}/bignum/internal/add2.cc
-  ${SRC_DIRECTORY}/bignum/internal/sub.cc
-  ${SRC_DIRECTORY}/bignum/internal/sub2.cc
-  ${SRC_DIRECTORY}/bignum/internal/mul.cc
-  ${SRC_DIRECTORY}/bignum/internal/div.cc
-  ${SRC_DIRECTORY}/bignum/internal/div2.cc
-  ${SRC_DIRECTORY}/bignum/shrink_zero.cc
-  ${SRC_DIRECTORY}/bignum/string_to_bignum.cc
-  ${SRC_DIRECTORY}/bignum/bignum_to_string.cc
-  ${SRC_DIRECTORY}/bignum/nan.cc
-  ${SRC_DIRECTORY}/bignum/zero.cc
-  ${SRC_DIRECTORY}/bignum/is_nan.cc
-  ${SRC_DIRECTORY}/bignum/is_zero.cc
-  ${SRC_DIRECTORY}/bignum/cmp.cc
-  ${SRC_DIRECTORY}/bignum/add.cc
-  ${SRC_DIRECTORY}/bignum/add2.cc
-  ${SRC_DIRECTORY}/bignum/sub.cc
-  ${SRC_DIRECTORY}/bignum/sub2.cc
-  ${SRC_DIRECTORY}/bignum/mul.cc
-  ${SRC_DIRECTORY}/bignum/div.cc
-  ${SRC_DIRECTORY}/bignum/div2.cc
-)
-target_link_libraries(${PROJECT_NAME} my)
 
 #
 # Enable Test
 #
-enable_testing()
-add_test(NAME test_bignum COMMAND test_bignum)
-set_tests_properties(test_bignum PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+# enable_testing()
+# add_test(NAME test_bignum COMMAND test_bignum)
+# set_tests_properties(test_bignum PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 
 #
 # Install Set
