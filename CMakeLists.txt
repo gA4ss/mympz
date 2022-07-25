@@ -45,7 +45,6 @@ add_library(${PROJECT_NAME} STATIC
   ${SRC_DIRECTORY}/cmp.cc
   ${SRC_DIRECTORY}/one.cc
   ${SRC_DIRECTORY}/zero.cc
-  ${SRC_DIRECTORY}/print.cc
 )
 target_link_libraries(${PROJECT_NAME} my)
 
@@ -66,8 +65,8 @@ add_executable(test_compile ${SRC_DIRECTORY}/test/test_compile.cc)
 target_link_libraries(test_compile)
 add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
 target_link_libraries(test_create mympz gtest pthread)
-add_executable(test_deque ${SRC_DIRECTORY}/test/test_deque.cc)
-target_link_libraries(test_deque)
+add_executable(test_cpp ${SRC_DIRECTORY}/test/test_cpp.cc)
+target_link_libraries(test_cpp)
 endif(BUILD_TEST)
 
 #

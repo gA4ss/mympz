@@ -36,7 +36,7 @@ void zero(bignum_t& x) {
   */
 bool is_zero(const bignum_t& x) {
   if (x.number.empty()) return false;
-  if (x.number.size() > 1) {
+  if (x.number.size() >= 1) {
     ///< 确保数值队列都是0
     for (size_t i = 0; i < x.number.size(); i++) {
       if (x.number[i] != 0) return false;

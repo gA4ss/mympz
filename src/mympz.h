@@ -20,6 +20,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <sstream>
 
 #include <mympz/exception.h>
 
@@ -28,7 +29,9 @@ namespace mympz {
 /**
   * @brief         大数结构的单位。
   */
+typedef int64_t          sunit_t;
 typedef uint64_t         unit_t;
+#define UNIT_STRING      "18446744073709551616"
 #define UNIT_ULONG       unsigned long
 #define UNIT_BYTES       8
 #define UNIT_BITS2       (UNIT_BYTES * 8)
@@ -81,8 +84,8 @@ typedef std::pair<bignum_t, bignum_t> division_result_t;
 unit_t __add_units(number_t& z, const number_t &x, const number_t &y, size_t n);
 unit_t __sub_units(number_t& z, const number_t &x, const number_t &y, size_t n);
 
-bignum_t create(std::string str);
-bignum_t create(unsigned char* buf, size_t len, bool little=true, bool unsign=true);
+bignum_t create(std::string str, bool hex=false);
+bignum_t create(unsigned char* buf, size_t len, bool little=true, bool is_sign=false);
 bignum_t create(unit_t number, int neg=0);
 bignum_t create(const std::deque<unit_t>& number, int neg=0);
 
@@ -100,7 +103,7 @@ bignum_t sub(const bignum_t& x, const bignum_t& y);
 bignum_t uadd(const bignum_t& x, const bignum_t& y);
 bignum_t usub(const bignum_t& x, const bignum_t& y);
 
-std::string print_string(const bignum_t& x, bool hex=false);
+std::string print_string(const bignum_t& x, bool hex=false, bool low_case=false);
 
 } // namespace mympz
 
