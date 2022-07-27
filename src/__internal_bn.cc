@@ -382,7 +382,11 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
     if (dividend.back() == 0) __shrink_zero(dividend, true);
   }/* end while */
 
-  __shrink_zero(remainder, true);
+  //
+  // 更新余数
+  //
+  remainder = dividend;
+  // __shrink_zero(remainder, true);
   return internal_division_result_t(quotient, remainder);
 }
 

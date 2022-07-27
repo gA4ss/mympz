@@ -21,6 +21,7 @@
 #include <cmath>
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 #include <mympz/exception.h>
 

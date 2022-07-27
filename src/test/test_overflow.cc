@@ -10,6 +10,5 @@ int main(int argc, char* argv[]) {
   unsigned int z = x + y;
   std::cout << "z = 0x" << std::hex << z << std::endl;
   std::cout << std::endl;
-
   return 0;
 }

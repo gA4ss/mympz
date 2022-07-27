@@ -135,9 +135,9 @@ static number_t __create_hex_str(const char* str) {
   size_t end = len % 2 == 0 ? 0 : 1;      ///< 包装fix_len是偶数
   size_t j = 0;
   for (int i = static_cast<int>(len - 1); i >= static_cast<int>(end); i -= 2) {
-    unsigned char b1 = __output_byte(str[i]), 
-                  b2 = __output_byte(str[i-1]);
-    unsigned char b = b1 * 16 + b2;
+    unsigned char bl = __output_byte(str[i]), 
+                  bh = __output_byte(str[i-1]);
+    unsigned char b = bh * 16 + bl;
     buf[j++] = b;
   }
 
