@@ -67,6 +67,10 @@ add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
 target_link_libraries(test_create mympz gtest pthread)
 add_executable(test_cpp ${SRC_DIRECTORY}/test/test_cpp.cc)
 target_link_libraries(test_cpp)
+add_executable(test_x86_64_add ${SRC_DIRECTORY}/test/test_x86_64_add.cc)
+target_link_libraries(test_x86_64_add)
+add_executable(test_x86_64_sub ${SRC_DIRECTORY}/test/test_x86_64_sub.cc)
+target_link_libraries(test_x86_64_sub)
 endif(BUILD_TEST)
 
 #

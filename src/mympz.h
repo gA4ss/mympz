@@ -54,7 +54,7 @@ typedef std::deque<unit_t> number_t;
 /**
   * @brief         大数结构。
   */
-typedef struct __bignum_t {
+typedef struct {
   number_t number;          ///< 保存数值的队列
   int neg;                  ///< 当前数是负数
 } bignum_t;
