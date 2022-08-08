@@ -1,8 +1,10 @@
 #include <mympz/mympz.h>
+#include "__internal.h"
 
 namespace mympz {
 
-#include "__internal_bn.cc"
+#include "./create/__internal_bn.cc"
+#include "./create/__create.cc"
 
 /**
   * @brief         将缓冲区数据转换为大数结构。

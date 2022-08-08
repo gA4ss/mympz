@@ -1,4 +1,5 @@
 #include <mympz/mympz.h>
+#include "__internal.h"
 
 namespace mympz {
 

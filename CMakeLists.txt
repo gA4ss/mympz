@@ -71,6 +71,12 @@ add_executable(test_x86_64_add ${SRC_DIRECTORY}/test/test_x86_64_add.cc)
 target_link_libraries(test_x86_64_add)
 add_executable(test_x86_64_sub ${SRC_DIRECTORY}/test/test_x86_64_sub.cc)
 target_link_libraries(test_x86_64_sub)
+add_executable(test_x86_64_mul ${SRC_DIRECTORY}/test/test_x86_64_mul.cc)
+target_link_libraries(test_x86_64_mul)
+add_executable(test_bits_word ${SRC_DIRECTORY}/test/test_bits_word.cc)
+target_link_libraries(test_bits_word)
+add_executable(test_mul_unit ${SRC_DIRECTORY}/test/test_mul_unit.cc)
+target_link_libraries(test_mul_unit)
 endif(BUILD_TEST)
 
 #

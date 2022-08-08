@@ -1,4 +1,5 @@
 #include <mympz/mympz.h>
+#include "__internal.h"
 
 namespace mympz {
 
@@ -10,7 +11,7 @@ namespace mympz {
   * @return        一个有符号整型表明比较结果。
   * @retval        -1    x < y
   * @retval        0     x = y
-  * @retval        0     x > y
+  * @retval        1     x > y
   */
 int cmp(const bignum_t& x, const bignum_t& y) {
   ///< 谁是null值，谁大。
@@ -64,7 +65,7 @@ int cmp(const bignum_t& x, const bignum_t& y) {
   * @return        一个有符号整型表明比较结果。
   * @retval        -1    x < y
   * @retval        0     x = y
-  * @retval        0     x > y
+  * @retval        1     x > y
   */
 int ucmp(const bignum_t& x, const bignum_t& y) {
   unit_t t1, t2;
