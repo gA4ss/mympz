@@ -1,4 +1,4 @@
-void __mul_4_units(number_t& z, const number_t& x, const number_t& y) {
+void __mul_4_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y) {
   unit_t c1 = 0, c2 = 0, c3 = 0;
 
   mul_add_c(x[0], y[0], c1, c2, c3);
@@ -33,7 +33,7 @@ void __mul_4_units(number_t& z, const number_t& x, const number_t& y) {
   z[7] = c2;
 }
 
-void __mul_8_units(number_t& z, const number_t& x, const number_t& y) {
+void __mul_8_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y) {
   unit_t c1 = 0, c2 = 0, c3 = 0;
 
   mul_add_c(x[0], y[0], c1, c2, c3);
@@ -132,7 +132,7 @@ void __mul_8_units(number_t& z, const number_t& x, const number_t& y) {
   z[15] = c1;
 }
 
-unit_t __mul_units_unit(number_t& z, const number_t &x, const unit_t& y) {
+unit_t __mul_units_unit(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y) {
   size_t n = x.size();
   if (n == 0)
     return 0;
@@ -160,7 +160,7 @@ unit_t __mul_units_unit(number_t& z, const number_t &x, const unit_t& y) {
   return carry;
 }
 
-unit_t __mul_add_units(number_t& z, size_t st, const number_t &x, size_t num, const unit_t& y) {
+unit_t __mul_add_units(const number_ptr_t& z, const number_ptr_t &x, size_t num, const unit_t& y) {
   unit_t c = 0;
   unit_t yl, yh;
 
@@ -174,10 +174,10 @@ unit_t __mul_add_units(number_t& z, size_t st, const number_t &x, size_t num, co
 
 #ifndef SMALL_FOOTPRINT
   while (num & ~3) {
-    mul_add(z[st+i], x[i], yl, yh, c);
-    mul_add(z[st+i+1], x[i+1], yl, yh, c);
-    mul_add(z[st+i+2], x[i+2], yl, yh, c);
-    mul_add(z[st+i+3], x[i+3], yl, yh, c);
+    mul_add(z[i], x[i], yl, yh, c);
+    mul_add(z[i+1], x[i+1], yl, yh, c);
+    mul_add(z[i+2], x[i+2], yl, yh, c);
+    mul_add(z[i+3], x[i+3], yl, yh, c);
     i += 4;
     num -= 4;
   }
@@ -191,50 +191,50 @@ unit_t __mul_add_units(number_t& z, size_t st, const number_t &x, size_t num, co
   return c;
 }
 
-void __mul_units_loop(number_t& z, const number_t& x, const number_t& y) {
-  unit_t *rr;
+void __mul_units_loop(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y) {
   size_t nx = bn_size(x), ny = bn_size(y);
 
   //
   // 如果x的长度小于y,则交换两个大数队列。
   //
-  const number_t& _x;
-  const number_t& _y;
+  number_ptr_t _x;
+  number_ptr_t _y;
   if (nx < ny) {
-    _x = y;
-    _y = x;
+    _x = num_ptr_const_cast(y);
+    _y = num_ptr_const_cast(x);
     nx = bn_size(_x);
     ny = bn_size(_y);
   } else {
-    _x = x;
-    _y = y;
+    _x = num_ptr_const_cast(x);
+    _y = num_ptr_const_cast(y);
   }
 
+  number_ptr_t _z = num_ptr_const_cast(z);
   if (ny == 0) {
-    z = _x;   // 将x赋给z
+    _z = _x;   // 将x赋给z
     return;
   }
 
   //
   // 进位保存在nx的索引，其余的保存在z的[0, nx-1]范围中。
   //
-  size_t i = nx, j = 0, k = 0;
-  z[i] = __mul_units_unit(z, _x, _y[j]);
+  size_t i = nx, j = 0;
+  _z[i] = __mul_units_unit(_z, _x, _y[j]);
   for (;;) {
     if (--ny == 0)
       return;
-    z[i+1] = __mul_add_units(z, k+1, _x, nx, _y[j+1]);
+    _z[i+1] = __mul_add_units(_z+1, _x, nx, _y[j+1]);
     if (--ny == 0)
       return;
-    z[i+2] = __mul_add_units(z, k+2, _x, nx, _y[j+2]);
+    _z[i+2] = __mul_add_units(_z+2, _x, nx, _y[j+2]);
     if (--ny == 0)
       return;
-    z[i+3] = __mul_add_units(z, k+3, _x, nx, _y[j+3]);
+    _z[i+3] = __mul_add_units(_z+3, _x, nx, _y[j+3]);
     if (--ny == 0)
       return;
-    z[i+4] = __mul_add_units(z, k+4, _x, nx, _y[j+4]);
+    _z[i+4] = __mul_add_units(_z+4, _x, nx, _y[j+4]);
     i += 4;
     j += 4;
-    k += 4;
+    _z += 4;
   }
 }

@@ -82,9 +82,11 @@ endif(BUILD_TEST)
 #
 # Enable Test
 #
-# enable_testing()
-# add_test(NAME test_bignum COMMAND test_bignum)
-# set_tests_properties(test_bignum PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+enable_testing()
+add_test(NAME test_create COMMAND test_create)
+set_tests_properties(test_create PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+add_test(NAME test_add COMMAND test_add)
+set_tests_properties(test_add PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 
 #
 # Install Set

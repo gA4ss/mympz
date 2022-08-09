@@ -6,7 +6,7 @@
   * @param[in]     n        多少位相加
   * @return        最后一组单位数相加后的进位。
   */
-unit_t __add_units(number_t& z, const number_t &x, const number_t &y, size_t n) {
+unit_t __add_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n) {
   unit_t c = 0, l = 0, t = 0;
   size_t i = 0;
 
@@ -71,7 +71,7 @@ unit_t __add_units(number_t& z, const number_t &x, const number_t &y, size_t n) 
   * @param[in]     n        多少位相减
   * @return        最后一组单位数相加后的进位。
   */
-unit_t __sub_units(number_t& z, const number_t &x, const number_t &y, size_t n) {
+unit_t __sub_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n) {
   unit_t t1, t2;
   int c = 0;
 

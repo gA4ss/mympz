@@ -10,130 +10,130 @@
  * for the systems that use assembler files.
  */
 
-unit_t __sub_part(BN_ULONG *r, const BN_ULONG *a, const BN_ULONG *b, int cl, int dl) {
-    BN_ULONG c, t;
+unit_t __sub_part(number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y, int cl, int dl) {
+  unit_t c, t;
 
-    assert(cl >= 0);
-    c = bn_sub_words(r, a, b, cl);
+  my_assert(cl >= 0);
+  c = bn_sub_words(r, a, b, cl);
 
-    if (dl == 0)
-        return c;
+  if (dl == 0)
+      return c;
 
-    r += cl;
-    a += cl;
-    b += cl;
+  r += cl;
+  a += cl;
+  b += cl;
 
-    if (dl < 0) {
-        for (;;) {
-            t = b[0];
-            r[0] = (0 - t - c) & BN_MASK2;
-            if (t != 0)
-                c = 1;
-            if (++dl >= 0)
-                break;
+  if (dl < 0) {
+      for (;;) {
+          t = b[0];
+          r[0] = (0 - t - c) & BN_MASK2;
+          if (t != 0)
+              c = 1;
+          if (++dl >= 0)
+              break;
 
-            t = b[1];
-            r[1] = (0 - t - c) & BN_MASK2;
-            if (t != 0)
-                c = 1;
-            if (++dl >= 0)
-                break;
+          t = b[1];
+          r[1] = (0 - t - c) & BN_MASK2;
+          if (t != 0)
+              c = 1;
+          if (++dl >= 0)
+              break;
 
-            t = b[2];
-            r[2] = (0 - t - c) & BN_MASK2;
-            if (t != 0)
-                c = 1;
-            if (++dl >= 0)
-                break;
+          t = b[2];
+          r[2] = (0 - t - c) & BN_MASK2;
+          if (t != 0)
+              c = 1;
+          if (++dl >= 0)
+              break;
 
-            t = b[3];
-            r[3] = (0 - t - c) & BN_MASK2;
-            if (t != 0)
-                c = 1;
-            if (++dl >= 0)
-                break;
+          t = b[3];
+          r[3] = (0 - t - c) & BN_MASK2;
+          if (t != 0)
+              c = 1;
+          if (++dl >= 0)
+              break;
 
-            b += 4;
-            r += 4;
-        }
-    } else {
-        int save_dl = dl;
-        while (c) {
-            t = a[0];
-            r[0] = (t - c) & BN_MASK2;
-            if (t != 0)
-                c = 0;
-            if (--dl <= 0)
-                break;
+          b += 4;
+          r += 4;
+      }
+  } else {
+      int save_dl = dl;
+      while (c) {
+          t = a[0];
+          r[0] = (t - c) & BN_MASK2;
+          if (t != 0)
+              c = 0;
+          if (--dl <= 0)
+              break;
 
-            t = a[1];
-            r[1] = (t - c) & BN_MASK2;
-            if (t != 0)
-                c = 0;
-            if (--dl <= 0)
-                break;
+          t = a[1];
+          r[1] = (t - c) & BN_MASK2;
+          if (t != 0)
+              c = 0;
+          if (--dl <= 0)
+              break;
 
-            t = a[2];
-            r[2] = (t - c) & BN_MASK2;
-            if (t != 0)
-                c = 0;
-            if (--dl <= 0)
-                break;
+          t = a[2];
+          r[2] = (t - c) & BN_MASK2;
+          if (t != 0)
+              c = 0;
+          if (--dl <= 0)
+              break;
 
-            t = a[3];
-            r[3] = (t - c) & BN_MASK2;
-            if (t != 0)
-                c = 0;
-            if (--dl <= 0)
-                break;
+          t = a[3];
+          r[3] = (t - c) & BN_MASK2;
+          if (t != 0)
+              c = 0;
+          if (--dl <= 0)
+              break;
 
-            save_dl = dl;
-            a += 4;
-            r += 4;
-        }
-        if (dl > 0) {
-            if (save_dl > dl) {
-                switch (save_dl - dl) {
-                case 1:
-                    r[1] = a[1];
-                    if (--dl <= 0)
-                        break;
-                    /* fall thru */
-                case 2:
-                    r[2] = a[2];
-                    if (--dl <= 0)
-                        break;
-                    /* fall thru */
-                case 3:
-                    r[3] = a[3];
-                    if (--dl <= 0)
-                        break;
-                }
-                a += 4;
-                r += 4;
-            }
-        }
-        if (dl > 0) {
-            for (;;) {
-                r[0] = a[0];
-                if (--dl <= 0)
-                    break;
-                r[1] = a[1];
-                if (--dl <= 0)
-                    break;
-                r[2] = a[2];
-                if (--dl <= 0)
-                    break;
-                r[3] = a[3];
-                if (--dl <= 0)
-                    break;
+          save_dl = dl;
+          a += 4;
+          r += 4;
+      }
+      if (dl > 0) {
+          if (save_dl > dl) {
+              switch (save_dl - dl) {
+              case 1:
+                  r[1] = a[1];
+                  if (--dl <= 0)
+                      break;
+                  /* fall thru */
+              case 2:
+                  r[2] = a[2];
+                  if (--dl <= 0)
+                      break;
+                  /* fall thru */
+              case 3:
+                  r[3] = a[3];
+                  if (--dl <= 0)
+                      break;
+              }
+              a += 4;
+              r += 4;
+          }
+      }
+      if (dl > 0) {
+          for (;;) {
+              r[0] = a[0];
+              if (--dl <= 0)
+                  break;
+              r[1] = a[1];
+              if (--dl <= 0)
+                  break;
+              r[2] = a[2];
+              if (--dl <= 0)
+                  break;
+              r[3] = a[3];
+              if (--dl <= 0)
+                  break;
 
-                a += 4;
-                r += 4;
-            }
-        }
-    }
-    return c;
+              a += 4;
+              r += 4;
+          }
+      }
+  }
+  return c;
 }
 
 
@@ -182,20 +182,20 @@ void __mul_recursive(number_t& z, const number_t& x, const number_t& y,
   }
 
   /* z=(x[0]-y[1])*(y[1]-y[0]) */
-  c1 = __cmp_park(a, &(a[n]), tnx, n - tnx);
-  c2 = __cmp_park(&(b[n]), b, tny, tny - n);
+  c1 = __cmp_park(bn_ptr(x), bn_ptr(x,n), tnx, n - tnx);
+  c2 = __cmp_park(bn_ptr(y,n), bn_ptr(y), tny, tny - n);
   zero = neg = 0;
   switch (c1 * 3 + c2) {
   case -4:
-    bn_sub_part_words(t, &(a[n]), a, tnx, tnx - n); /* - */
-    bn_sub_part_words(&(t[n]), b, &(b[n]), tny, n - tny); /* - */
+    __sub_park(bn_ptr(t), bn_ptr(x,n), bn_ptr(x), tnx, tnx - n); /* - */
+    __sub_park(bn_ptr(t,n), bn_ptr(y), bn_ptr(y, n), tny, n - tny); /* - */
     break;
   case -3:
     zero = 1;
     break;
   case -2:
-    bn_sub_part_words(t, &(a[n]), a, tnx, tnx - n); /* - */
-    bn_sub_part_words(&(t[n]), &(b[n]), b, tny, tny - n); /* + */
+    __sub_park(bn_ptr(t), bn_ptr(x,n), bn_ptr(x), tnx, tnx - n); /* - */
+    __sub_park(bn_ptr(t,n), bn_ptr(y,n), bn_ptr(y), tny, tny - n); /* + */
     neg = 1;
     break;
   case -1:
@@ -204,16 +204,16 @@ void __mul_recursive(number_t& z, const number_t& x, const number_t& y,
     zero = 1;
     break;
   case 2:
-    bn_sub_part_words(t, a, &(a[n]), tnx, n - tnx); /* + */
-    bn_sub_part_words(&(t[n]), b, &(b[n]), tny, n - tny); /* - */
+    __sub_park(bn_ptr(t), bn_ptr(x), bn_ptr(x,n), tnx, n - tnx); /* + */
+    __sub_park(bn_ptr(t,n), bn_ptr(y), bn_ptr(y,n), tny, n - tny); /* - */
     neg = 1;
     break;
   case 3:
     zero = 1;
     break;
   case 4:
-    bn_sub_part_words(t, a, &(a[n]), tnx, n - tnx);
-    bn_sub_part_words(&(t[n]), &(b[n]), b, tny, tny - n);
+    __sub_park(bn_ptr(t), bn_ptr(x), bn_ptr(x,n), tnx, n - tnx);
+    __sub_park(bn_ptr(t,n), bn_ptr(y), bn_ptr(y,n), tny, tny - n);
     break;
   }
 

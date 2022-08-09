@@ -77,7 +77,7 @@ size_t __count_bits(unit_t l) {
   * @retval        0     x = y
   * @retval        1     x > y
   */
-int __cmp(const number_t& x, const number_t& y, int n) {
+int __cmp(const number_ptr_t& x, const number_ptr_t& y, int n) {
   unit_t xx, yy;
 
   if (n == 0)
@@ -109,7 +109,7 @@ int __cmp(const number_t& x, const number_t& y, int n) {
   * @retval        0     x = y
   * @retval        1     x > y
   */
-int __cmp_part(const number_t& x, const number_t& y, int cl, int dl) {
+int __cmp_part(const number_ptr_t& x, const number_ptr_t& y, int cl, int dl) {
   int n, i;
   n = cl - 1;
 

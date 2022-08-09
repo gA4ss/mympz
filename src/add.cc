@@ -108,8 +108,8 @@ bignum_t uadd(const bignum_t& x, const bignum_t& y) {
   //
   // 交换两个数
   //
-  bignum_t& _x = const_cast<bignum_t&>(x);
-  bignum_t& _y = const_cast<bignum_t&>(y);
+  bignum_t& _x = bn_const_cast(x);
+  bignum_t& _y = bn_const_cast(y);
   if (bn_size(_x) < bn_size(_y)) {
     bignum_t& tmp = _x;
     _x = _y;
@@ -123,7 +123,7 @@ bignum_t uadd(const bignum_t& x, const bignum_t& y) {
   //
   // 先将min位相加
   //
-  unit_t carry = __add_units(z.number, _x.number, _y.number, min);
+  unit_t carry = __add_units(bn_ptr(z), bn_ptr(_x), bn_ptr(_y), min);
 
   size_t i = min;
   unit_t t1, t2;
@@ -161,30 +161,32 @@ bignum_t uadd(const bignum_t& x, const bignum_t& y) {
   */
 bignum_t usub(const bignum_t& x, const bignum_t& y) {
   bignum_t z;
+  bignum_t& _x = bn_const_cast(x);
+  bignum_t& _y = bn_const_cast(y);
 
-  mympz_check_size(x);
-  mympz_check_size(y);
+  mympz_check_size(_x);
+  mympz_check_size(_y);
 
-  size_t max = bn_size(x);
-  size_t min = bn_size(y);
+  size_t max = bn_size(_x);
+  size_t min = bn_size(_y);
   size_t dif = max - min;
 
   if (static_cast<int>(dif) < 0) {
     mympz_exception("x(%s) < y(%s)", 
-                    print_string(x).c_str(), 
-                    print_string(y).c_str()
+                    print_string(_x).c_str(), 
+                    print_string(_y).c_str()
     );
   }
 
   bn_resize(z, max);
 
-  unit_t borrow = __sub_units(z.number, x.number, y.number, min);
+  unit_t borrow = __sub_units(bn_ptr(z), bn_ptr(_x), bn_ptr(_y), min);
   size_t i = min;
 
   unit_t t1, t2;
   while (dif) {
     dif--;
-    t1 = x.number[i];
+    t1 = _x.number[i];
     t2 = (t1 - borrow) & CALC_MASK;
     z.number[i] = t2;
     borrow &= (t1 == 0);

@@ -10,9 +10,9 @@ namespace mympz {
 #define UNIT_BYTES       8
 #define UNIT_BITS        64
 #define UNIT_HALF_BITS   UNIT_BITS / 2
-// #define UNIT_BITS2       (UNIT_BYTES * 8)
+#define UNIT_BITS2       (UNIT_BYTES * 8)
 // #define UNIT_BITS        (UNIT_BITS2 * 2)
-// #define UNIT_TBIT        ((UNIT_ULONG)1 << (UNIT_BITS2 - 1))
+#define UNIT_TBIT        ((UNIT_ULONG)1 << (UNIT_BITS2 - 1))
 
 #define CALC_MASK        (0xffffffffffffffffL)
 #define CALC_MASKl       (0xffffffffL)
@@ -40,15 +40,15 @@ namespace mympz {
 
 size_t __count_bits(unit_t l);
 
-int __cmp(const number_t& x, const number_t& y, int n);
-int __cmp_part(const number_t& x, const number_t& y, int cl, int dl);
+int __cmp(const number_ptr_t& x, const number_ptr_t& y, int n);
+int __cmp_part(const number_ptr_t& x, const number_ptr_t& y, int cl, int dl);
 
-unit_t __add_units(number_t& z, const number_t &x, const number_t &y, size_t n);
-unit_t __sub_units(number_t& z, const number_t &x, const number_t &y, size_t n);
+unit_t __add_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n);
+unit_t __sub_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n);
 
-void __mul_4_units(number_t& z, const number_t& x, const number_t& y);
-void __mul_8_units(number_t& z, const number_t& x, const number_t& y);
-void __mul_units_loop(number_t& z, const number_t &x, const number_t &y);
+void __mul_4_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y);
+void __mul_8_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y);
+void __mul_units_loop(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y);
 
 
 } // namespace mympz
