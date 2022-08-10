@@ -42,6 +42,7 @@ add_library(${PROJECT_NAME} STATIC
   ${SRC_DIRECTORY}/create.cc
   ${SRC_DIRECTORY}/calc.cc
   ${SRC_DIRECTORY}/add.cc
+  ${SRC_DIRECTORY}/mul.cc
   ${SRC_DIRECTORY}/cmp.cc
   ${SRC_DIRECTORY}/one.cc
   ${SRC_DIRECTORY}/zero.cc
@@ -55,6 +56,10 @@ set(BUILD_TEST TRUE)
 if(BUILD_TEST)
 add_executable(test_add ${SRC_DIRECTORY}/test/test_add.cc)
 target_link_libraries(test_add mympz gtest pthread)
+add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
+target_link_libraries(test_create mympz gtest pthread)
+add_executable(test_mul ${SRC_DIRECTORY}/test/test_mul.cc)
+target_link_libraries(test_mul mympz gtest pthread)
 add_executable(test_overflow ${SRC_DIRECTORY}/test/test_overflow.cc)
 target_link_libraries(test_overflow)
 add_executable(test_size ${SRC_DIRECTORY}/test/test_size.cc)
@@ -63,10 +68,6 @@ add_executable(test_macro ${SRC_DIRECTORY}/test/test_macro.cc)
 target_link_libraries(test_macro mympz)
 add_executable(test_compile ${SRC_DIRECTORY}/test/test_compile.cc)
 target_link_libraries(test_compile)
-add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
-target_link_libraries(test_create mympz gtest pthread)
-add_executable(test_cpp ${SRC_DIRECTORY}/test/test_cpp.cc)
-target_link_libraries(test_cpp)
 add_executable(test_x86_64_add ${SRC_DIRECTORY}/test/test_x86_64_add.cc)
 target_link_libraries(test_x86_64_add)
 add_executable(test_x86_64_sub ${SRC_DIRECTORY}/test/test_x86_64_sub.cc)
@@ -77,6 +78,8 @@ add_executable(test_bits_word ${SRC_DIRECTORY}/test/test_bits_word.cc)
 target_link_libraries(test_bits_word)
 add_executable(test_mul_unit ${SRC_DIRECTORY}/test/test_mul_unit.cc)
 target_link_libraries(test_mul_unit)
+add_executable(test_cpp ${SRC_DIRECTORY}/test/test_cpp.cc)
+target_link_libraries(test_cpp)
 endif(BUILD_TEST)
 
 #
@@ -87,6 +90,8 @@ add_test(NAME test_create COMMAND test_create)
 set_tests_properties(test_create PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_add COMMAND test_add)
 set_tests_properties(test_add PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+add_test(NAME test_mul COMMAND test_mul)
+set_tests_properties(test_mul PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 
 #
 # Install Set

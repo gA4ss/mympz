@@ -1,7 +1,3 @@
-#include "__internal.h"
-
-namespace mympz {
-
 /*
  * 这里此函数借鉴了Openssl的代码，在VS的编译器会之前会引发一个编译器优化
  * 错误，这里如果遇到微软的编译器则将其优化关闭。
@@ -130,5 +126,3 @@ int __cmp_part(const number_ptr_t& x, const number_ptr_t& y, int cl, int dl) {
   }
   return __cmp(x, y, cl);
 }
-
-} // namespace mympz

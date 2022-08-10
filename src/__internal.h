@@ -9,13 +9,13 @@ namespace mympz {
 #define UNIT_ULONG       unit_t
 #define UNIT_BYTES       8
 #define UNIT_BITS        64
-#define UNIT_HALF_BITS   UNIT_BITS / 2
+#define UNIT_HALF_BITS   32
 #define UNIT_BITS2       (UNIT_BYTES * 8)
 // #define UNIT_BITS        (UNIT_BITS2 * 2)
 #define UNIT_TBIT        ((UNIT_ULONG)1 << (UNIT_BITS2 - 1))
 
 #define CALC_MASK        (0xffffffffffffffffL)
-#define CALC_MASKl       (0xffffffffL)
+#define CALC_MASKl       (0x00000000ffffffffL)
 #define CALC_MASKh       (0xffffffff00000000L)
 #define CALC_MASKh1      (0xffffffff80000000L)
 
@@ -48,8 +48,10 @@ unit_t __sub_units(const number_ptr_t& z, const number_ptr_t &x, const number_pt
 
 void __mul_4_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y);
 void __mul_8_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y);
-void __mul_units_loop(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y);
-
+void __mul_units_loop(const number_ptr_t& z, const number_ptr_t &x, size_t nx, const number_ptr_t &y, 
+                      size_t ny);
+// void __mul_units_recursive(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y,
+//                            int n2, int dnx, int dny, const number_ptr_t& t);
 
 } // namespace mympz
 

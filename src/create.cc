@@ -270,14 +270,14 @@ std::string print_string(const bignum_t& x, bool hex, bool low_case) {
     return str;
   }
 
-  if (x.neg) {
-    str.push_back('-');
-  }
-
   if (hex)
     str += __print_string_hex(x.number, low_case);
   else
     str += __print_string_dec(x.number);
+
+  if (x.neg) {
+    str = std::string("-") + str;
+  }
   return str;
 }
 

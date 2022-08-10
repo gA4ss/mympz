@@ -22,6 +22,8 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
   bignum_t& _x = bn_const_cast(x);
   bignum_t& _y = bn_const_cast(y);
 
+  init_bignum(z);init_bignum(t);
+
   //
   // 如果任意一个参数为0，则返回空值。
   //
@@ -41,6 +43,9 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
     } else if (xl == 8) {
       bn_resize(z, 16);
       __mul_8_units(bn_ptr(z), bn_ptr(_x), bn_ptr(_y));
+    } else {
+      bn_resize(z, xl + yl + 1);
+      __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
     }
   } else if ((xl >= CALC_MULL_SIZE_NORMAL) && (yl >= CALC_MULL_SIZE_NORMAL)) {
     //
@@ -64,27 +69,27 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
       // 随后使用k的长度来保存乘法结果。
       //
       j = 1 << (j - 1);
-      my_assert(j <= xl || j <= yl);
-      k = j + j;
+      my_assert(j <= xl || j <= yl, "j > xl || j > yl,j = %l.", j);
+      int k = j + j;
 
       if (xl > j || yl > j) {
         bn_resize(t, k*4);
         bn_resize(z, k*4);
-        __mul_part_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
-                             j, xl - j, yl - j, bn_ptr(t));
+        // __mul_part_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
+        //                      j, xl - j, yl - j, bn_ptr(t));
       } else {  // xl <= j || yl <= j
         bn_resize(t, k*2);
         bn_resize(z, k*2);
-        __mul_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
-                        j, xl - j, yl - j, bn_ptr(t)));
+        // __mul_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
+        //                 j, xl - j, yl - j, bn_ptr(t)));
       }
     }
   } else {
     //
     // 小于CALC_MULL_SIZE_NORMAL位数则直接使用循环来处理
     //
-    bn_resize(z, xl + yl);
-    __mul_units_loop(bn_ptr(z), bn_ptr(_x), bn_ptr(_y));
+    bn_resize(z, xl + yl + 1);
+    __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
   }
 
   z.neg = x.neg ^ y.neg;    // 设定符号

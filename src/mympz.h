@@ -52,9 +52,15 @@ typedef struct {
   */
 typedef std::pair<bignum_t, bignum_t> division_result_t;
 
+#define init_bignum(x)                {(x).neg = 0;(x).number.clear();}
+
 #define is_negative(x)                ((x).neg)
 #define is_positive(x)                (!(x).neg)
 #define is_null(x)                    ((x).number.empty())
+
+#define set_negative(x)               ((x).neg = 1;)
+#define set_positive(x)               ((x).neg = 0;)
+#define set_null(x)                   {(x).neg = 0;(x).number.clear();}
 
 #define bn_size(x)                    ((x).number.size())
 #define bn_resize(x, n)               ((x).number.resize(n))
