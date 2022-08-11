@@ -29,9 +29,9 @@ namespace mympz {
 /* Alpha       16,16,16,16.64 */
 #define CALC_MULL_SIZE_NORMAL                     (16)/* 32 */
 #define CALC_MUL_RECURSIVE_SIZE_NORMAL            (16)/* 32 less than */
-// # define CALC_SQR_RECURSIVE_SIZE_NORMAL            (16)/* 32 */
-// # define CALC_MUL_LOW_RECURSIVE_SIZE_NORMAL        (32)/* 32 */
-// # define CALC_MONT_CTX_SET_SIZE_WORD               (64)/* 32 */
+#define CALC_SQR_RECURSIVE_SIZE_NORMAL            (16)/* 32 */
+#define CALC_MUL_LOW_RECURSIVE_SIZE_NORMAL        (32)/* 32 */
+#define CALC_MONT_CTX_SET_SIZE_WORD               (64)/* 32 */
 
 //
 // 一些乘法宏的内部支持
@@ -50,9 +50,13 @@ void __mul_4_units(const number_ptr_t& z, const number_ptr_t& x, const number_pt
 void __mul_8_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y);
 void __mul_units_loop(const number_ptr_t& z, const number_ptr_t &x, size_t nx, const number_ptr_t &y, 
                       size_t ny);
-// void __mul_units_recursive(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y,
-//                            int n2, int dnx, int dny, const number_ptr_t& t);
-
+void __mul_units_low_loop(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y, int n);
+void __mul_units_recursive(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y,
+                           int n2, int dnx, int dny, const number_ptr_t& t);
+void __mul_part_units_recursive(const number_ptr_t &z, const number_ptr_t &x, const number_ptr_t &y, int n,
+                                int tnx, int tny, const number_ptr_t &t);
+void __mul_units_low_recursive(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y, int n2,
+                               const number_ptr_t& t);
 } // namespace mympz
 
 #endif // MYMPZ_INTERNAL_H_

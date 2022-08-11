@@ -242,3 +242,31 @@ void __mul_units_loop(const number_ptr_t& z, const number_ptr_t& x, size_t nx,
     _zz += 4;
   }
 }
+
+void __mul_units_low_loop(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y, int n) {
+  __mul_units_unit(z, x, n, y[0]);
+
+  number_ptr_t _z = num_ptr_const_cast(z);
+  number_ptr_t _y = num_ptr_const_cast(y);
+  for (;;) {
+    if (--n == 0)
+      return;
+    __mul_add_units(_z + 1, x, n, _y[1]);
+    if (--n == 0)
+      return;
+    __mul_add_units(_z + 2, x, n, _y[2]);
+    if (--n == 0)
+      return;
+    __mul_add_units(_z + 3, x, n, _y [3]);
+    if (--n == 0)
+      return;
+    __mul_add_units(_z + 4, x, n, _y[4]);
+    _z += 4;
+    _y += 4;
+  }
+}
+
+//
+// 递归实现
+//
+#include "__calc_mul_recursive.cc"

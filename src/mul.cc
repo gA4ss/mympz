@@ -33,6 +33,8 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
   }
   
   int i = static_cast<int>(bn_size(_x)) - static_cast<int>(bn_size(_y));
+
+#if 0
   if (i == 0) {
     //
     // x与y的长度相同
@@ -47,7 +49,10 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
       bn_resize(z, xl + yl + 1);
       __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
     }
-  } else if ((xl >= CALC_MULL_SIZE_NORMAL) && (yl >= CALC_MULL_SIZE_NORMAL)) {
+  } else 
+#endif
+
+  if ((xl >= CALC_MULL_SIZE_NORMAL) && (yl >= CALC_MULL_SIZE_NORMAL)) {
     //
     // 1.乘数与被乘数大于某个长度
     // 2.乘数与被乘数的长度仅差1位
@@ -75,14 +80,17 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
       if (xl > j || yl > j) {
         bn_resize(t, k*4);
         bn_resize(z, k*4);
-        // __mul_part_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
-        //                      j, xl - j, yl - j, bn_ptr(t));
+        __mul_part_units_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
+                                   j, xl - j, yl - j, bn_ptr(t));
       } else {  // xl <= j || yl <= j
         bn_resize(t, k*2);
         bn_resize(z, k*2);
-        // __mul_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
-        //                 j, xl - j, yl - j, bn_ptr(t)));
+        __mul_units_recursive(bn_ptr(z), bn_ptr(_x), bn_ptr(_y),
+                              j, xl - j, yl - j, bn_ptr(t));
       }
+    } else {
+      bn_resize(z, xl + yl + 1);
+      __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
     }
   } else {
     //
@@ -96,6 +104,5 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
   clear_head_zero(z);
   return z;
 }
-
 
 } // namespace mympz
