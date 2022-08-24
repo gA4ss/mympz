@@ -73,7 +73,7 @@ unit_t __add_units(const number_ptr_t& z, const number_ptr_t &x, const number_pt
   */
 unit_t __sub_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n) {
   unit_t t1, t2;
-  int c = 0;
+  unit_t c = 0;
 
   if (n == 0) return 0;
 

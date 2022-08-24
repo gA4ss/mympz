@@ -46,6 +46,7 @@ int __cmp_part(const number_ptr_t& x, const number_ptr_t& y, int cl, int dl);
 unit_t __add_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n);
 unit_t __sub_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n);
 
+unit_t __mul_units_unit(const number_ptr_t& z, const number_ptr_t& x, size_t nx, unit_t y);
 void __mul_4_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y);
 void __mul_8_units(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y);
 void __mul_units_loop(const number_ptr_t& z, const number_ptr_t &x, size_t nx, const number_ptr_t &y, 
@@ -57,6 +58,8 @@ void __mul_part_units_recursive(const number_ptr_t &z, const number_ptr_t &x, co
                                 int tnx, int tny, const number_ptr_t &t);
 void __mul_units_low_recursive(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y, int n2,
                                const number_ptr_t& t);
+
+unit_t __div_unit(unit_t h, unit_t l, unit_t d);
 } // namespace mympz
 
 #endif // MYMPZ_INTERNAL_H_

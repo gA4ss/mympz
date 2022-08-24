@@ -99,8 +99,23 @@ void test5() {
 
 }
 
+void test6() {
+  std::deque<int> x,y;
+  x.resize(5);
+  for (int i = 0; i < 5; i++)
+    x[i] = i;
+
+  std::deque<int>::iterator x_ptr1, x_ptr2;
+  x_ptr1= x.begin() + 3;
+  x_ptr2= x.begin() + 3;
+  if (x_ptr1 == x_ptr2)
+    std::cout << "same" << std::endl;
+  else
+    std::cout << "not same" << std::endl;
+}
+
 int main(int argc, char* argv[]) {
   // test1();
-  test5();
+  test6();
   return 0;
 }

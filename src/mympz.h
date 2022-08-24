@@ -105,6 +105,12 @@ bignum_t uadd(const bignum_t& x, const bignum_t& y);
 bignum_t usub(const bignum_t& x, const bignum_t& y);
 
 bignum_t mul(const bignum_t& x, const bignum_t& y);
+division_result_t div(const bignum_t& x, const bignum_t& y);
+
+bignum_t lshift1(const bignum_t& x);
+bignum_t rshift1(const bignum_t& x);
+bignum_t lshift(const bignum_t& x, size_t n);
+bignum_t rshift(const bignum_t& x, size_t n);
 
 std::string print_string(const bignum_t& x, bool hex=false, bool low_case=false);
 

@@ -1,5 +1,3 @@
-typedef std::deque<unit_t> number_t;
-typedef number_t::iterator __bignum_iter_t;
 typedef std::pair<number_t, number_t> internal_division_result_t;
 
 static bool __is_zero(const number_t& a) {
@@ -33,7 +31,7 @@ static size_t __shrink_zero(number_t& a, bool reverse=false) {
       }
     }
   } else {
-    __bignum_iter_t it = a.begin();
+    number_ptr_t it = a.begin();
     while (it < a.end()) {
       if (*it == 0) {
         it = a.erase(it);
