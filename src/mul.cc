@@ -29,6 +29,7 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
   //
   int xl = static_cast<int>(bn_size(_x)), yl = static_cast<int>(bn_size(_y));
   if ((xl == 0) || (yl == 0)) {
+    set_error(z);
     return z;
   }
   

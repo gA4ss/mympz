@@ -149,6 +149,10 @@ unit_t __sub_part(const number_ptr_t &z, const number_ptr_t &x, const number_ptr
   * @param[in]     dnx是x队列要分治的长度，可能不是整数但是n2/2+dna必须是
   * @param[in]     dny是y队列要分治的长度,可能不是整数但是n2/2+dna必须是
   * @param[out]    t是2乘以n2个元素的长度的队列
+  * @note
+  * x[0]*y[0]
+  * x[0]*y[0]+x[1]*y[1]+(x[0]-x[1])*(y[1]-y[0])
+  * x[1]*y[1]
   * @return        x * y
 
   * @par Sample

@@ -9,8 +9,8 @@ static size_t __left_align(number_t& num) {
 
   size_t lshift = UNIT_BITS - rshift;         // 最高位左边还空余的位数
   rshift %= UNIT_BITS;
-  unit_t rmask = 0 - rshift;  /* rmask = 0 - (rshift != 0) */
-  rmask |= rmask >> 8;        /* rmask为CALC_MASK */
+  unit_t rmask = (unit_t)0 - rshift;          // rmask = 0 - (rshift != 0)
+  rmask |= rmask >> 8;                        // rmask为CALC_MASK
 
   unit_t n = 0, m = 0;
   for (size_t i = 0; i < l; i++) {

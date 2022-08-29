@@ -43,6 +43,7 @@ add_library(${PROJECT_NAME} STATIC
   ${SRC_DIRECTORY}/calc.cc
   ${SRC_DIRECTORY}/add.cc
   ${SRC_DIRECTORY}/mul.cc
+  ${SRC_DIRECTORY}/sqr.cc
   ${SRC_DIRECTORY}/div.cc
   ${SRC_DIRECTORY}/shift.cc
   ${SRC_DIRECTORY}/cmp.cc
@@ -66,6 +67,8 @@ add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
 target_link_libraries(test_create mympz gtest pthread)
 add_executable(test_mul ${SRC_DIRECTORY}/test/test_mul.cc)
 target_link_libraries(test_mul mympz gtest pthread)
+add_executable(test_sqr ${SRC_DIRECTORY}/test/test_sqr.cc)
+target_link_libraries(test_sqr mympz gtest pthread)
 add_executable(test_div ${SRC_DIRECTORY}/test/test_div.cc)
 target_link_libraries(test_div mympz gtest pthread)
 add_executable(test_shift ${SRC_DIRECTORY}/test/test_shift.cc)

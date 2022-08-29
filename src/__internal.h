@@ -37,6 +37,7 @@ namespace mympz {
 // 一些乘法宏的内部支持
 //
 #include "__internal_mul.h"
+#include "__internal_sqr.h"
 
 size_t __count_bits(unit_t l);
 
@@ -58,6 +59,14 @@ void __mul_part_units_recursive(const number_ptr_t &z, const number_ptr_t &x, co
                                 int tnx, int tny, const number_ptr_t &t);
 void __mul_units_low_recursive(const number_ptr_t& z, const number_ptr_t& x, const number_ptr_t& y, int n2,
                                const number_ptr_t& t);
+
+void __sqr_4_units(const number_ptr_t& y, const number_ptr_t& x);
+void __sqr_8_units(const number_ptr_t& y, const number_ptr_t& x);
+void __sqr_units(const number_ptr_t& y, const number_ptr_t& x, size_t n);
+void __sqr_units_loop(const number_ptr_t& y, const number_ptr_t& x, size_t nx, 
+                         const number_ptr_t& t);
+void __sqr_units_recursive(const number_ptr_t& y, const number_ptr_t& x, size_t n2,
+                              const number_ptr_t& t);
 
 unit_t __div_unit(unit_t h, unit_t l, unit_t d);
 } // namespace mympz
