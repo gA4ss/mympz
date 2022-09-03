@@ -92,11 +92,20 @@ bignum_t create(unsigned char* buf, size_t len, bool little=true, bool is_sign=f
 bignum_t create(unit_t number, int neg=0);
 bignum_t create(const std::deque<unit_t>& number, int neg=0);
 
-void zero(bignum_t& x);
 bool is_zero(const bignum_t& x);
-
-void one(bignum_t& x, int neg=0);
 bool is_one(const bignum_t& x);
+bool is_odd(const bignum_t& x);
+
+void zero(bignum_t& x);
+void one(bignum_t& x, int neg=0);
+
+unit_t get_word(const bignum_t& x);
+void set_word(bignum_t& x, unit_t w);
+
+void set_bit(bignum_t& x, size_t n);
+void clear_bit(bignum_t& x, size_t n);
+int is_bit_set(const bignum_t& x, size_t n);
+void mask_bits(bignum_t& x, size_t n);
 
 int cmp(const bignum_t& x, const bignum_t& y);
 int ucmp(const bignum_t& x, const bignum_t& y);
@@ -109,11 +118,22 @@ bignum_t usub(const bignum_t& x, const bignum_t& y);
 bignum_t mul(const bignum_t& x, const bignum_t& y);
 bignum_t sqr(const bignum_t& x);
 division_result_t div(const bignum_t& x, const bignum_t& y);
+bignum_t idiv(const bignum_t& x, const bignum_t& y);
 
 bignum_t lshift1(const bignum_t& x);
 bignum_t rshift1(const bignum_t& x);
 bignum_t lshift(const bignum_t& x, size_t n);
 bignum_t rshift(const bignum_t& x, size_t n);
+
+bignum_t mod(const bignum_t& x, const bignum_t& y);
+bignum_t nnmod(const bignum_t& x, const bignum_t& y);
+bignum_t mod_add(const bignum_t& x, const bignum_t& y, const bignum_t& m);
+bignum_t mod_sub(const bignum_t& x, const bignum_t& y, const bignum_t& m);
+bignum_t mod_mul(const bignum_t& x, const bignum_t& y, const bignum_t& m);
+bignum_t mod_sqr(const bignum_t& x, const bignum_t& m);
+bignum_t mod_lshift1(const bignum_t& x, const bignum_t& m);
+bignum_t mod_lshift(const bignum_t& x, size_t n, const bignum_t& m);
+bignum_t exp(const bignum_t& x, const bignum_t& p);
 
 std::string print_string(const bignum_t& x, bool hex=false, bool low_case=false);
 

@@ -163,4 +163,8 @@ division_result_t div(const bignum_t& x, const bignum_t& y) {
   return division_result_t(_z, rm);
 }
 
+bignum_t idiv(const bignum_t& x, const bignum_t& y) {
+  return div(x,y).first;
+}
+
 } // namespace mympz

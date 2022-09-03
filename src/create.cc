@@ -3,8 +3,8 @@
 
 namespace mympz {
 
-#include "./create/__internal_bn.cc"
-#include "./create/__create.cc"
+#include "./internal/__internal_bn.cc"
+#include "./internal/__create.cc"
 
 /**
   * @brief         将缓冲区数据转换为大数结构。
@@ -112,6 +112,78 @@ static bignum_t __bin2bn(const unsigned char *s, size_t len,
   //
   clear_head_zero(x);
   return x;
+}
+
+static int __bn2bin(const bignum_t& x, const unsigned char *to, size_t tolen, 
+                    bool little=true, bool is_sign=false) {
+  int inc;
+  size_t i, lasti, j, atop, mask;
+  BN_ULONG l;
+
+  size_t n8 = __number_bits(x.number);    // 获取总共的位数
+  size_t n = (n8 + 7) / 8;                // 获取需要多少个字节
+
+  // 存在符号
+  int x0r = 0, carry = 0;
+  size_t ext = 0;
+  if (is_sign == true) {
+    x0r = x.neg ? 0xff : 0x00;
+    carry = x.neg;
+
+    // 位数与字节*8相当，说明数值的最高位为1。
+    ext = (n * 8 == n8)
+        ? !x.neg            /* 最高位设置为非负数 */
+        : x.neg;            /* 最高位没有设置为非负数 */
+  }
+
+  if (tolen == -1) {
+    tolen = n + ext;
+  } else if (tolen < n + ext) { /* uncommon/unlike case */
+      BIGNUM temp = *a;
+
+      bn_correct_top(&temp);
+      n8 = BN_num_bits(&temp);
+      n = (n8 + 7) / 8;       /* This is what BN_num_bytes() does */
+      if (tolen < n + ext)
+          return -1;
+  }
+
+  /* Swipe through whole available data and don't give away padded zero. */
+  atop = a->dmax * BN_BYTES;
+  if (atop == 0) {
+      if (tolen != 0)
+          memset(to, '\0', tolen);
+      return tolen;
+  }
+
+  /*
+    * The loop that does the work iterates from least significant
+    * to most significant BIGNUM limb, so we adapt parameters to
+    * transfer output bytes accordingly.
+    */
+  if (endianess == LITTLE) {
+      inc = 1;
+  } else {
+      inc = -1;
+      to += tolen - 1;         /* Move to the last byte, not beyond */
+  }
+
+  lasti = atop - 1;
+  atop = a->top * BN_BYTES;
+  for (i = 0, j = 0; j < (size_t)tolen; j++) {
+      unsigned char byte, byte_xored;
+
+      l = a->d[i / BN_BYTES];
+      mask = 0 - ((j - atop) >> (8 * sizeof(i) - 1));
+      byte = (unsigned char)(l >> (8 * (i % BN_BYTES)) & mask);
+      byte_xored = byte ^ xor;
+      *to = (unsigned char)(byte_xored + carry);
+      carry = byte_xored > *to; /* Implicit 1 or 0 */
+      to += inc;
+      i += (i - lasti) >> (8 * sizeof(i) - 1); /* stay on last limb */
+  }
+
+  return tolen;
 }
 
 static unsigned char __output_byte(char c) {

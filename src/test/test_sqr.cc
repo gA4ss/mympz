@@ -11,6 +11,18 @@ TEST(Mympz, Sqr) {
   bignum_t x,y;
   std::string y_str;
 
+  x = create("-5");
+  // std::cout << "x = " << print_string(x) << std::endl;
+  y = sqr(x);
+  y_str = print_string(y);
+  // std::cout << "y = " << y_str << std::endl;
+  EXPECT_TRUE(y_str == "25");
+}
+
+TEST(Mympz, SqrBig) {
+  bignum_t x,y;
+  std::string y_str;
+
   x = create(
     "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233AA"
     "44FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"

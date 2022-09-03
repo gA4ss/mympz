@@ -1,3 +1,14 @@
+bool __is_zero(const number_t& x) {
+  if (x.empty()) return false;    // null不是0
+  if (x.size() >= 1) {
+    ///< 确保数值队列都是0
+    for (size_t i = 0; i < x.size(); i++) {
+      if (x[i] != 0) return false;
+    }
+  }
+  return true;
+}
+
 /*
  * 这里此函数借鉴了Openssl的代码，在VS的编译器会之前会引发一个编译器优化
  * 错误，这里如果遇到微软的编译器则将其优化关闭。
@@ -6,7 +17,7 @@
  */
 #if defined(_MSC_VER) && defined(_ARM_) && defined(_WIN32_WCE) \
     && _MSC_VER>=1400 && _MSC_VER<1501
-# define MS_BROKEN_num_bits_word
+# define MS_BROKEN_count_bits
 # pragma optimize("", off)
 #endif
 
@@ -58,7 +69,18 @@ size_t __count_bits(unit_t l) {
 
   return bits;
 }
-#ifdef MS_BROKEN_BN_num_bits_word
+#ifdef MS_BROKEN_count_bits
 # pragma optimize("", on)
 #endif
 
+/**
+  * @brief         统计输入的大数一同存在多少位
+  * @param[in]     x
+  * @return        一个大数总共的有效位数
+  */
+size_t __number_bits(const number_t& x) {
+  if (__is_zero(x)) return 0;
+
+  size_t i = num_size(x) - 1;
+  return ((i * UNIT_BITS) + __count_bits(x[i]));
+}

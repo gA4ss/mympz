@@ -1,6 +1,6 @@
 typedef std::pair<number_t, number_t> internal_division_result_t;
 
-static bool __is_zero(const number_t& a) {
+static bool __bn_is_zero(const number_t& a) {
   if (a.empty())
     return false;
   
@@ -274,7 +274,7 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
       "%s", "operand a or b is nan."
     );
   }
-  if (__is_zero(b)) mympz_exception("%s", "b is zero.");
+  if (__bn_is_zero(b)) mympz_exception("%s", "b is zero.");
   //const number_t ten = {0, 1};    // 表示10
 
   number_t x = a, y = b;

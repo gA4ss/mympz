@@ -39,7 +39,11 @@ namespace mympz {
 #include "__internal_mul.h"
 #include "__internal_sqr.h"
 
+bool __is_zero(const number_t& x);
+
 size_t __count_bits(unit_t l);
+size_t __number_bits(const number_t& x);
+#define __number_bytes(x) ((__number_bits(x)+7)/8)
 
 int __cmp(const number_ptr_t& x, const number_ptr_t& y, int n);
 int __cmp_part(const number_ptr_t& x, const number_ptr_t& y, int cl, int dl);
@@ -69,6 +73,12 @@ void __sqr_units_recursive(const number_ptr_t& y, const number_ptr_t& x, size_t 
                               const number_ptr_t& t);
 
 unit_t __div_unit(unit_t h, unit_t l, unit_t d);
+
+number_t __mod_add(const number_ptr_t& x, size_t xl, const number_ptr_t& y, size_t yl,
+                   const number_ptr_t& m, size_t ml);
+number_t __mod_sub(const number_ptr_t& x, size_t xl, const number_ptr_t& y, size_t yl,
+                   const number_ptr_t& m, size_t ml);
+
 } // namespace mympz
 
 #endif // MYMPZ_INTERNAL_H_

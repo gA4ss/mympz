@@ -39,16 +39,17 @@ set(MYMPZ_HEADERS
 # Library Build
 #
 add_library(${PROJECT_NAME} STATIC
+  ${SRC_DIRECTORY}/internal.cc
   ${SRC_DIRECTORY}/create.cc
-  ${SRC_DIRECTORY}/calc.cc
   ${SRC_DIRECTORY}/add.cc
   ${SRC_DIRECTORY}/mul.cc
   ${SRC_DIRECTORY}/sqr.cc
   ${SRC_DIRECTORY}/div.cc
+  ${SRC_DIRECTORY}/mod.cc
   ${SRC_DIRECTORY}/shift.cc
+  ${SRC_DIRECTORY}/exp.cc
   ${SRC_DIRECTORY}/cmp.cc
-  ${SRC_DIRECTORY}/one.cc
-  ${SRC_DIRECTORY}/zero.cc
+  ${SRC_DIRECTORY}/mympz.cc
 )
 target_link_libraries(${PROJECT_NAME} my)
 
@@ -71,8 +72,12 @@ add_executable(test_sqr ${SRC_DIRECTORY}/test/test_sqr.cc)
 target_link_libraries(test_sqr mympz gtest pthread)
 add_executable(test_div ${SRC_DIRECTORY}/test/test_div.cc)
 target_link_libraries(test_div mympz gtest pthread)
+add_executable(test_mod ${SRC_DIRECTORY}/test/test_mod.cc)
+target_link_libraries(test_mod mympz gtest pthread)
 add_executable(test_shift ${SRC_DIRECTORY}/test/test_shift.cc)
 target_link_libraries(test_shift mympz gtest pthread)
+add_executable(test_exp ${SRC_DIRECTORY}/test/test_exp.cc)
+target_link_libraries(test_exp mympz gtest pthread)
 
 #
 # Optimize Test
@@ -121,8 +126,12 @@ add_test(NAME test_mul COMMAND test_mul)
 set_tests_properties(test_mul PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_div COMMAND test_div)
 set_tests_properties(test_div PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+add_test(NAME test_mod COMMAND test_mod)
+set_tests_properties(test_mod PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_shift COMMAND test_shift)
 set_tests_properties(test_shift PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+add_test(NAME test_exp COMMAND test_exp)
+set_tests_properties(test_exp PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 
 #
 # Install Set
