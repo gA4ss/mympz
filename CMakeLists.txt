@@ -50,6 +50,7 @@ add_library(${PROJECT_NAME} STATIC
   ${SRC_DIRECTORY}/exp.cc
   ${SRC_DIRECTORY}/cmp.cc
   ${SRC_DIRECTORY}/mympz.cc
+  ${SRC_DIRECTORY}/debug.cc
 )
 target_link_libraries(${PROJECT_NAME} my)
 

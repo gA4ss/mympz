@@ -4,6 +4,51 @@
 namespace mympz {
 
 /**
+  * @brief         一个大数与一个字相加，将y加到x上。
+  * @param[in]     x 大数
+  * @param[in]     y 一个字
+  * @return        x + y
+  */
+bignum_t add(const bignum_t& x, unit_t w) {
+  bignum_t y;
+  w &= CALC_MASK;
+
+  if (!w)
+    return x;
+  if (is_zero(x)) {
+    set_word(y, w);
+    return y;
+  }
+
+  // x为负数
+  if (x.neg) {
+    y = x;
+    set_positive(y);
+    y = sub(y, w);
+    if (!is_zero(y))
+      y.neg = !(y.neg);
+    return y;
+  }
+
+  size_t xl = bn_size(x);
+  unit_t l = 0;
+  size_t i = 0;
+  y = x;
+  for (i = 0; w != 0 && i < xl; i++) {
+    y.number[i] = l = (x.number[i] + w) & CALC_MASK;
+    w = (w > l) ? 1 : 0;
+  }
+
+  // 最后存在进位
+  if (w && i == xl) {
+    bn_resize(y, xl + 1);
+    y.number[i] = w;
+  }
+
+  return y;
+}
+
+/**
   * @brief         有符号的两个大数相加，将y加到x上。
   * @param[in]     x
   * @param[in]     y
@@ -42,6 +87,59 @@ bignum_t add(const bignum_t& x, const bignum_t& y) {
 
   z.neg = r_neg;
   return z;
+}
+
+/**
+  * @brief         一个有符号大数与一个字相减法。
+  * @param[in]     x 大数
+  * @param[in]     y 一个字
+  * @return        x - y
+  */
+bignum_t sub(const bignum_t& x, unit_t w) {
+  bignum_t y;
+  w &= CALC_MASK;
+
+  if (!w)
+    return x;
+  if (is_zero(x)) {
+    set_word(y, w);
+    set_negative(y);
+    return y;
+  }
+  
+  if (x.neg) {
+    y = x;
+    set_positive(y);
+    y = add(y, w);
+    set_negative(y);
+    return y;
+  }
+
+  size_t xl = bn_size(x);
+  y = x;
+
+  if ((xl == 1) && (x.number[0] < w)) {
+    y.number[0] = w - x.number[0];
+    set_negative(y);
+    return y;
+  }
+
+  size_t i = 0;
+  for (;;) {
+    if (x.number[i] >= w) {
+      y.number[i] = x.number[i] - w;
+      break;
+    } else {
+      y.number[i] = (x.number[i] - w) & CALC_MASK;
+      i++;
+      w = 1;
+    }
+  }
+
+  // 去掉末尾的0
+  if ((y.number[i] == 0) && (i == (xl - 1)))
+    bn_resize(y, i + 1);
+  return y;
 }
 
 /**

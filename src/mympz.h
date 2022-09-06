@@ -32,6 +32,7 @@ namespace mympz {
   */
 typedef int64_t          sunit_t;
 typedef uint64_t         unit_t;
+#define UNIT_MAX         (0xffffffffffffffffL)
 
 /**
   * @brief         大数类型的保存结构。
@@ -59,8 +60,8 @@ typedef std::pair<bignum_t, bignum_t> division_result_t;
 #define is_null(x)                    ((x).number.empty())
 #define is_error(x)                   is_null((x))
 
-#define set_negative(x)               ((x).neg = 1;)
-#define set_positive(x)               ((x).neg = 0;)
+#define set_negative(x)               ((x).neg = 1)
+#define set_positive(x)               ((x).neg = 0)
 #define set_null(x)                   {(x).neg = 0;(x).number.clear();}
 #define set_error(x)                  set_null((x))
 
@@ -110,13 +111,19 @@ void mask_bits(bignum_t& x, size_t n);
 int cmp(const bignum_t& x, const bignum_t& y);
 int ucmp(const bignum_t& x, const bignum_t& y);
 
+bignum_t add(const bignum_t& x, unit_t w);
 bignum_t add(const bignum_t& x, const bignum_t& y);
-bignum_t sub(const bignum_t& x, const bignum_t& y);
 bignum_t uadd(const bignum_t& x, const bignum_t& y);
+
+bignum_t sub(const bignum_t& x, unit_t w);
+bignum_t sub(const bignum_t& x, const bignum_t& y);
 bignum_t usub(const bignum_t& x, const bignum_t& y);
 
+bignum_t mul(const bignum_t& x, unit_t w);
 bignum_t mul(const bignum_t& x, const bignum_t& y);
 bignum_t sqr(const bignum_t& x);
+
+bignum_t div(const bignum_t& x, unit_t w, unit_t* r=nullptr);
 division_result_t div(const bignum_t& x, const bignum_t& y);
 bignum_t idiv(const bignum_t& x, const bignum_t& y);
 
@@ -125,6 +132,7 @@ bignum_t rshift1(const bignum_t& x);
 bignum_t lshift(const bignum_t& x, size_t n);
 bignum_t rshift(const bignum_t& x, size_t n);
 
+unit_t mod(const bignum_t& x, unit_t w);
 bignum_t mod(const bignum_t& x, const bignum_t& y);
 bignum_t nnmod(const bignum_t& x, const bignum_t& y);
 bignum_t mod_add(const bignum_t& x, const bignum_t& y, const bignum_t& m);
@@ -133,9 +141,12 @@ bignum_t mod_mul(const bignum_t& x, const bignum_t& y, const bignum_t& m);
 bignum_t mod_sqr(const bignum_t& x, const bignum_t& m);
 bignum_t mod_lshift1(const bignum_t& x, const bignum_t& m);
 bignum_t mod_lshift(const bignum_t& x, size_t n, const bignum_t& m);
+bignum_t mod_exp(const bignum_t& x, const bignum_t& p, const bignum_t& m);
 bignum_t exp(const bignum_t& x, const bignum_t& p);
 
 std::string print_string(const bignum_t& x, bool hex=false, bool low_case=false);
+size_t print_buffer(const bignum_t& x, unsigned char *to, size_t tolen,
+                    bool little=true, bool is_sign=false);
 
 } // namespace mympz
 

@@ -114,11 +114,11 @@ static bignum_t __bin2bn(const unsigned char *s, size_t len,
   return x;
 }
 
-static int __bn2bin(const bignum_t& x, const unsigned char *to, size_t tolen, 
-                    bool little=true, bool is_sign=false) {
-  int inc;
-  size_t i, lasti, j, atop, mask;
-  BN_ULONG l;
+static size_t __bn2bin(const bignum_t& x, unsigned char *to, size_t tolen, 
+                       bool little=true, bool is_sign=false) {
+  if (is_null(x)) {
+    mympz_exception("%s", "bignum is null.");
+  }
 
   size_t n8 = __number_bits(x.number);    // 获取总共的位数
   size_t n = (n8 + 7) / 8;                // 获取需要多少个字节
@@ -136,51 +136,38 @@ static int __bn2bin(const bignum_t& x, const unsigned char *to, size_t tolen,
         : x.neg;            /* 最高位没有设置为非负数 */
   }
 
-  if (tolen == -1) {
+  // 修正要输出的长度
+  if (tolen == UNIT_MAX) {
     tolen = n + ext;
-  } else if (tolen < n + ext) { /* uncommon/unlike case */
-      BIGNUM temp = *a;
-
-      bn_correct_top(&temp);
-      n8 = BN_num_bits(&temp);
-      n = (n8 + 7) / 8;       /* This is what BN_num_bytes() does */
-      if (tolen < n + ext)
-          return -1;
+  } else if (tolen < n + ext) {
+    mympz_exception("buffer size is not enought. size = \'%lu\'", tolen);
   }
 
-  /* Swipe through whole available data and don't give away padded zero. */
-  atop = a->dmax * BN_BYTES;
-  if (atop == 0) {
-      if (tolen != 0)
-          memset(to, '\0', tolen);
-      return tolen;
-  }
+  if (tolen != 0)
+    memset((void*)to, '\0', tolen);
 
-  /*
-    * The loop that does the work iterates from least significant
-    * to most significant BIGNUM limb, so we adapt parameters to
-    * transfer output bytes accordingly.
-    */
-  if (endianess == LITTLE) {
-      inc = 1;
+  int inc = 0;
+  if (little == true) {
+    inc = 1;
   } else {
-      inc = -1;
-      to += tolen - 1;         /* Move to the last byte, not beyond */
+    inc = -1;
+    to += tolen - 1;
   }
 
-  lasti = atop - 1;
-  atop = a->top * BN_BYTES;
-  for (i = 0, j = 0; j < (size_t)tolen; j++) {
-      unsigned char byte, byte_xored;
-
-      l = a->d[i / BN_BYTES];
-      mask = 0 - ((j - atop) >> (8 * sizeof(i) - 1));
-      byte = (unsigned char)(l >> (8 * (i % BN_BYTES)) & mask);
-      byte_xored = byte ^ xor;
-      *to = (unsigned char)(byte_xored + carry);
-      carry = byte_xored > *to; /* Implicit 1 or 0 */
-      to += inc;
-      i += (i - lasti) >> (8 * sizeof(i) - 1); /* stay on last limb */
+  size_t xl = bn_size(x);                       // x的长度
+  size_t lasti = xl - 1;                        // x的最低位索引
+  size_t xs = xl * UNIT_BYTES;                  // x总共有多少个字节
+  unit_t l = 0, mask = 0;
+  for (size_t i = 0, j = 0; j < (size_t)tolen; j++) {
+    unsigned char byte, byte_xored;
+    l = x.number[i / UNIT_BYTES];        // 取得到哪个位置
+    mask = 0 - ((j - xs) >> (8 * sizeof(i) - 1));
+    byte = (unsigned char)(l >> (8 * (i % UNIT_BYTES)) & mask);
+    byte_xored = byte ^ x0r;
+    *to = (unsigned char)(byte_xored + carry);
+    carry = byte_xored > *to;                   // 蕴含 1 或者 0
+    to += inc;
+    i += (i - lasti) >> (8 * sizeof(i) - 1);
   }
 
   return tolen;
@@ -351,6 +338,18 @@ std::string print_string(const bignum_t& x, bool hex, bool low_case) {
     str = std::string("-") + str;
   }
   return str;
+}
+
+/**
+  * @brief         按照大数结构输出到缓存。
+  * @param[in]     x          大数结构。
+  * @param[in]     to         输出缓存。
+  * @param[in]     tolen      缓存长度。
+  * @return        返回转化后的长度。
+  */
+size_t print_buffer(const bignum_t& x, unsigned char *to, size_t tolen,
+                    bool little, bool is_sign) {
+  return __bn2bin(x, to, tolen, little, is_sign);
 }
 
 } // namespace mympz

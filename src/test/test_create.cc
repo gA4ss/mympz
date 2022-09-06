@@ -77,6 +77,25 @@ TEST(Mympz, Create_2022_8_10) {
   EXPECT_STREQ(x_str.c_str(), "FFAABBCCDD11223344FFAABBCCDD11223344FFAABBCCDD11223344FFFFAABBCCDD11223344FFAABBCCDD11223344FFAABBCCDD11223344FF");
 }
 
+TEST(Mympz, Print) {
+  bignum_t x;
+  std::string x_str;
+
+  x = create("18446744073709551615");
+  x_str = print_string(x);
+  EXPECT_STREQ(x_str.c_str(), "18446744073709551615");
+
+  unsigned char buffer[1024] = {0};
+  size_t blen = print_buffer(x, buffer, 1024);
+
+  bignum_t y;
+  std::string y_str;
+
+  y = create(buffer, blen);
+  y_str = print_string(y);
+  EXPECT_STREQ(y_str.c_str(), "18446744073709551615");
+}
+
 int main(int argc, char* argv[]) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

@@ -12,6 +12,7 @@ namespace mympz {
     __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__); \
 }
 #define mympz_check_size(x) { my_assert(!x.number.empty(), "%s", "bignum is empty."); }
+#define mympz_return_error(x) { my_assert(!is_error(x), "%s", "function return error."); }
 
 } // namespace mympz
 

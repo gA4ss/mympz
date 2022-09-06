@@ -3,6 +3,28 @@
 
 namespace mympz {
 
+bignum_t mul(const bignum_t& x, unit_t w) {
+  bignum_t y; init_bignum(y);
+  w &= CALC_MASK;
+  size_t xl = bn_size(x);
+  if (xl) {
+    if (w == 0)
+      zero(y);
+    else {
+      bignum_t _x = bn_const_cast(x);
+      bn_resize(y, xl);
+      unit_t ll = __mul_units_unit(bn_ptr(y), bn_ptr(_x), xl, w);
+      if (ll) {
+        bn_resize(y, xl + 1);
+        y.number[xl] = ll;
+      }
+      y.neg = x.neg;
+    }
+  }
+
+  return y;
+}
+
 /**
   * @brief         有符号的两个大数相乘法
   * @param[in]     x

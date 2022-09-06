@@ -3,6 +3,49 @@
 
 namespace mympz {
 
+/**
+  * @brief         一个大数与一个字相除。
+  * @param[in]     x 大数
+  * @param[in]     w 一个字
+  * @param[out]    r 输出余数
+  * @return        余数与商
+  */
+bignum_t div(const bignum_t& x, unit_t w, unit_t* r) {
+  bignum_t y; y.neg = 0;
+  size_t xl = bn_size(x);
+
+  w &= CALC_MASK;
+  if (!w)
+    mympz_exception("%s", "division is zero.")
+  if (xl == 0)
+    return y;
+
+  // 规范化数据
+  size_t j = UNIT_BITS - __count_bits(w);
+  w <<= j;
+  bignum_t _x = lshift(x, j);
+
+  bn_resize(y, xl);
+  unit_t rm = 0;
+  for (int i = static_cast<int>(xl) - 1; i >= 0; i--) {
+    unit_t l, d;
+
+    l = _x.number[i];
+    d = __div_unit(rm, l, w);
+    rm = (l - ((d * w) & CALC_MASK)) & CALC_MASK;
+    y.number[i] = d;
+  }
+
+  if (y.number[xl - 1] == 0)
+    bn_resize(y, xl - 1);
+
+  // 求余数
+  rm >>= j;
+  if (r) *r = rm;
+  y.neg = x.neg;
+  return y;
+}
+
 static size_t __left_align(number_t& num) {
   size_t l = num.size();
   size_t rshift = __count_bits(num[l - 1]);   // 统计最高位的数值位数
