@@ -123,7 +123,7 @@ bignum_t mul(const bignum_t& x, unit_t w);
 bignum_t mul(const bignum_t& x, const bignum_t& y);
 bignum_t sqr(const bignum_t& x);
 
-bignum_t div(const bignum_t& x, unit_t w, unit_t* r=nullptr);
+bignum_t div(const bignum_t& x, unit_t w, int wneg=0, unit_t* r=nullptr);
 division_result_t div(const bignum_t& x, const bignum_t& y);
 bignum_t idiv(const bignum_t& x, const bignum_t& y);
 

@@ -16,7 +16,7 @@ unit_t mod(const bignum_t& x, unit_t w) {
     mympz_exception("%s", "division is zero.");
 
   if (w > ((unit_t)1 << UNIT_HALF_BITS)) {
-    div(x, w, &r);
+    div(x, w, 0, &r);
     return r;
   }
 
