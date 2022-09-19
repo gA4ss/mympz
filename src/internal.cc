@@ -3,6 +3,8 @@
 namespace mympz {
 
 #include "./internal/__internal.cc"
+#include "./internal/__internal_bn.cc"
+#include "./internal/__create.cc"
 #include "./internal/__cmp.cc"
 #include "./internal/__addsub.cc"
 #include "./internal/__mul.cc"

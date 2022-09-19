@@ -1,6 +1,4 @@
-typedef std::pair<number_t, number_t> internal_division_result_t;
-
-static bool __bn_is_zero(const number_t& a) {
+bool __ibn_is_zero(const number_t& a) {
   if (a.empty())
     return false;
   
@@ -11,12 +9,12 @@ static bool __bn_is_zero(const number_t& a) {
   return true;
 }
 
-void __zero(number_t& a) {
+void __ibn_zero(number_t& a) {
   a.clear();
   a.push_back(0);
 }
 
-static size_t __shrink_zero(number_t& a, bool reverse=false) {
+size_t __ibn_shrink_zero(number_t& a, bool reverse) {
   if (a.empty()) return 0;
   if ((a.size() == 1) && (a[0] == 0)) return 0;
 
@@ -44,7 +42,7 @@ static size_t __shrink_zero(number_t& a, bool reverse=false) {
   return ret;
 }
 
-static int __cmp(const number_t& a, const number_t& b, bool push_front=false) {
+int __ibn_cmp(const number_t& a, const number_t& b, bool push_front) {
   int res = 0, l = 0;
   number_t _a = a, _b = b;
 
@@ -87,7 +85,7 @@ static int __cmp(const number_t& a, const number_t& b, bool push_front=false) {
   return res;
 }
 
-static number_t __add(const number_t& a, const number_t& b, bool o) {
+number_t __ibn_add(const number_t& a, const number_t& b, bool o) {
   number_t x, y, z;
 
   if (a.empty() || b.empty()) {
@@ -133,7 +131,7 @@ static number_t __add(const number_t& a, const number_t& b, bool o) {
   return z;
 }
 
-static number_t __sub(number_t& a, number_t& b, bool t) {
+number_t __ibn_sub(number_t& a, number_t& b, bool t) {
   number_t x, y, z;
 
   if (a.empty() || b.empty()) {
@@ -159,7 +157,7 @@ static number_t __sub(number_t& a, number_t& b, bool t) {
   //
   // x比 y小则交换两者位置
   //
-  if (__cmp(x, y) < 0) {
+  if (__ibn_cmp(x, y) < 0) {
     z = x;
     x = y;
     y = z;
@@ -191,7 +189,7 @@ static number_t __sub(number_t& a, number_t& b, bool t) {
   return z;
 }
 
-static number_t __mul(const number_t& a, const number_t& b) {
+number_t __ibn_mul(const number_t& a, const number_t& b) {
   if (a.empty() || b.empty()) {
     mympz_exception(
       "%s", "operand a or b is nan."
@@ -222,7 +220,7 @@ static number_t __mul(const number_t& a, const number_t& b) {
     z[j+m] = q;
   }
 
-  __shrink_zero(z, true);
+  __ibn_shrink_zero(z, true);
   return z;
 }
 
@@ -237,7 +235,7 @@ static number_t __mul(const number_t& a, const number_t& b) {
  *        q <= q1
  * 证明见《计算机代数》【陈玉福，张智勇】 25-26页。
  */
-static std::pair<unit_t, unit_t> __get_quotient_range(const number_t& a, const number_t& b) {
+std::pair<unit_t, unit_t> __get_quotient_range(const number_t& a, const number_t& b) {
   const unit_t B = 10;
   unit_t a1 = *(a.end()-1), b1 = *(b.end()-1);
   unit_t a2 = 0, b2 = 0;
@@ -268,19 +266,19 @@ static std::pair<unit_t, unit_t> __get_quotient_range(const number_t& a, const n
 }
 
 /* 不考虑符号 */
-static internal_division_result_t __div(const number_t& a, const number_t& b) {
+internal_division_result_t __ibn_div(const number_t& a, const number_t& b) {
   if (a.empty() || b.empty()) {
     mympz_exception(
       "%s", "operand a or b is nan."
     );
   }
-  if (__bn_is_zero(b)) mympz_exception("%s", "b is zero.");
+  if (__ibn_is_zero(b)) mympz_exception("%s", "b is zero.");
   //const number_t ten = {0, 1};    // 表示10
 
   number_t x = a, y = b;
-  if (__cmp(x, y) == 0)
+  if (__ibn_cmp(x, y) == 0)
     return internal_division_result_t({1}, {0});
-  else if (__cmp(x, y) == -1)
+  else if (__ibn_cmp(x, y) == -1)
     return internal_division_result_t({0}, {x});
 
   number_t quotient, product, dividend = x, divisor = y, remainder = {0};
@@ -294,7 +292,7 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
   size_t n = divisor.size();
   dividend_remainder_digits -= n;
   dividend = number_t(x.begin()+dividend_remainder_digits, x.end());
-  if (__cmp(dividend, divisor) == -1) {
+  if (__ibn_cmp(dividend, divisor) == -1) {
     // 如果小于这里dividend必比divisor多一位。
     --dividend_remainder_digits;
     dividend = number_t(x.begin()+dividend_remainder_digits, x.end());
@@ -306,13 +304,13 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
     std::pair<unit_t, unit_t> quo_range = __get_quotient_range(dividend, divisor);
     unit_t q = 0;
     for (q = quo_range.first; q <= quo_range.second; q++) {
-      product = __mul(divisor, {q});
-      __shrink_zero(product, true); // 乘法可能产生多余的0。
+      product = __ibn_mul(divisor, {q});
+      __ibn_shrink_zero(product, true); // 乘法可能产生多余的0。
       //
       // product 必然小于等于 dividend
       //
-      remainder = __sub(dividend, product, false);
-      int c = __cmp(divisor, remainder);
+      remainder = __ibn_sub(dividend, product, false);
+      int c = __ibn_cmp(divisor, remainder);
       if ((c == -1) || (c == 0)) {
         continue;
       } else {
@@ -337,15 +335,15 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
     // 如果还是小于则商使用0补位。
     // 保证被除数大于除数。
     //
-    if ((__cmp(dividend, divisor) == -1) && (dividend_remainder_digits != 0)) {
-      if (__cmp(dividend, {0}) == 0) dividend.clear();  // 余数为零，多见10000/2这种情况。
+    if ((__ibn_cmp(dividend, divisor) == -1) && (dividend_remainder_digits != 0)) {
+      if (__ibn_cmp(dividend, {0}) == 0) dividend.clear();  // 余数为零，多见10000/2这种情况。
       dividend.push_front(x[dividend_remainder_digits-1]);
       --dividend_remainder_digits;
 
       //
       // 这里如果借了一位还是小于那么开始补位
       //
-      while ((__cmp(dividend, divisor) == -1) && (dividend_remainder_digits != 0)) {
+      while ((__ibn_cmp(dividend, divisor) == -1) && (dividend_remainder_digits != 0)) {
         dividend.push_front(x[dividend_remainder_digits-1]);
         quotient.push_front(0);
         --dividend_remainder_digits;
@@ -357,7 +355,7 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
     // 如果被除数还是小于除数，这里蕴含的一个条件就是 dividend_remainder_digits为0。
     // quotient压入0比dividend少一个。
     //
-    if (__cmp(dividend, divisor) == -1) {
+    if (__ibn_cmp(dividend, divisor) == -1) {
       quotient.push_front(0);
       break;
     }
@@ -367,7 +365,7 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
     // 如果被除数剩余全部是0，这里蕴含的一个条件就是 dividend_remainder_digits为0。
     // quotient压入0比dividend少一个。
     //
-    if (__cmp(dividend, {0}) == 0) {
+    if (__ibn_cmp(dividend, {0}) == 0) {
       // quotient.insert(quotient.begin(), dividend.begin(), dividend.end());
       quotient.push_front(0);
       break;
@@ -377,7 +375,7 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
     // 例如：10001 / 2 这种情况，可能造成 dividend = 0010
     // 这里将前面两个0清除。
     //
-    if (dividend.back() == 0) __shrink_zero(dividend, true);
+    if (dividend.back() == 0) __ibn_shrink_zero(dividend, true);
   }/* end while */
 
   //
@@ -386,4 +384,142 @@ static internal_division_result_t __div(const number_t& a, const number_t& b) {
   remainder = dividend;
   // __shrink_zero(remainder, true);
   return internal_division_result_t(quotient, remainder);
+}
+
+void __invalid_base(int base) {
+  if (base != 10 && base != 2 && base != 8 && base != 16) {
+    invalid_arguments_exception("base = %d", base);
+  }
+}
+
+bool __check_number_format(const char* number) {
+  if (number == nullptr) return false;
+  char* ptr = const_cast<char*>(number);
+  do {
+    if (!std::isdigit(*ptr)) return false;
+  } while (*(++ptr));
+  return true;
+}
+
+number_t __internal_string_to_bignum(const char* number, int base=10, bool shrink_reverse=true) {
+  number_t res;
+
+  if (strlen(number) == 0 || number == nullptr) {
+    __ibn_zero(res);
+    return res;
+  }
+
+  __invalid_base(base);   // FIXME: 目前只支持10进制构造。
+
+  // 检查number字符串的格式
+  if (!__check_number_format(number)) {
+    invalid_arguments_exception("number = %s", number);
+  }
+
+  char* ptr = const_cast<char*>(number);
+  do {
+    unit_t j = static_cast<unit_t>(*ptr - 48);
+    res.push_front(j);
+  } while (*(++ptr));
+
+  __ibn_shrink_zero(res, shrink_reverse);
+  if (res.empty()) res.push_back(0);      // 如果削减为空，则添加一个0保留位数。
+  return res;
+}
+
+/*
+ * 内部大数转大数单元
+ */
+unit_t __internal_bignum_to_unit(const number_t& a, size_t s, size_t e) {
+  my_assert(!a.empty(), "size of a = %l", a.size());
+
+  unit_t b = 0, c = 0;
+  for (size_t i = s; i < e; i++) {
+    if (c == 0)
+      c = 1;
+    else
+      c *= 10;
+    
+    b += c * a[i];
+  }
+  return b;
+}
+
+/*
+ * 首先转换为内部的一个存储单元保存一个10进制数。
+ * 然后从这个内部的存储格式转为正式运算的保存格式。
+ */
+const number_t __internal_max_integer = __internal_string_to_bignum(UNIT_STRING);
+number_t __ibn_s2b(const char* number) {
+  number_t res, target = __internal_string_to_bignum(number);
+
+  unit_t x = 0;
+  while (true) {
+    // 结束条件
+    if (__ibn_cmp(target, __internal_max_integer) == -1) {
+      x = __internal_bignum_to_unit(target, 0, target.size());
+      res.push_back(x);
+      break;
+    }
+
+    internal_division_result_t y = __ibn_div(target, __internal_max_integer);
+    if (!__ibn_is_zero(y.second)) {
+      x = __internal_bignum_to_unit(y.second, 0, y.second.size());
+    } else {
+      x = 0;
+    }
+    target = y.first;
+    res.push_back(x);
+  }
+
+  return res;
+}
+
+std::string __internal_bignum_to_string(const number_t& a) {
+  std::string res = "";
+  char c = 0;
+
+  int i = static_cast<int>(a.size()) - 1;
+  for (; i >= 0; i--) {
+    c = static_cast<char>(a[i] + 48);
+    res.push_back(c);
+  }
+  return res;
+}
+
+std::string __ibn_b2s(const number_t& a) {
+  std::string res = "";
+  std::ostringstream ostr;
+  std::string s;
+  size_t e = 0;
+  number_t x, y, b, o = __internal_string_to_bignum("1");
+  __ibn_zero(y);
+
+  //
+  // 将unit_t进制转换为10进制数值
+  //
+  // for (int i = static_cast<int>(a.size()) - 1; i >= 0; i--) {
+  for (size_t i = 0; i < a.size(); i++) {
+    //
+    // 计算当前的基
+    //
+    if (e == 0) {
+      b = o;
+    } else if (e == 1) {
+      b = __internal_max_integer;
+    } else {
+      b = __ibn_mul(b, __internal_max_integer);
+    }
+
+    ostr << a[i];
+    s = ostr.str();
+    ostr.str("");
+    x = __internal_string_to_bignum(s.c_str());
+    x = __ibn_mul(x, b);
+    y = __ibn_add(x, y, false);
+
+    // 指数增加
+    ++e;
+  }
+  return __internal_bignum_to_string(y);
 }

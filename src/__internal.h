@@ -36,6 +36,7 @@ namespace mympz {
 //
 // 一些乘法宏的内部支持
 //
+#include "__internal_bn.h"
 #include "__internal_mul.h"
 #include "__internal_sqr.h"
 
@@ -79,10 +80,13 @@ number_t __mod_add(const number_ptr_t& x, size_t xl, const number_ptr_t& y, size
 number_t __mod_sub(const number_ptr_t& x, size_t xl, const number_ptr_t& y, size_t yl,
                    const number_ptr_t& m, size_t ml);
 
-#if 0
-std::string __print_string(const number_ptr_t& x, size_t xl);
-std::string __print_string(const number_t& x);
-#endif
+number_t __bin2bn(const unsigned char *s, size_t len, int* oneg=nullptr, bool little=true, bool is_sign=false);
+size_t __bn2bin(const number_t& x, int neg, unsigned char *to, size_t tolen, bool little=true, bool is_sign=false);
+number_t __create_hex_str(const char* str);
+number_t __create_dec_str(const char* str);
+
+std::string __print_string_hex(const number_t& x, bool low_case=false);
+
 
 } // namespace mympz
 
