@@ -17,7 +17,7 @@ bignum_t div(const bignum_t& x, unit_t w, int wneg, unit_t* r) {
 
   w &= CALC_MASK;
   if (!w)
-    mympz_exception("%s", "division is zero.")
+    mympz_exception("%s", "division is zero.");
 
   //
   // 处理一个特殊情况
@@ -58,10 +58,10 @@ bignum_t div(const bignum_t& x, unit_t w, int wneg, unit_t* r) {
     bignum_t rr = create(rm);
     rr = sub(y, rr);
     rm = rr.number[0];
-    if (r) *r = rm;
   } else {
     y.neg = 0;
   }
+  if (r) *r = rm;
 
   return y;
 }

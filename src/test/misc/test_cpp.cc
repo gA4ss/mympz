@@ -114,8 +114,18 @@ void test6() {
     std::cout << "not same" << std::endl;
 }
 
+void test7() {
+  signed short i = 0x8000;
+  signed short j = 0;
+  std::cout << "i = " << i << std::endl;
+  if (i == j)
+    std::cout << "yes" << std::endl;
+  else
+    std::cout << "no"  << std::endl;
+}
+
 int main(int argc, char* argv[]) {
   // test1();
-  test6();
+  test7();
   return 0;
 }

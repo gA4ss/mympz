@@ -3,7 +3,7 @@
 
 namespace mympz {
 
-bignum_t mul(const bignum_t& x, unit_t w) {
+bignum_t mul(const bignum_t& x, unit_t w, int wneg) {
   bignum_t y; init_bignum(y);
   w &= CALC_MASK;
   size_t xl = bn_size(x);
@@ -18,7 +18,7 @@ bignum_t mul(const bignum_t& x, unit_t w) {
         bn_resize(y, xl + 1);
         y.number[xl] = ll;
       }
-      y.neg = x.neg;
+      y.neg = x.neg ^ wneg;
     }
   }
 

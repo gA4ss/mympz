@@ -9,7 +9,7 @@ namespace mympz {
   * @param[in]     y 一个字
   * @return        x + y
   */
-bignum_t add(const bignum_t& x, unit_t w) {
+bignum_t add(const bignum_t& x, unit_t w, int wneg) {
   bignum_t y;
   w &= CALC_MASK;
 
@@ -24,7 +24,7 @@ bignum_t add(const bignum_t& x, unit_t w) {
   if (x.neg) {
     y = x;
     set_positive(y);
-    y = sub(y, w);
+    y = sub(y, w, wneg);
     if (!is_zero(y))
       y.neg = !(y.neg);
     return y;
@@ -95,7 +95,7 @@ bignum_t add(const bignum_t& x, const bignum_t& y) {
   * @param[in]     y 一个字
   * @return        x - y
   */
-bignum_t sub(const bignum_t& x, unit_t w) {
+bignum_t sub(const bignum_t& x, unit_t w, int wneg) {
   bignum_t y;
   w &= CALC_MASK;
 
@@ -110,7 +110,7 @@ bignum_t sub(const bignum_t& x, unit_t w) {
   if (x.neg) {
     y = x;
     set_positive(y);
-    y = add(y, w);
+    y = add(y, w, wneg);
     set_negative(y);
     return y;
   }

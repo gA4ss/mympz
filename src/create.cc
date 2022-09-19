@@ -276,7 +276,7 @@ bignum_t create(unit_t number, int neg) {
   * @param[in]     neg          表明是否是负数。
   * @return        大数结构
   */
-bignum_t create(const std::deque<unit_t>& number, int neg) {
+bignum_t create(const number_t& number, int neg) {
   bignum_t x;
   x.neg = neg;
   x.number = number;
@@ -323,6 +323,8 @@ static std::string __print_string_dec(const number_t& x) {
   */
 std::string print_string(const bignum_t& x, bool hex, bool low_case) {
   std::string str;
+
+  if (x.number.empty()) return "";
 
   if (is_zero(x)) {
     str.push_back('0');

@@ -117,7 +117,8 @@ TEST(Mympz, DivUnit) {
   y = div(x, 0xAAFFBBCCDD223344, 0, &r);
   y_str = print_string(y);
   EXPECT_STREQ(y_str.c_str(), "173152446377589581230323824595894323210568774914033697511446676810");
-  EXPECT_EQ(r, 10063173294514900632UL);
+  unit_t t = 10063173294514900632UL;
+  EXPECT_EQ(r, t);
 }
 
 int main(int argc, char* argv[]) {

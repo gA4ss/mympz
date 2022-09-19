@@ -79,6 +79,11 @@ number_t __mod_add(const number_ptr_t& x, size_t xl, const number_ptr_t& y, size
 number_t __mod_sub(const number_ptr_t& x, size_t xl, const number_ptr_t& y, size_t yl,
                    const number_ptr_t& m, size_t ml);
 
+#if 0
+std::string __print_string(const number_ptr_t& x, size_t xl);
+std::string __print_string(const number_t& x);
+#endif
+
 } // namespace mympz
 
 #endif // MYMPZ_INTERNAL_H_

@@ -23,6 +23,7 @@
 #include <sstream>
 #include <iostream>
 
+#include <mympz/compile.h>
 #include <mympz/exception.h>
 
 namespace mympz {
@@ -91,7 +92,7 @@ typedef std::pair<bignum_t, bignum_t> division_result_t;
 bignum_t create(std::string str, bool hex=false);
 bignum_t create(unsigned char* buf, size_t len, bool little=true, bool is_sign=false);
 bignum_t create(unit_t number, int neg=0);
-bignum_t create(const std::deque<unit_t>& number, int neg=0);
+bignum_t create(const number_t& number, int neg=0);
 
 bool is_zero(const bignum_t& x);
 bool is_one(const bignum_t& x);
@@ -111,15 +112,15 @@ void mask_bits(bignum_t& x, size_t n);
 int cmp(const bignum_t& x, const bignum_t& y);
 int ucmp(const bignum_t& x, const bignum_t& y);
 
-bignum_t add(const bignum_t& x, unit_t w);
+bignum_t add(const bignum_t& x, unit_t w, int wneg=0);
 bignum_t add(const bignum_t& x, const bignum_t& y);
 bignum_t uadd(const bignum_t& x, const bignum_t& y);
 
-bignum_t sub(const bignum_t& x, unit_t w);
+bignum_t sub(const bignum_t& x, unit_t w, int wneg=0);
 bignum_t sub(const bignum_t& x, const bignum_t& y);
 bignum_t usub(const bignum_t& x, const bignum_t& y);
 
-bignum_t mul(const bignum_t& x, unit_t w);
+bignum_t mul(const bignum_t& x, unit_t w, int wneg=0);
 bignum_t mul(const bignum_t& x, const bignum_t& y);
 bignum_t sqr(const bignum_t& x);
 
@@ -132,7 +133,7 @@ bignum_t rshift1(const bignum_t& x);
 bignum_t lshift(const bignum_t& x, size_t n);
 bignum_t rshift(const bignum_t& x, size_t n);
 
-unit_t mod(const bignum_t& x, unit_t w);
+unit_t mod(const bignum_t& x, unit_t w, int wneg=0);
 bignum_t mod(const bignum_t& x, const bignum_t& y);
 bignum_t nnmod(const bignum_t& x, const bignum_t& y);
 bignum_t mod_add(const bignum_t& x, const bignum_t& y, const bignum_t& m);

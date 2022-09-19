@@ -9,14 +9,14 @@ namespace mympz {
   * @param[in]     w 一个字
   * @return        r = x % w
   */
-unit_t mod(const bignum_t& x, unit_t w) {
+unit_t mod(const bignum_t& x, unit_t w, int wneg) {
   unit_t r = 0;
 
   if (w == 0)
     mympz_exception("%s", "division is zero.");
 
   if (w > ((unit_t)1 << UNIT_HALF_BITS)) {
-    div(x, w, 0, &r);
+    div(x, w, wneg, &r);
     return r;
   }
 
