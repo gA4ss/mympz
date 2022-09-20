@@ -20,10 +20,7 @@ std::string print_string(const bignum_t& x, bool hex, bool low_case) {
     return str;
   }
 
-  if (hex)
-    str += __print_string_hex(x.number, low_case);
-  else
-    str += __print_string_dec(x.number);
+  str += __print_string(bn_ptr(const_cast<bignum_t&>(x)), bn_size(x), hex, low_case);
 
   if (x.neg) {
     str = std::string("-") + str;
@@ -40,7 +37,7 @@ std::string print_string(const bignum_t& x, bool hex, bool low_case) {
   */
 size_t print_buffer(const bignum_t& x, unsigned char *to, size_t tolen,
                     bool little, bool is_sign) {
-  return __bn2bin(x, to, tolen, little, is_sign);
+  return __bn2bin(x.number, x.neg, to, tolen, little, is_sign);
 }
 
 } // namespace mympz

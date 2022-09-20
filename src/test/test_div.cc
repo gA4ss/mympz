@@ -94,7 +94,6 @@ TEST(Mympz, Div) {
 
 TEST(Mympz, DivUnit) {
   bignum_t x,y;
-  unit_t r = 0;
   std::string y_str;
 
   x = create("2133545241523432654321426543543143215425434312425312454254243154241425314315424314432");
@@ -107,6 +106,8 @@ TEST(Mympz, DivUnit) {
   EXPECT_STREQ(q_str.c_str(), "173152446377589581230323824595894323210568774914033697511446676810");
   EXPECT_STREQ(r_str.c_str(), "10063173294514900632");
 
+#ifdef ARCH_64BITS
+  unit_t r = 0;
   zero(x);
   y = div(x, 0xAAFFBBCCDD223344, 0, &r);
   y_str = print_string(y);
@@ -119,6 +120,7 @@ TEST(Mympz, DivUnit) {
   EXPECT_STREQ(y_str.c_str(), "173152446377589581230323824595894323210568774914033697511446676810");
   unit_t t = 10063173294514900632UL;
   EXPECT_EQ(r, t);
+#endif
 }
 
 int main(int argc, char* argv[]) {

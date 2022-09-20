@@ -31,9 +31,15 @@ namespace mympz {
 /**
   * @brief         大数结构的单位。
   */
+#ifdef ARCH_64BITS
 typedef int64_t          sunit_t;
 typedef uint64_t         unit_t;
 #define UNIT_MAX         (0xffffffffffffffffL)
+#else
+typedef int32_t          sunit_t;
+typedef uint32_t         unit_t;
+#define UNIT_MAX         (0xffffffffL)
+#endif
 
 /**
   * @brief         大数类型的保存结构。

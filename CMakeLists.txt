@@ -41,6 +41,7 @@ set(MYMPZ_HEADERS
 add_library(${PROJECT_NAME} STATIC
   ${SRC_DIRECTORY}/internal.cc
   ${SRC_DIRECTORY}/create.cc
+  ${SRC_DIRECTORY}/print.cc
   ${SRC_DIRECTORY}/add.cc
   ${SRC_DIRECTORY}/mul.cc
   ${SRC_DIRECTORY}/sqr.cc

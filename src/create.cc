@@ -18,11 +18,6 @@ static bignum_t __bignum_bin2bn(const unsigned char *s, size_t len,
   return x;
 }
 
-static size_t __bignum_bn2bin(const bignum_t& x, unsigned char *to, size_t tolen, 
-                              bool little=true, bool is_sign=false) {
-  return __bn2bin(x.number, x.neg, to, tolen, little, is_sign);
-}
-
 /**
   * @brief         创建大数类型
   * @param[in]     str         大数的字符串，可存在负号'-'。
@@ -32,12 +27,28 @@ static size_t __bignum_bn2bin(const bignum_t& x, unsigned char *to, size_t tolen
 bignum_t create(std::string str, bool hex) {
   bignum_t x;
   const char* ptr = str.c_str();
+  size_t i = 0;
   int neg = 0;
 
-  if (str[0] == '-') {
-    ptr++;
+  //
+  // FIXME: 这里没有做str的长度验证，存在风险。
+  //
+
+  if (str[i] == '-') {
+    i++;
     neg = 1;
   }
+
+  if ((str[i] == '0') && ((str[i+1] == 'x') || (str[i+1] == 'X'))) {
+    hex = true;
+    i += 2;
+  } else if  ((str[i] == 'x') || (str[i] == 'X')) {
+    hex = true;
+    i++;
+  }
+
+  // 操作指针
+  ptr += i;
 
   if (hex) {
     x.number = __create_hex_str(ptr);

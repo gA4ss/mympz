@@ -110,7 +110,7 @@ number_t __bin2bn(const unsigned char *s, size_t len, int* oneg, bool little, bo
 
 size_t __bn2bin(const number_t& x, int neg, unsigned char *to, size_t tolen, 
                 bool little, bool is_sign) {
-  if (is_null(x)) {
+  if (x.empty()) {
     mympz_exception("%s", "bignum is null.");
   }
 
@@ -203,7 +203,7 @@ number_t __create_hex_str(const char* str) {
   number_t x = __bin2bn(buf, buf_size);
   if (buf) delete [] buf;
 
-  return x.number;
+  return x;
 }
 
 number_t __create_dec_str(const char* str) {

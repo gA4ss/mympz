@@ -4,6 +4,7 @@ namespace mympz {
 
 #include "./internal/__internal.cc"
 #include "./internal/__internal_bn.cc"
+#include "./internal/__print.cc"
 #include "./internal/__create.cc"
 #include "./internal/__cmp.cc"
 #include "./internal/__addsub.cc"
@@ -12,6 +13,5 @@ namespace mympz {
 #include "./internal/__div.cc"
 #include "./internal/__mod.cc"
 #include "./internal/__exp.cc"
-// #include "./internal/__print.cc"
 
 } // namespace mympz

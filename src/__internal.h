@@ -5,6 +5,8 @@
 
 namespace mympz {
 
+#ifdef ARCH_64BITS
+
 #define UNIT_STRING      "18446744073709551616"
 #define UNIT_ULONG       unit_t
 #define UNIT_BYTES       8
@@ -18,6 +20,24 @@ namespace mympz {
 #define CALC_MASKl       (0x00000000ffffffffL)
 #define CALC_MASKh       (0xffffffff00000000L)
 #define CALC_MASKh1      (0xffffffff80000000L)
+
+#else // ARCH_32BITS
+
+#define UNIT_STRING      "4294967296"
+#define UNIT_ULONG       unit_t
+#define UNIT_BYTES       4
+#define UNIT_BITS        32
+#define UNIT_HALF_BITS   16
+#define UNIT_BITS2       (UNIT_BYTES * 8)
+// #define UNIT_BITS        (UNIT_BITS2 * 2)
+#define UNIT_TBIT        ((UNIT_ULONG)1 << (UNIT_BITS2 - 1))
+
+#define CALC_MASK        (0xffffffffL)
+#define CALC_MASKl       (0x0000ffffL)
+#define CALC_MASKh       (0xffff0000L)
+#define CALC_MASKh1      (0xffff8000L)
+
+#endif
 
 #define LBITS(a)         ((a)&CALC_MASKl)
 #define HBITS(a)         (((a)>>UNIT_HALF_BITS)&CALC_MASKl)
@@ -85,8 +105,10 @@ size_t __bn2bin(const number_t& x, int neg, unsigned char *to, size_t tolen, boo
 number_t __create_hex_str(const char* str);
 number_t __create_dec_str(const char* str);
 
-std::string __print_string_hex(const number_t& x, bool low_case=false);
-
+std::string __print_string_dec(const number_ptr_t& x, size_t xl);
+std::string __print_string_hex(const number_ptr_t& x, size_t xl, bool low_case=false);
+std::string __print_string(const number_ptr_t& x, size_t xl, bool hex=false, bool low_case=false);
+std::string __print_string(number_t& x, bool hex=false, bool low_case=false);
 
 } // namespace mympz
 

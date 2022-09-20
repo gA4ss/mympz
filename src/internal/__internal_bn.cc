@@ -450,7 +450,7 @@ unit_t __internal_bignum_to_unit(const number_t& a, size_t s, size_t e) {
  * 然后从这个内部的存储格式转为正式运算的保存格式。
  */
 const number_t __internal_max_integer = __internal_string_to_bignum(UNIT_STRING);
-number_t __ibn_s2b(const char* number) {
+number_t __string_to_bignum(const char* number) {
   number_t res, target = __internal_string_to_bignum(number);
 
   unit_t x = 0;
@@ -487,7 +487,7 @@ std::string __internal_bignum_to_string(const number_t& a) {
   return res;
 }
 
-std::string __ibn_b2s(const number_t& a) {
+std::string __bignum_to_string(const number_ptr_t& a, size_t al) {
   std::string res = "";
   std::ostringstream ostr;
   std::string s;
@@ -499,7 +499,7 @@ std::string __ibn_b2s(const number_t& a) {
   // 将unit_t进制转换为10进制数值
   //
   // for (int i = static_cast<int>(a.size()) - 1; i >= 0; i--) {
-  for (size_t i = 0; i < a.size(); i++) {
+  for (size_t i = 0; i < al; i++) {
     //
     // 计算当前的基
     //
