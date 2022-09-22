@@ -269,4 +269,6 @@ void __mul_units_low_loop(const number_ptr_t& z, const number_ptr_t& x, const nu
 //
 // 递归实现
 //
+#if defined(CALC_RECURSION)
 #include "__mul_recursive.cc"
+#endif

@@ -1,8 +1,8 @@
-uint64_t __add_units(uint64_t *rp, const uint64_t *ap, const uint64_t *bp, int n) {
-  uint64_t ret;
+unit_t __opt_add_units(unit_t *rp, const unit_t *ap, const unit_t *bp, size_t n) {
+  unit_t ret;
   size_t i = 0;
 
-  if (n <= 0)
+  if (n == 0)
     return 0;
 
   asm volatile ("       subq    %0,%0           \n" /* clear carry */
@@ -22,11 +22,11 @@ uint64_t __add_units(uint64_t *rp, const uint64_t *ap, const uint64_t *bp, int n
   return ret & 1;
 }
 
-uint64_t __sub_units(uint64_t *rp, const uint64_t *ap, const uint64_t *bp, int n) {
-  uint64_t ret;
+unit_t __opt_sub_units(unit_t *rp, const unit_t *ap, const unit_t *bp, size_t n) {
+  unit_t ret;
   size_t i = 0;
 
-  if (n <= 0)
+  if (n == 0)
     return 0;
 
   asm volatile ("       subq    %0,%0           \n" /* clear borrow */

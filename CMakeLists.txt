@@ -3,7 +3,8 @@ project(mympz VERSION 1.0)
 
 # -g allows for gdb debugging
 # turn on -03 for best performance
-add_definitions(-std=c++11 -g -O0 -Wunused-variable)
+add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
+# add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
 # add_definitions(-std=c++11 -O3 -Wunused-variable)
 
 set(CXX_FLAGS "-Wall")
@@ -64,8 +65,8 @@ if(BUILD_TEST)
 #
 # Main Test
 #
-add_executable(test_add ${SRC_DIRECTORY}/test/test_add.cc)
-target_link_libraries(test_add mympz gtest pthread)
+add_executable(test_addsub ${SRC_DIRECTORY}/test/test_addsub.cc)
+target_link_libraries(test_addsub mympz gtest pthread)
 add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
 target_link_libraries(test_create mympz gtest pthread)
 add_executable(test_mul ${SRC_DIRECTORY}/test/test_mul.cc)
@@ -122,8 +123,8 @@ endif(BUILD_TEST)
 enable_testing()
 add_test(NAME test_create COMMAND test_create)
 set_tests_properties(test_create PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
-add_test(NAME test_add COMMAND test_add)
-set_tests_properties(test_add PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+add_test(NAME test_addsub COMMAND test_addsub)
+set_tests_properties(test_addsub PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_mul COMMAND test_mul)
 set_tests_properties(test_mul PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_div COMMAND test_div)
