@@ -97,6 +97,8 @@ target_link_libraries(test_x86_64_div)
 #
 # Misc Test
 #
+add_executable(test_neg_system ${SRC_DIRECTORY}/test/misc/test_neg_system.cc)
+target_link_libraries(test_neg_system)
 add_executable(test_overflow ${SRC_DIRECTORY}/test/misc/test_overflow.cc)
 target_link_libraries(test_overflow)
 add_executable(test_size ${SRC_DIRECTORY}/test/misc/test_size.cc)
