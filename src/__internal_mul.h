@@ -69,7 +69,7 @@
 
 //
 // a 乘以 b(bl,bh)加上进位，最后再加上
-// r的结果，高位放到上，低位放到r上。
+// r的结果，高位放到c上，低位放到r上。
 //
 #define mul_add(r, a, bl, bh, c) \
   {                              \
@@ -80,7 +80,6 @@
     h = HBITS(h);                \
     mul64(l, h, (bl), (bh));     \
                                  \
-    /* non-multiply part */      \
     l = (l + (c)) & CALC_MASK;   \
     if (l < (c))                 \
       h++;                       \
@@ -105,7 +104,6 @@
     h = HBITS(h);                 \
     mul64(l, h, (bl), (bh));      \
                                   \
-    /* non-multiply part */       \
     l += (c);                     \
     if ((l & CALC_MASK) < (c))    \
       h++;                        \

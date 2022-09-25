@@ -161,4 +161,6 @@ void __sqr_units_loop(const number_ptr_t& y, const number_ptr_t& x, size_t nx,
 //
 // 递归实现
 //
+#if defined(CALC_RECURSION)
 #include "__sqr_recursive.cc"
+#endif
