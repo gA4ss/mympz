@@ -68,11 +68,9 @@ typedef __uint128_t dunit_t;
 #endif
 
 //
-// 一些乘法宏的内部支持
+// 内部大数的支持
 //
 #include "__internal_bn.h"
-#include "__internal_mul.h"
-#include "__internal_sqr.h"
 
 bool __is_zero(const number_t &x);
 
@@ -107,7 +105,8 @@ void __sqr_units_loop(const number_ptr_t &y, const number_ptr_t &x, size_t nx,
 void __sqr_units_recursive(const number_ptr_t &y, const number_ptr_t &x, size_t n2,
                             const number_ptr_t &t);
 
-unit_t __div_unit(unit_t h, unit_t l, unit_t d);
+number_t __div_units_unit(const number_ptr_t &x, size_t xl, unit_t w, unit_t* r);
+number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl);
 
 number_t __mod_add(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
                     const number_ptr_t &m, size_t ml);

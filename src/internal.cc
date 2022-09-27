@@ -26,7 +26,9 @@ namespace mympz
       (num)[__cntb_i__] = (buf)[__cntb_i__];                    \
   }
 
+#if !defined(DISABLE_OPTIMIZE)
 #include "./internal/optimize/__optimize.cc"
+#endif
 
 #include "./internal/__internal.cc"
 #include "./internal/__internal_bn.cc"
@@ -35,7 +37,7 @@ namespace mympz
 #include "./internal/__cmp.cc"
 #include "./internal/__addsub.cc"
 #include "./internal/__mul.cc"
-#include "./internal/__sqr.cc"
+#include "./internal/__sqr.cc"  // 需要放置在__mul.cc之后
 #include "./internal/__div.cc"
 #include "./internal/__mod.cc"
 #include "./internal/__exp.cc"

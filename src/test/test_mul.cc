@@ -24,7 +24,7 @@ TEST(Mympz, Mul) {
   EXPECT_TRUE(z_str == "56351568");
 
   x = create("11223344", true);
-  set_null(y);
+  zero(y);
   z = mul(x, y);
   z_str = print_string(z);
   EXPECT_TRUE(z_str == "0");
