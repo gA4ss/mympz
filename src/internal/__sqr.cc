@@ -1,4 +1,5 @@
 #if defined(DISABLE_OPTIMIZE)
+
 #define __sqr64(lo, ho, in)                         \
   {                                                 \
     unit_t l, h, m;                                 \
@@ -40,7 +41,10 @@
  */
 #define __sqr_add_c2_unit(a, i, j, c0, c1, c2) \
   __mul_add_c2_unit((a)[i], (a)[j], c0, c1, c2)
+
 #endif
+
+#if defined(CALC_SQR_COMBA)
 
 void __sqr_4_units(const number_ptr_t &y, const number_ptr_t &x)
 {
@@ -143,6 +147,8 @@ void __sqr_8_units(const number_ptr_t &y, const number_ptr_t &x)
   y[14] = c3;
   y[15] = c1;
 }
+
+#endif
 
 void __sqr_units(const number_ptr_t &y, const number_ptr_t &x, size_t n)
 {
