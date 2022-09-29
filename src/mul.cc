@@ -57,19 +57,24 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
   
   int i = static_cast<int>(bn_size(_x)) - static_cast<int>(bn_size(_y));
 
-#if defined(CALC_MUL_COMBA)
-  if ((xl == 4) && (i == 0)) {
-    bn_resize(z, 8);
-    __mul_4_units(bn_ptr(z), bn_ptr(_x), bn_ptr(_y));
-    goto _end;
-  } else if ((xl == 8) && (i == 0)) {
-    bn_resize(z, 16);
-    __mul_8_units(bn_ptr(z), bn_ptr(_x), bn_ptr(_y));
-    goto _end;
-  }
+#if 0
+  if (i == 0) {
+    //
+    // x与y的长度相同
+    //
+    if (xl == 4) {
+      bn_resize(z, 8);
+      __mul_4_units(bn_ptr(z), bn_ptr(_x), bn_ptr(_y));
+    } else if (xl == 8) {
+      bn_resize(z, 16);
+      __mul_8_units(bn_ptr(z), bn_ptr(_x), bn_ptr(_y));
+    } else {
+      bn_resize(z, xl + yl + 1);
+      __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
+    }
+  } else 
 #endif
 
-#if defined(CALC_RECURSION)
   if ((xl >= CALC_MULL_SIZE_NORMAL) && (yl >= CALC_MULL_SIZE_NORMAL)) {
     //
     // 1.乘数与被乘数大于某个长度
@@ -110,15 +115,14 @@ bignum_t mul(const bignum_t& x, const bignum_t& y) {
       bn_resize(z, xl + yl + 1);
       __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
     }
-    goto _end;
+  } else {
+    //
+    // 小于CALC_MULL_SIZE_NORMAL位数则直接使用循环来处理
+    //
+    bn_resize(z, xl + yl + 1);
+    __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
   }
-#endif
 
-  // 循环相乘并累加
-  bn_resize(z, xl + yl + 1);
-  __mul_units_loop(bn_ptr(z), bn_ptr(_x), xl, bn_ptr(_y), yl);
-
-_end:
   z.neg = x.neg ^ y.neg;    // 设定符号
   clear_head_zero(z);
   return z;

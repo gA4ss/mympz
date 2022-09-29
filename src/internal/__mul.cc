@@ -118,8 +118,6 @@
 
 #endif
 
-#if defined(CALC_MUL_COMBA)
-
 void __mul_4_units(const number_ptr_t &z, const number_ptr_t &x, const number_ptr_t &y)
 {
   unit_t c1 = 0, c2 = 0, c3 = 0;
@@ -255,8 +253,6 @@ void __mul_8_units(const number_ptr_t &z, const number_ptr_t &x, const number_pt
   z[14] = c3;
   z[15] = c1;
 }
-
-#endif
 
 unit_t __mul_units_unit(const number_ptr_t &z, const number_ptr_t &x, size_t nx, unit_t y)
 {

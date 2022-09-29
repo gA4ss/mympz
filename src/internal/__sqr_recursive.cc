@@ -15,7 +15,6 @@ void __sqr_units_recursive(const number_ptr_t& y, const number_ptr_t& x, size_t 
 {
   size_t n = n2 / 2;
 
-#if defined(CALC_SQR_COMBA)
   if (n2 == 4) {
     __sqr_4_units(y, x);
     return;
@@ -23,7 +22,6 @@ void __sqr_units_recursive(const number_ptr_t& y, const number_ptr_t& x, size_t 
     __sqr_8_units(y, x);
     return;
   }
-#endif
 
   if (n2 < CALC_SQR_RECURSIVE_SIZE_NORMAL) {
     __sqr_units_loop(y, x, n2, t);
