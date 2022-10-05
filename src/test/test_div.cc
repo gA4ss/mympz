@@ -12,6 +12,14 @@ TEST(Mympz, Div) {
   division_result_t z;
   std::string d_str, r_str;
 
+  x = create("0x55667788AABBCCDDFFEEDDCC11223344");
+  y = create("0xEEFFCCDDBBAA1122");
+  z = div(x, y);
+  d_str = print_string(z.first, true, true);
+  r_str = print_string(z.second, true, true);
+  EXPECT_STREQ(d_str.c_str(), "5b799d3f5881f172");
+  EXPECT_STREQ(r_str.c_str(), "a37ccd6f13239020");
+
   x = create("56789");
   y = create("123");
   z = div(x, y);

@@ -8,40 +8,74 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
   if (d == 0)
     return CALC_MASK;
 
+  // 统计除数的位数
   size_t i = __count_bits(d);
   my_assert((i == UNIT_BITS) || (h <= (unit_t)(1 << i)), "invalid word bits, %lu.", i);
 
+  // 计算得到比除数多出来的位
   i = UNIT_BITS - i;
+
+  //
+  // 高位大于或者等于除数则减去一个除数
+  // 这里做的原因是后面的算法是先用高位
+  // 除以除数，然后得到试商进行调整随后
+  //
   if (h >= d)
     h -= d;
 
+  //
+  // 如果除数不足一个字，则进行对齐
+  // 除数左移到最高位
+  // 被除数的高位也移动到本身字的最高位，低位随着移动对齐。
+  //
   if (i)
   {
     d <<= i;
     h = (h << i) | (l >> (UNIT_BITS - i));
     l <<= i;
   }
+
+  // 取出除数的高位与低位
   dh = (d & CALC_MASKh) >> UNIT_HALF_BITS;
   dl = (d & CALC_MASKl);
+
+  // 进行实际除法操作
   for (;;)
   {
+    // 计算试商
+    // 如果被除数的高位的半字与除数的高位相等，则直接得出一个商0xffffffff，
+    // 当乘以除数时直接给给除数左移动了32位。
+    // 如果不相等，则计算高位与除数高位半字的商q。
+    //
     if ((h >> UNIT_HALF_BITS) == dh)
       q = CALC_MASKl;
     else
       q = h / dh;
 
+    // 试商乘以除数，用来后判断商的正确性。
     th = q * dh;
     tl = dl * q;
+
+    //
+    // 使用尝试来得到正确的商，这里使用了余数小于除数的判断法则来进行判定。
+    //
     for (;;)
     {
+      // 使用余数小于除数的法则判断商是否正确
       t = h - th;
       if ((t & CALC_MASKh) || ((tl) <= ((t << UNIT_HALF_BITS) |
                                         ((l & CALC_MASKh) >> UNIT_HALF_BITS))))
         break;
+      
+      // 商减1
       q--;
       th -= dh;
       tl -= dl;
     }
+
+    //
+    // 这里是使用之前的商与除数的积构造下一轮的被除数
+    //
     t = (tl >> UNIT_HALF_BITS);
     tl = (tl << UNIT_HALF_BITS) & CALC_MASKh;
     th += t;
@@ -56,9 +90,14 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
     }
     h -= th;
 
+    // 两个字除以一个字，最多计算两次。
     if (--count == 0)
       break;
 
+    //
+    // 位移商到最终的位置上
+    // 重新移动下一轮的被除数的高位与低位到最高位上
+    //
     ret = q << UNIT_HALF_BITS;
     h = ((h << UNIT_HALF_BITS) | (l >> UNIT_HALF_BITS)) & CALC_MASK;
     l = (l & CALC_MASKl) << UNIT_HALF_BITS;

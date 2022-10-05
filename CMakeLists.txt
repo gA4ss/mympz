@@ -3,8 +3,8 @@ project(mympz VERSION 1.0)
 
 # -g allows for gdb debugging
 # turn on -03 for best performance
-add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
-# add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
+# add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
+add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
 # add_definitions(-std=c++11 -O3 -Wunused-variable)
 
 set(CXX_FLAGS "-Wall")
