@@ -41,14 +41,14 @@ bignum_t mod(const bignum_t& x, const bignum_t& y) {
 }
 
 /**
-  * @brief         有符号的两个大数的模数取绝对值
+  * @brief         有符号的两个大数去与模|y|
   * @param[in]     x
   * @param[in]     y
-  * @return        r = |x % y|
+  * @return        r = x % |y|
   * @note 与mod运算一致，但是返回非负的余数。
   *       $0 <= r < |y|$
   */
-bignum_t nnmod(const bignum_t& x, const bignum_t& y) {
+static bignum_t __nnmod(const bignum_t& x, const bignum_t& y) {
   bignum_t r = mod(x, y);
   if (!r.neg)   // 如果为正数
     return r;
@@ -63,7 +63,7 @@ bignum_t nnmod(const bignum_t& x, const bignum_t& y) {
   * @brief         有符号的两个大数的模数相加取模后取绝对值
   * @param[in]     x
   * @param[in]     y
-  * @return        r = |(x + y) % m|
+  * @return        r = (x + y) % |m|
   */
 bignum_t mod_add(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
   bignum_t z;
@@ -80,14 +80,14 @@ bignum_t mod_add(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
     return z;
   }
   z = add(x, y);
-  return nnmod(z, m);
+  return __nnmod(z, m);
 }
 
 /**
   * @brief         有符号的两个大数的模数相减取模后取绝对值
   * @param[in]     x
   * @param[in]     y
-  * @return        r = |(x - y) % m|
+  * @return        r = (x - y) % |m|
   */
 bignum_t mod_sub(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
   bignum_t z;
@@ -104,14 +104,14 @@ bignum_t mod_sub(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
     return z;
   }
   z = sub(x, y);
-  return nnmod(z, m);
+  return __nnmod(z, m);
 }
 
 /**
   * @brief         有符号的两个大数的模数相乘取模后取绝对值
   * @param[in]     x
   * @param[in]     y
-  * @return        r = |(x * y) % m|
+  * @return        r = (x * y) % |m|
   */
 bignum_t mod_mul(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
   bignum_t z;
@@ -122,13 +122,13 @@ bignum_t mod_mul(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
   }
 
   z = mul(x, y);
-  return nnmod(z, m);
+  return __nnmod(z, m);
 }
 
 /**
   * @brief         大数的平方取模后取绝对值
   * @param[in]     x
-  * @return        r = |(x * x) % m|
+  * @return        r = (x * x) % m
   */
 bignum_t mod_sqr(const bignum_t& x, const bignum_t& m) {
   bignum_t y = sqr(x);
@@ -136,23 +136,23 @@ bignum_t mod_sqr(const bignum_t& x, const bignum_t& m) {
 }
 
 /**
-  * @brief         大数的左移1位取模后取绝对值
+  * @brief         大数的左移1位取模|m|
   * @param[in]     x
-  * @return        r = |(x << 1) % m|
+  * @return        r = (x << 1) % |m|
   */
 bignum_t mod_lshift1(const bignum_t& x, const bignum_t& m) {
   bignum_t r = lshift1(x);
   if (cmp(r, m) >= 0) {
     return sub(r, m);
   }
-  return nnmod(r, m);
+  return __nnmod(r, m);
 }
 
 /**
-  * @brief         大数的左移n位取模后取绝对值
+  * @brief         大数的左移n位取模|m|
   * @param[in]     x x < m && x >= 0
   * @param[in]     n 要移动的位数
-  * @return        r = |(x << n) % m|
+  * @return        r = x << n
   */
 bignum_t __mod_lshift(const bignum_t& x, int n, const bignum_t& m) {
   bignum_t r = x;
@@ -170,6 +170,7 @@ bignum_t __mod_lshift(const bignum_t& x, int n, const bignum_t& m) {
     if (max_shift > n)
       max_shift = n;
 
+    // m与x的位数相同
     if (max_shift) {
       r = lshift(r, max_shift);
       n -= max_shift;
@@ -178,7 +179,6 @@ bignum_t __mod_lshift(const bignum_t& x, int n, const bignum_t& m) {
       --n;
     }
 
-    /* __bignum_bits(r) <= __bignum_bits(m) */
     if (cmp(r, m) >= 0) {
       r = sub(r, m);
     }
@@ -188,15 +188,15 @@ bignum_t __mod_lshift(const bignum_t& x, int n, const bignum_t& m) {
 }
 
 /**
-  * @brief         大数的左移n位取模后取绝对值
+  * @brief         大数的左移n位取模后模|m|
   * @param[in]     x
   * @param[in]     n 要移动的位数
-  * @return        r = |(x << n) % m|
+  * @return        r = x % |m| << n
   */
 bignum_t mod_lshift(const bignum_t& x, size_t n, const bignum_t& m) {
   bignum_t r, abs_m;
 
-  r = nnmod(x, m);
+  r = __nnmod(x, m);
 
   // 如果模数为负数
   if (m.neg) {

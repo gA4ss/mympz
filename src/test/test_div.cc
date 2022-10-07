@@ -7,6 +7,23 @@
 
 using namespace mympz;
 
+TEST(Mympz, UnPass) {
+#if defined(DISABLE_OPTIMIZE)
+  bignum_t x,y;
+  division_result_t z;
+  std::string d_str, r_str;
+
+  // 此用例没有通过
+  x = create("0xFFEEDDCCAABBCCDD5566778811223344");
+  y = create("0x1122334455667788");
+  z = div(x, y);
+  d_str = print_string(z.first, true, true);
+  r_str = print_string(z.second, true, true);
+  EXPECT_STREQ(d_str.c_str(), "eefffffff0300007d");
+  EXPECT_STREQ(r_str.c_str(), "19b34bc619d5dc");
+#endif
+}
+
 TEST(Mympz, Div) {
   bignum_t x,y;
   division_result_t z;

@@ -17,8 +17,6 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
 
   //
   // 高位大于或者等于除数则减去一个除数
-  // 这里做的原因是后面的算法是先用高位
-  // 除以除数，然后得到试商进行调整随后
   //
   if (h >= d)
     h -= d;
@@ -58,11 +56,17 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
 
     //
     // 使用尝试来得到正确的商，这里使用了余数小于除数的判断法则来进行判定。
-    //
+    //  
     for (;;)
     {
+      //
       // 使用余数小于除数的法则判断商是否正确
+      // h - th 计算余数t
+      //
       t = h - th;
+
+      // t是64位除以32位的结果，肯定在32位以内，所以判断t的高位是否为0，如果不为零则说明
+      // h - th溢出了，是负数。
       if ((t & CALC_MASKh) || ((tl) <= ((t << UNIT_HALF_BITS) |
                                         ((l & CALC_MASKh) >> UNIT_HALF_BITS))))
         break;

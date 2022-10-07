@@ -155,7 +155,6 @@ namespace mympz
 
   unit_t mod(const bignum_t &x, unit_t w, int wneg = 0);
   bignum_t mod(const bignum_t &x, const bignum_t &y);
-  bignum_t nnmod(const bignum_t &x, const bignum_t &y);
   bignum_t mod_add(const bignum_t &x, const bignum_t &y, const bignum_t &m);
   bignum_t mod_sub(const bignum_t &x, const bignum_t &y, const bignum_t &m);
   bignum_t mod_mul(const bignum_t &x, const bignum_t &y, const bignum_t &m);

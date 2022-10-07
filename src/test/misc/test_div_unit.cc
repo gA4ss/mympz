@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctype.h>
+#include <assert.h>
 
 typedef uint64_t unit_t;
 
@@ -72,7 +73,7 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
 
   // 统计除数的位数
   size_t i = num_bits_word(d);
-  // my_assert((i == UNIT_BITS) || (h <= (unit_t)(1 << i)), "invalid word bits, %lu.", i);
+  assert((i == UNIT_BITS) || (h <= (unit_t)(1 << i)));
 
   // 计算得到比除数多出来的位
   i = UNIT_BITS - i;
@@ -171,11 +172,13 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
 int main(int argc, char *argv[])
 {
   // 0xFFFFBBBBCCCCDDDDAABB112233445566
-  unit_t xl = 0x5566778811223344, xh = 0xFFEEDDCCAABBCCDD;
-  unit_t y = 0xFFEEDDCCBBAA1122;
-  // unit_t xl = 125, xh = 4456;
+  unit_t xl = 0x5566778811223344, xh = 0x11223344AABBCCDD;
+  unit_t y = 0x1122334455667788;
+  // unit_t xl = 0x5566778811223344, xh = 0xFFEEDDCCAABBCCDD;
+  // unit_t y = 0x1122334455667788;
+  // unit_t xl = 256, xh = 0;
   // unit_t y = 8;
   unit_t q = __div_unit(xh, xl, y);
-  std::cout << "q = " << std::hex << q << std::endl;
+  std::cout << "q = " << q << " " << std::hex << q << std::endl;
   return 0;
 }
