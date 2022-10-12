@@ -164,6 +164,8 @@ namespace mympz
   bignum_t mod_exp(const bignum_t &x, const bignum_t &p, const bignum_t &m);
   bignum_t exp(const bignum_t &x, const bignum_t &p);
 
+  bignum_t gcd(const bignum_t &x, const bignum_t &y);
+
   std::string print_string(const bignum_t &x, bool hex = false, bool low_case = false);
   size_t print_buffer(const bignum_t &x, unsigned char *to, size_t tolen,
                       bool little = true, bool is_sign = false);

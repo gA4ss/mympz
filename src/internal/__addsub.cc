@@ -79,6 +79,39 @@ unit_t __add_units(const number_ptr_t& z, const number_ptr_t &x, const number_pt
   return c;
 }
 
+number_t __add_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl) {  
+  //
+  // 保证xl >= yl
+  //
+  my_assert(xl >= yl, "x(%lu) is less than y(%lu).", xl, yl);
+
+  number_t z;
+  num_resize(z, xl + 1);
+
+  //
+  // 先将min位相加
+  //
+  unit_t carry = __add_units(num_ptr(z), x, y, yl);
+
+  size_t i = yl;
+  size_t dif = xl - yl;
+  unit_t t1, t2;
+  while (dif) {
+    dif--;
+    t1 = x[i];
+    t2 = (t1 + carry) & CALC_MASK;
+    z[i] = t2;
+    carry &= (t2 == 0);
+    i++;
+  }
+
+  if (carry)
+    z[i] = carry;
+
+  clear_number_head_zero(z);
+  return z;
+}
+
 /**
   * @brief         两个指定的单位长度相减
   * @param[in]     z        返回结果
@@ -148,4 +181,36 @@ unit_t __sub_units(const number_ptr_t& z, const number_ptr_t &x, const number_pt
 #endif
 
   return c;
+}
+
+number_t __sub_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl) {
+  //
+  // 保证xl >= yl
+  //
+  my_assert(xl >= yl, "x(%lu) is less than y(%lu).", xl, yl);
+
+  number_t z;
+  num_resize(z, xl);
+
+  unit_t borrow = __sub_units(num_ptr(z), x, y, yl);
+  size_t i = yl;
+
+  unit_t t1, t2;
+  size_t dif = xl - yl;
+  while (dif) {
+    dif--;
+    t1 = x[i];
+    t2 = (t1 - borrow) & CALC_MASK;
+    z[i] = t2;
+    borrow &= (t1 == 0);
+    i++;
+  }
+
+  i = xl-1;
+  while (xl && z[i--] == 0)
+    xl--;
+  num_resize(z, xl);
+  
+  if (!xl) z.push_back(0);
+  return z;
 }

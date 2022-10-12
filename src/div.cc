@@ -66,31 +66,6 @@ namespace mympz
     return y;
   }
 
-  size_t __left_align(number_t &num)
-  {
-    size_t l = num.size();
-    size_t rshift = __count_bits(num[l - 1]); // 统计最高位的数值位数
-
-    size_t lshift = UNIT_BITS - rshift; // 最高位左边还空余的位数
-    rshift %= UNIT_BITS;
-    unit_t rmask = (unit_t)0 - rshift; // rmask = 0 - (rshift != 0)
-    rmask |= rmask >> 8;               // rmask为CALC_MASK
-
-    unit_t n = 0, m = 0;
-    for (size_t i = 0; i < l; i++)
-    {
-      //
-      // 先左移到需要得位然后或上上一个字节
-      // 的右移位的部分。
-      //
-      n = num[i];
-      num[i] = ((n << lshift) | m) & CALC_MASK;
-      m = (n >> rshift) & rmask;
-    }
-
-    return lshift;
-  }
-
   /**
    * @brief         有符号的两个大数相除，这里不处理符号问题。
    * @param[in]     x 大数
@@ -115,7 +90,7 @@ namespace mympz
 
     // 左对其除数
     bignum_t _y = bn_const_cast(y);
-    size_t norm_shift = __left_align(_y.number);
+    size_t norm_shift = __left_align(bn_ptr(_y), bn_size(_y));
     _y.neg = 0;
 
     // 左对齐被除数

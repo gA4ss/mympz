@@ -35,9 +35,24 @@ unit_t mod(const bignum_t& x, unit_t w, int wneg) {
   * @param[in]     y
   * @return        r = x % y
   */
+// bignum_t mod(const bignum_t& x, const bignum_t& y) {
+//   division_result_t z = div(x, y);
+//   return z.second;
+// }
 bignum_t mod(const bignum_t& x, const bignum_t& y) {
-  division_result_t z = div(x, y);
-  return z.second;
+  bignum_t r; r.neg = 0;
+  r.number = __mod(bn_ptr(bn_const_cast(x)), bn_size(x), bn_ptr(bn_const_cast(y)), bn_size(y));
+
+  //  异号
+  if (x.neg ^ y.neg)
+  {
+    r = sub(y, r);
+  }
+  else
+  {
+    r.neg = y.neg;
+  }
+  return r;
 }
 
 /**

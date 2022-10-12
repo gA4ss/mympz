@@ -402,3 +402,73 @@ void __mul_units_low_loop(const number_ptr_t &z, const number_ptr_t &x, const nu
 #if defined(CALC_RECURSION)
 #include "__mul_recursive.cc"
 #endif
+
+number_t __mul_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl)
+{
+  number_t z;
+
+  int i = static_cast<int>(xl) - static_cast<int>(yl);
+  if ((xl >= CALC_MULL_SIZE_NORMAL) && (yl >= CALC_MULL_SIZE_NORMAL))
+  {
+    //
+    // 1.乘数与被乘数大于某个长度
+    // 2.乘数与被乘数的长度仅差1位
+    // 才使用分治算法
+    //
+    if (i >= -1 && i <= 1)
+    { // -1 <= i <= 1
+      number_t t;
+      //
+      // 求最小二的幂，或等于其中最长的两个数字。
+      //
+      int j = 0; ///< 保存最大长度的最小二次幂
+      if (i >= 0)
+      { // xl >= yl
+        j = static_cast<int>(__count_bits(static_cast<unit_t>(xl)));
+      }
+      else if (i == -1)
+      { // xl < yl
+        j = static_cast<int>(__count_bits(static_cast<unit_t>(yl)));
+      }
+
+      //
+      // j,k这个组合相当于取了2的取整数，
+      // 随后使用k的长度来保存乘法结果。
+      //
+      j = 1 << (j - 1);
+      my_assert(j <= static_cast<int>(xl) || j <= static_cast<int>(yl),
+                "j > xl || j > yl,j = %l.", j);
+      int k = j + j;
+
+      if (static_cast<int>(xl) > j || static_cast<int>(yl) > j)
+      {
+        num_resize(t, k * 4);
+        num_resize(z, k * 4);
+        __mul_part_units_recursive(num_ptr(z), x, y,
+                                   j, xl - j, yl - j, num_ptr(t));
+      }
+      else
+      { // xl <= j || yl <= j
+        num_resize(t, k * 2);
+        num_resize(z, k * 2);
+        __mul_units_recursive(num_ptr(z), x, y,
+                              j, xl - j, yl - j, num_ptr(t));
+      }
+    }
+    else
+    {
+      num_resize(z, xl + yl + 1);
+      __mul_units_loop(num_ptr(z), x, xl, y, yl);
+    }
+  }
+  else
+  {
+    //
+    // 小于CALC_MULL_SIZE_NORMAL位数则直接使用循环来处理
+    //
+    num_resize(z, xl + yl + 1);
+    __mul_units_loop(num_ptr(z), x, xl, y, yl);
+  }
+  clear_number_head_zero(z);
+  return z;
+}

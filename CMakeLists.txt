@@ -48,6 +48,7 @@ add_library(${PROJECT_NAME} STATIC
   ${SRC_DIRECTORY}/sqr.cc
   ${SRC_DIRECTORY}/div.cc
   ${SRC_DIRECTORY}/mod.cc
+  ${SRC_DIRECTORY}/gcd.cc
   ${SRC_DIRECTORY}/shift.cc
   ${SRC_DIRECTORY}/exp.cc
   ${SRC_DIRECTORY}/cmp.cc
@@ -81,6 +82,8 @@ add_executable(test_shift ${SRC_DIRECTORY}/test/test_shift.cc)
 target_link_libraries(test_shift mympz gtest pthread)
 add_executable(test_exp ${SRC_DIRECTORY}/test/test_exp.cc)
 target_link_libraries(test_exp mympz gtest pthread)
+add_executable(test_gcd ${SRC_DIRECTORY}/test/test_gcd.cc)
+target_link_libraries(test_gcd mympz gtest pthread)
 
 #
 # Optimize Test
@@ -132,6 +135,8 @@ add_test(NAME test_shift COMMAND test_shift)
 set_tests_properties(test_shift PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_exp COMMAND test_exp)
 set_tests_properties(test_exp PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+add_test(NAME test_gcd COMMAND test_gcd)
+set_tests_properties(test_gcd PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 
 #
 # Install Set

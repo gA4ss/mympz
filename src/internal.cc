@@ -36,9 +36,11 @@ namespace mympz
 #include "./internal/__create.cc"
 #include "./internal/__cmp.cc"
 #include "./internal/__addsub.cc"
+#include "./internal/__shift.cc"
 #include "./internal/__mul.cc"
 #include "./internal/__sqr.cc"  // 需要放置在__mul.cc之后
 #include "./internal/__div.cc"
+#include "./internal/__gcd.cc"
 #include "./internal/__mod.cc"
 #include "./internal/__exp.cc"
 
