@@ -214,27 +214,31 @@ size_t __left_align(const number_ptr_t &x, size_t xl)
  * 假设x和y中至少分配了n个字。
  * 假设x或y使用的字不超过n个。
  */
-void __consttime_swap(unit_t condition, const number_ptr_t &x, const number_ptr_t &y, size_t nwords)
+void __consttime_swap(unit_t condition, const number_ptr_t &x, size_t* xl, int* xneg,
+                      const number_ptr_t &y, size_t* yl, int* yneg,
+                      size_t nwords)
 {
+  my_assert(xneg && yneg, "%s", "pointer \'xneg\' | \'yneg\' is nullptr.");
+
   //
   // 这里必须保证x与y的长度等于nwords
   //
   // 设置条件数
   condition = ((~condition & ((condition - 1))) >> (UNIT_BITS2 - 1)) - 1;
 
+  unit_t t = 0;
+
   //
   // 交换两个数的长度与符号
   //
-  // size_t xl = num_size(x), yl = num_size(y);
-  // unit_t t = (xl ^ yl) & condition;
-  // xl ^= t;
-  // yl ^= t;
+  t = (*xl ^ *yl) & condition;
+  *xl ^= t;
+  *yl ^= t;
 
-  // t = (xneg ^ yneg) & condition;
-  // xneg ^= t;
-  // yneg ^= t;
+  t = (*xneg ^ *yneg) & condition;
+  *xneg ^= t;
+  *yneg ^= t;
 
-  unit_t t = 0;
   for (size_t i = 0; i < nwords; i++)
   {
     t = (x[i] ^ y[i]) & condition;

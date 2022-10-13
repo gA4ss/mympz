@@ -101,8 +101,10 @@ namespace mympz
   void __mask_bits(number_t &x, size_t n);
 
   size_t __left_align(const number_ptr_t &x, size_t xl);
-  void __consttime_swap(unit_t condition, const number_ptr_t &x, const number_ptr_t &y, size_t nwords);
-
+  void __consttime_swap(unit_t condition,
+                        const number_ptr_t &x, size_t *xl, int *xneg,
+                        const number_ptr_t &y, size_t *yl, int *yneg,
+                        size_t nwords);
   int __cmp(const number_ptr_t &x, const number_ptr_t &y, int n);
   int __cmp_part(const number_ptr_t &x, const number_ptr_t &y, int cl, int dl);
 

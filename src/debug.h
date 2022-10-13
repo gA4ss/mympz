@@ -34,56 +34,56 @@ namespace mympz
                 const char *fmt, ...);
 
 #ifdef DEBUG
-#define mympz_dbgprint(w, s) dbgprint((w), "%s", (s))
-#define mympz_dbgprint_fmt(w, format, ...) dbgprint((w), format, __VA_ARGS__)
+#define mympz_dbgprint(w, s) dbgprint((w),  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt(w, format, ...) dbgprint((w), __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_info(s) dbgprint(kDbgInfo, "%s", (s))
-#define mympz_dbgprint_fmt_info(format, ...) dbgprint(kDbgInfo, format, __VA_ARGS__)
+#define mympz_dbgprint_info(s) dbgprint(kDbgInfo,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_info(format, ...) dbgprint(kDbgInfo, __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_create(s) dbgprint(kDbgCreate, "%s", (s))
-#define mympz_dbgprint_fmt_create(format, ...) dbgprint(kDbgCreate, format, __VA_ARGS__)
+#define mympz_dbgprint_create(s) dbgprint(kDbgCreate,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_create(format, ...) dbgprint(kDbgCreate,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_addsub(s) dbgprint(kDbgAddSub, "%s", (s))
-#define mympz_dbgprint_fmt_addsub(format, ...) dbgprint(kDbgAddSub, format, __VA_ARGS__)
+#define mympz_dbgprint_addsub(s) dbgprint(kDbgAddSub,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_addsub(format, ...) dbgprint(kDbgAddSub,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_mul(s) dbgprint(kDbgMul, "%s", (s))
-#define mympz_dbgprint_fmt_mul(format, ...) dbgprint(kDbgMul, format, __VA_ARGS__)
+#define mympz_dbgprint_mul(s) dbgprint(kDbgMul,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_mul(format, ...) dbgprint(kDbgMul,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_sqr(s) dbgprint(kDbgSqr, "%s", (s))
-#define mympz_dbgprint_fmt_sqr(format, ...) dbgprint(kDbgSqr, format, __VA_ARGS__)
+#define mympz_dbgprint_sqr(s) dbgprint(kDbgSqr,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_sqr(format, ...) dbgprint(kDbgSqr,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_exp(s) dbgprint(kDbgExp, "%s", (s))
-#define mympz_dbgprint_fmt_exp(format, ...) dbgprint(kDbgExp, format, __VA_ARGS__)
+#define mympz_dbgprint_exp(s) dbgprint(kDbgExp,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_exp(format, ...) dbgprint(kDbgExp,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_div(s) dbgprint(kDbgDiv, "%s", (s))
-#define mympz_dbgprint_fmt_div(format, ...) dbgprint(kDbgDiv, format, __VA_ARGS__)
+#define mympz_dbgprint_div(s) dbgprint(kDbgDiv,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_div(format, ...) dbgprint(kDbgDiv,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_mod(s) dbgprint(kDbgMod, "%s", (s))
-#define mympz_dbgprint_fmt_mod(format, ...) dbgprint(kDbgMod, format, __VA_ARGS__)
+#define mympz_dbgprint_mod(s) dbgprint(kDbgMod,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_mod(format, ...) dbgprint(kDbgMod,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_modmul(s) dbgprint(kDbgModMul, "%s", (s))
-#define mympz_dbgprint_fmt_modmul(format, ...) dbgprint(kDbgModMul, format, __VA_ARGS__)
+#define mympz_dbgprint_modmul(s) dbgprint(kDbgModMul,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_modmul(format, ...) dbgprint(kDbgModMul,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_modexp(s) dbgprint(kDbgMulExp, "%s", (s))
-#define mympz_dbgprint_fmt_modexp(format, ...) dbgprint(kDbgMulExp, format, __VA_ARGS__)
+#define mympz_dbgprint_modexp(s) dbgprint(kDbgMulExp,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_modexp(format, ...) dbgprint(kDbgMulExp,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_modinv(s) dbgprint(kDbgModInv, "%s", (s))
-#define mympz_dbgprint_fmt_modinv(format, ...) dbgprint(kDbgModInv, format, __VA_ARGS__)
+#define mympz_dbgprint_modinv(s) dbgprint(kDbgModInv,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_modinv(format, ...) dbgprint(kDbgModInv,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_gcd(s) dbgprint(kDbgGCD, "%s", (s))
-#define mympz_dbgprint_fmt_gcd(format, ...) dbgprint(kDbgGCD, format, __VA_ARGS__)
+#define mympz_dbgprint_gcd(s) dbgprint(kDbgGCD,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_gcd(format, ...) dbgprint(kDbgGCD,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_shift(s) dbgprint(kDbgShift, "%s", (s))
-#define mympz_dbgprint_fmt_shift(format, ...) dbgprint(kDbgShift, format, __VA_ARGS__)
+#define mympz_dbgprint_shift(s) dbgprint(kDbgShift,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_shift(format, ...) dbgprint(kDbgShift,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_random(s) dbgprint(kDbgRandom, "%s", (s))
-#define mympz_dbgprint_fmt_random(format, ...) dbgprint(kDbgRandom, format, __VA_ARGS__)
+#define mympz_dbgprint_random(s) dbgprint(kDbgRandom,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_random(format, ...) dbgprint(kDbgRandom,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_prime(s) dbgprint(kDbgPrime, "%s", (s))
-#define mympz_dbgprint_fmt_prime(format, ...) dbgprint(kDbgPrime, format, __VA_ARGS__)
+#define mympz_dbgprint_prime(s) dbgprint(kDbgPrime,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_prime(format, ...) dbgprint(kDbgPrime,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-#define mympz_dbgprint_rsa(s) dbgprint(kDbgRSA, "%s", (s))
-#define mympz_dbgprint_fmt_rsa(format, ...) dbgprint(kDbgRSA, format, __VA_ARGS__)
+#define mympz_dbgprint_rsa(s) dbgprint(kDbgRSA,  __FILE__, __LINE__, __FUNCTION__, "%s", (s))
+#define mympz_dbgprint_fmt_rsa(format, ...) dbgprint(kDbgRSA,  __FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
 #else
 

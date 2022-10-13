@@ -25,6 +25,7 @@
 
 #include <mympz/compile.h>
 #include <mympz/exception.h>
+#include <mympz/debug.h>
 
 namespace mympz
 {

@@ -98,7 +98,7 @@ namespace mympz
 #define DEBUG_MODMUL
 #define DEBUG_MODEXP
 #define DEBUG_MODINV
-#define DEBUG_GCD
+// #define DEBUG_GCD
 #define DEBUG_SHIFT
 #define DEBUG_RANDOM
 #define DEBUG_PRIME

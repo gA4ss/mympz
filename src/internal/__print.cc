@@ -22,6 +22,7 @@ std::string __print_string_hex(const number_ptr_t& x, size_t xl, bool low_case) 
       }/* end if */
     }
   }/* end for */
+  if (str.empty()) str = "0";
   return str;
 }
 
