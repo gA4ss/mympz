@@ -74,6 +74,9 @@ namespace mympz
    */
   division_result_t __div(const bignum_t &x, const bignum_t &y)
   {
+    mympz_dbgprint_fmt_div("x = %s.\n", __print_string(x.number, true).c_str());
+    mympz_dbgprint_fmt_div("y = %s.\n", __print_string(y.number, true).c_str());
+
     if (is_zero(y))
     {
       mympz_exception("%s.", "divisor is zero");
@@ -88,15 +91,19 @@ namespace mympz
     // 这样保证了 q'-2 <= q <= q'
     //
 
+    //
     // 左对其除数
+    // 左对齐被除数
+    //
     bignum_t _y = bn_const_cast(y);
     size_t norm_shift = __left_align(bn_ptr(_y), bn_size(_y));
     _y.neg = 0;
+    mympz_dbgprint_fmt_div("normalize shift = %lu.\n", norm_shift);
 
-    // 左对齐被除数
     bignum_t _x = lshift(x, norm_shift);
-
     size_t yl = bn_size(_y), xl = bn_size(_x);
+    mympz_dbgprint_fmt_div("normalized x = %s.\n", __print_string(_x.number, true).c_str());
+    mympz_dbgprint_fmt_div("normalized y = %s.\n", __print_string(_y.number, true).c_str());
 
     //
     // 被除数的长度小于等于除数则扩展被除数
@@ -114,11 +121,12 @@ namespace mympz
     //
     // 计算余数
     //
-    bignum_t rm = rshift(_x, norm_shift);
+    bignum_t r = rshift(_x, norm_shift);
+    mympz_dbgprint_fmt_div("remove normalized r = %s.\n", __print_string(r.number, true).c_str());
 
     clear_head_zero(z);
-    clear_head_zero(rm);
-    return division_result_t(z, rm);
+    clear_head_zero(r);
+    return division_result_t(z, r);
   }
 
   /**

@@ -93,6 +93,7 @@ namespace mympz
 #define num_resize(x, n) ((x).resize(n))
 #define num_ptr(x) ((x).begin())
 #define num_ptr2(x, n) ((x).begin() + (n))
+#define num_const_cast(x) (const_cast<number_t &>((x)))
 #define num_ptr_const_cast(x) (const_cast<number_ptr_t &>((x)))
 
 /**

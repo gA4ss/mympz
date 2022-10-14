@@ -175,7 +175,7 @@ namespace mympz
   std::string __print_string_dec(const number_ptr_t &x, size_t xl);
   std::string __print_string_hex(const number_ptr_t &x, size_t xl, bool low_case = false);
   std::string __print_string(const number_ptr_t &x, size_t xl, bool hex = false, bool low_case = false);
-  std::string __print_string(number_t &x, bool hex = false, bool low_case = false);
+  std::string __print_string(const number_t &x, bool hex = false, bool low_case = false);
 
 } // namespace mympz
 

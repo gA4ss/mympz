@@ -51,11 +51,11 @@ number_t __lshift(const number_ptr_t &x, size_t xl, size_t n)
 {
   number_t y;
 
-  if (n == 0)
-  {
-    for (size_t i = 0; i < xl; i++)
-      y[i] = x[i];
-  }
+  // if (n == 0)
+  // {
+  //   for (size_t i = 0; i < xl; i++)
+  //     y[i] = x[i];
+  // }
 
   size_t nw = n / UNIT_BITS;  // 有多少个64位
   num_resize(y, xl + nw + 1); // 扩展到移动后的位数
@@ -80,7 +80,7 @@ number_t __lshift(const number_ptr_t &x, size_t xl, size_t n)
   }
   t[0] = (l << lb) & CALC_MASK;
 
-  clear_number_head_zero(y);
+  // clear_number_head_zero(y);
   return y;
 }
 

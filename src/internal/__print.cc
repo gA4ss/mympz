@@ -34,7 +34,7 @@ std::string __print_string(const number_ptr_t& x, size_t xl, bool hex, bool low_
   return hex ? __print_string_hex(x, xl, low_case) : __print_string_dec(x, xl);
 }
 
-std::string __print_string(number_t& x, bool hex, bool low_case) {
-  return hex ? __print_string_hex(num_ptr(x), num_size(x), low_case) :
-               __print_string_dec(num_ptr(x), num_size(x));
+std::string __print_string(const number_t& x, bool hex, bool low_case) {
+  return hex ? __print_string_hex(num_ptr(num_const_cast(x)), num_size(x), low_case) :
+               __print_string_dec(num_ptr(num_const_cast(x)), num_size(x));
 }

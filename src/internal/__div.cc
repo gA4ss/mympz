@@ -56,7 +56,7 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
 
     //
     // 使用尝试来得到正确的商，这里使用了余数小于除数的判断法则来进行判定。
-    //  
+    //
     for (;;)
     {
       //
@@ -70,7 +70,7 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
       if ((t & CALC_MASKh) || ((tl) <= ((t << UNIT_HALF_BITS) |
                                         ((l & CALC_MASKh) >> UNIT_HALF_BITS))))
         break;
-      
+
       // 商减1
       q--;
       th -= dh;
@@ -114,25 +114,45 @@ unit_t __div_unit(unit_t h, unit_t l, unit_t d)
 
 number_t __div_units_unit(const number_ptr_t &x, size_t xl, unit_t w, unit_t *r)
 {
+  mympz_dbgprint_fmt_div("x = %s.\n", __print_string_hex(x, xl).c_str());
+  mympz_dbgprint_fmt_div("xl = %lu.\n", xl);
+  mympz_dbgprint_fmt_div("w = %lu.\n", w);
+  mympz_dbgprint_fmt_div("r = %p.\n", r);
+
   number_t y;
   num_resize(y, xl);
   unit_t l, d, rem = 0;
 
+  // 规范化输入
+  mympz_dbgprint_div("normalize input.\n");
+  unit_t lshfit_bits = UNIT_BITS - __count_bits(w);
+  mympz_dbgprint_fmt_div("normalize shift = %lu.\n", lshfit_bits);
+  w <<= lshfit_bits;
+  number_t _x = __lshift(x, xl, lshfit_bits);
+  xl = num_size(_x);
+  mympz_dbgprint_fmt_div("normalized w = %lu.\n", w);
+  mympz_dbgprint_fmt_div("normalized x = %s.\n", __print_string_hex(num_ptr(_x), xl).c_str());
+
   for (int i = static_cast<int>(xl) - 1; i >= 0; i--)
   {
-    l = x[i];
+    l = _x[i];
     d = __div_unit(rem, l, w);
 #ifndef REMAINDER_IS_ALREADY_CALCULATED
     rem = (l - ((d * w) & CALC_MASK)) & CALC_MASK;
 #endif
     y[i] = d;
+    mympz_dbgprint_fmt_div("[%lu] %lu, %lu = %lu / %lu.\n", i, d, rem, l, w);
   }
 
   if (y[xl - 1] == 0)
     num_resize(y, xl - 1);
 
   if (r)
+  {
+    rem >>= lshfit_bits;
     *r = rem;
+    mympz_dbgprint_fmt_div("remove normalized r = %lu.\n", r);
+  }
 
   return y;
 }
@@ -167,6 +187,12 @@ number_t __div_units_unit(const number_ptr_t &x, size_t xl, unit_t w, unit_t *r)
  */
 number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl)
 {
+
+  mympz_dbgprint_fmt_div("x = %s.\n", __print_string_hex(x, xl).c_str());
+  mympz_dbgprint_fmt_div("xl = %lu.\n", xl);
+  mympz_dbgprint_fmt_div("y = %s.\n", __print_string_hex(y, yl).c_str());
+  mympz_dbgprint_fmt_div("yl = %lu.\n", yl);
+
   number_t z;
   my_assert(xl > yl, "xl less than yl. xl = %lu, yl = %lu", xl, yl);
 
@@ -176,6 +202,7 @@ number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
   // 时保持为0
   //
   size_t loop = xl - yl;
+  mympz_dbgprint_fmt_div("loop = %lu.\n", loop);
 
   //
   // 初始化
@@ -187,6 +214,7 @@ number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
   // 获取除数的头两位
   unit_t d0 = y[yl - 1];
   unit_t d1 = (yl == 1) ? 0 : y[yl - 2];
+  mympz_dbgprint_fmt_div("d0 = %lx, d1 = %lx.\n", d0, d1);
 
   // 设置商
   num_resize(z, loop);
@@ -204,6 +232,8 @@ number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
 
     n0 = wnumtop[0];
     n1 = wnumtop[-1];
+    mympz_dbgprint_fmt_div("[%lu] n0 = %lx, n1 = %lx.\n", i, n0, n1);
+
     //
     // 这里计算的q' = floor(u_{j+n}b+u_{j+n-1} / v_{n-1})
     // 所以如果u_{j+n} == v_{n-1},必然意味着q' > b
@@ -218,6 +248,7 @@ number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
       // 除数与被除数的第一个字如果相同，
       //
       q = CALC_MASK;
+      mympz_dbgprint_fmt_div("[%lu] n0 = d0, q = %lx.\n", i, q);
     }
     else
     { /* n0 < d0 */
@@ -231,6 +262,8 @@ number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
       // 余数计算
       rem = (n1 - q * d0) & CALC_MASK;
 #endif
+      mympz_dbgprint_fmt_div("[%lu] %lx, %lx = (%lx %lx) / %lx.\n",
+                             i, q, rem, n0, n1, d0);
 
       {
         //
@@ -243,18 +276,23 @@ number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
         ql = LBITS(q);
         qh = HBITS(q);
         __mul64_in_div(t2l, t2h, ql, qh); /* t2=d1*q; */
+        mympz_dbgprint_fmt_div("[%lu] %lx, %lx = %lx * %lx.\n",
+                               i, t2h, t2l, d1, q);
       }
-
       //
       // 第五个阶段 检查余数
       //
+      mympz_dbgprint_fmt_div("[%lu] entry <check remainder>.\n", i);
       for (;;)
       {
         //
         // q'v_{n-2} > br'+u_{j+n-2}
         //
         if ((t2h < rem) || ((t2h == rem) && (t2l <= n2)))
+        {
+          mympz_dbgprint_fmt_div("[%lu] achieve condition.\n", i);
           break;
+        }
 
         //
         // 试商减1，试余加上被除数前两位的第一位
@@ -262,41 +300,79 @@ number_t __div_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
         //
         q--;
         rem += d0;
+        mympz_dbgprint_fmt_div("[%lu] q = %lx, rem = %lx.\n", i, q, rem);
 
         //
         // 防止余数溢出
         //
         if (rem < d0)
+        {
+          mympz_dbgprint_fmt_div("[%lu] prevent remainder overflow.\n", i);
           break;
+        }
 
         //
         // t2 = t2 - d1
         //
         if (t2l < d1)
+        {
           t2h--;
+          mympz_dbgprint_fmt_div("[%lu] t2l < d1 then t2h-- = %lx.\n", i, t2h);
+        }
+
         t2l -= d1;
+        mympz_dbgprint_fmt_div("[%lu] t2l - dl1 = %lx.\n", i, t2l);
       } /* end for */
+      mympz_dbgprint_fmt_div("[%lu] leave <check remainder>.\n", i);
     }   /* end else */
 
     //
     // (u_{j+n}u_{j+n-1}...u_j) - q'(0v_{n-1}...v_1v_0)
     //
+    mympz_dbgprint_fmt_div("[%lu] compute divisor times quotient.\n", i);
     l0 = __mul_units_unit(tmp.begin(), y, yl, q);
     tmp[yl] = l0;
     wnum--;
 
+    mympz_dbgprint_fmt_div("[%lu] product = %s.\n", i, __print_string(tmp, true).c_str());
+    mympz_dbgprint_fmt_div("[%lu] carry = %lx.\n", i, l0);
+
+    mympz_dbgprint_fmt_div("[%lu] dividend minus product.\n", i);
+    mympz_dbgprint_fmt_div("[%lu] dividend = %s.\n", i, 
+                            __print_string_hex(wnum, 
+                            xl - static_cast<size_t>((wnum - x))).c_str());
+
+    //
+    // 如果乘积大于被除数则，商减一。
+    //
     l0 = __sub_units(wnum, wnum, tmp.begin(), yl + 1);
     q -= l0;
 
+    mympz_dbgprint_fmt_div("[%lu] difference = %s.\n", i, 
+                            __print_string_hex(wnum, 
+                            xl - static_cast<size_t>((wnum - x))).c_str());
+    mympz_dbgprint_fmt_div("[%lu] q - %lx = %lx.\n", i, l0, q);
+
     //
-    // 用前两个字计算的试商，除数乘以试商也许会大于被除数的部分，但是试商减一乘以
-    // 除数必然小于等于被除数的部分。
+    // 用前两个字计算的试商，除数乘以试商也许会大于被除数的部分，
+    // 但是试商减一后乘以除数必然小于等于被除数的部分。
     //
     l0 = 0 - l0; // 生成借位掩码
+    mympz_dbgprint_fmt_div("[%lu] borrow mask = %lx.\n", i, l0);
     for (size_t j = 0; j < yl; j++)
       tmp[j] = y[j] & l0;
+    mympz_dbgprint_fmt_div("[%lu] product and borrow mask = %s.\n", 
+                            i, __print_string(tmp, true).c_str());
+
     l0 = __add_units(wnum, wnum, tmp.begin(), yl);
+    mympz_dbgprint_fmt_div("[%lu] recover dividend = %s.\n", i, 
+                            __print_string_hex(wnum, 
+                            (xl - static_cast<size_t>(wnum - x))).c_str());
+    mympz_dbgprint_fmt_div("[%lu] carry = %lx.\n", i, l0);
     (*wnumtop) += l0;
+    mympz_dbgprint_fmt_div("[%lu] the difference between top and current of dividend = %lu.\n",
+                             i, static_cast<size_t>(wnumtop - wnum));
+    mympz_dbgprint_fmt_div("[%lu] top word of dividend = %lx.\n", i, *wnumtop);
     my_assert((*wnumtop) == 0, "top number is not zero, top = %lu.", (*wnumtop));
 
     /* 保存部分结果 */

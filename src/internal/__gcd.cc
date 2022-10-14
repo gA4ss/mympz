@@ -8,9 +8,10 @@
  */
 number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl)
 {
-  mympz_dbgprint_gcd("Entry __gcd.\n");
   mympz_dbgprint_fmt_gcd("x = %s.\n", __print_string_hex(x, xl).c_str());
+  mympz_dbgprint_fmt_gcd("xl = %lu.\n", xl);
   mympz_dbgprint_fmt_gcd("y = %s.\n", __print_string_hex(y, yl).c_str());
+  mympz_dbgprint_fmt_gcd("yl = %lu.\n", yl);
 
   int xneg = 0, yneg = 0;
   unit_t mask = 0, bit = 1, delta = 1, cond = 0, shifts = 0;
@@ -70,7 +71,7 @@ number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t y
   mympz_dbgprint_fmt_gcd("g = %s.\n", __print_string_hex(num_ptr(g), num_size(g)).c_str());
 
   /* 计算迭代数 */
-  mympz_dbgprint_gcd("calc iteration count.\n");
+  mympz_dbgprint_gcd("compute iteration count.\n");
   size_t rlen = __number_bits(r);
   size_t glen = __number_bits(g);
   size_t m = 4 + 3 * ((rlen >= glen) ? rlen : glen);
@@ -91,7 +92,6 @@ number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t y
                    num_ptr(g), &yl, &yneg,
                    top);
 
-  mympz_dbgprint_gcd("entry iteration.\n");
   number_t t;
   size_t tl = 0;
   int tneg = 0;

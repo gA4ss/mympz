@@ -93,7 +93,7 @@ namespace mympz
 #define DEBUG_MUL
 #define DEBUG_SQR
 #define DEBUG_EXP
-#define DEBUG_DIV
+// #define DEBUG_DIV
 #define DEBUG_MOD
 #define DEBUG_MODMUL
 #define DEBUG_MODEXP
