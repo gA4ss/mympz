@@ -13,7 +13,7 @@ set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 #
 # Sub modules directories
 #
-set(SRC_DIRECTORY ./src/)
+set(SRC_DIRECTORY ./src)
 
 #
 # Mympz include path
@@ -64,56 +64,9 @@ set(BUILD_TEST TRUE)
 if(BUILD_TEST)
 
 #
-# Main Test
+# Add SubDirectory
 #
-add_executable(test_addsub ${SRC_DIRECTORY}/test/test_addsub.cc)
-target_link_libraries(test_addsub mympz gtest pthread)
-add_executable(test_create ${SRC_DIRECTORY}/test/test_create.cc)
-target_link_libraries(test_create mympz gtest pthread)
-add_executable(test_mul ${SRC_DIRECTORY}/test/test_mul.cc)
-target_link_libraries(test_mul mympz gtest pthread)
-add_executable(test_sqr ${SRC_DIRECTORY}/test/test_sqr.cc)
-target_link_libraries(test_sqr mympz gtest pthread)
-add_executable(test_div ${SRC_DIRECTORY}/test/test_div.cc)
-target_link_libraries(test_div mympz gtest pthread)
-add_executable(test_mod ${SRC_DIRECTORY}/test/test_mod.cc)
-target_link_libraries(test_mod mympz gtest pthread)
-add_executable(test_shift ${SRC_DIRECTORY}/test/test_shift.cc)
-target_link_libraries(test_shift mympz gtest pthread)
-add_executable(test_exp ${SRC_DIRECTORY}/test/test_exp.cc)
-target_link_libraries(test_exp mympz gtest pthread)
-add_executable(test_gcd ${SRC_DIRECTORY}/test/test_gcd.cc)
-target_link_libraries(test_gcd mympz gtest pthread)
-
-#
-# Optimize Test
-#
-add_executable(test_x86_64_add ${SRC_DIRECTORY}/test/opt/test_x86_64_add.cc)
-target_link_libraries(test_x86_64_add)
-add_executable(test_x86_64_sub ${SRC_DIRECTORY}/test/opt/test_x86_64_sub.cc)
-target_link_libraries(test_x86_64_sub)
-add_executable(test_x86_64_mul ${SRC_DIRECTORY}/test/opt/test_x86_64_mul.cc)
-target_link_libraries(test_x86_64_mul)
-add_executable(test_x86_64_div ${SRC_DIRECTORY}/test/opt/test_x86_64_div.cc)
-target_link_libraries(test_x86_64_div)
-add_executable(test_x86_64_sqr ${SRC_DIRECTORY}/test/opt/test_x86_64_sqr.cc)
-target_link_libraries(test_x86_64_sqr)
-
-#
-# Misc Test
-#
-add_executable(test_macro ${SRC_DIRECTORY}/test/misc/test_macro.cc)
-target_link_libraries(test_macro mympz)
-add_executable(test_bits_word ${SRC_DIRECTORY}/test/misc/test_bits_word.cc)
-target_link_libraries(test_bits_word)
-add_executable(test_left_align ${SRC_DIRECTORY}/test/misc/test_left_align.cc)
-target_link_libraries(test_left_align)
-add_executable(test_mul_unit ${SRC_DIRECTORY}/test/misc/test_mul_unit.cc)
-target_link_libraries(test_mul_unit)
-add_executable(test_div_unit ${SRC_DIRECTORY}/test/misc/test_div_unit.cc)
-target_link_libraries(test_div_unit)
-
-endif(BUILD_TEST)
+add_subdirectory(test)
 
 #
 # Enable Test
@@ -137,6 +90,8 @@ add_test(NAME test_exp COMMAND test_exp)
 set_tests_properties(test_exp PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_gcd COMMAND test_gcd)
 set_tests_properties(test_gcd PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+
+endif(BUILD_TEST)
 
 #
 # Install Set
