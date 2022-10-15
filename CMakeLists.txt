@@ -91,6 +91,13 @@ set_tests_properties(test_exp PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_gcd COMMAND test_gcd)
 set_tests_properties(test_gcd PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 
+#
+# Auto Test
+#
+set(BUILD_AUTOTEST FALSE)
+if(BUILD_AUTOTEST)
+endif(BUILD_AUTOTEST)
+
 endif(BUILD_TEST)
 
 #

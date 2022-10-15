@@ -42,6 +42,54 @@ void __zero(const number_ptr_t &x, size_t xl)
   }
 }
 
+void __one(number_t &x)
+{
+  x.clear();
+  x.push_back(0);
+}
+
+void __one(const number_ptr_t &x, size_t xl)
+{
+  if (!xl)
+    return;
+  while (--xl)
+  {
+    x[xl] = 0;
+  }
+  x[0] = 1;
+}
+
+bool __is_one(const number_t &x)
+{
+  return __is_one(num_ptr(x), num_size(x));
+}
+
+bool __is_one(const number_ptr_t &x, size_t xl)
+{
+  if (x == 0)
+    return false; // null不是0
+  if (xl > 1)
+  {
+    ///< 确保数值队列都是0
+    for (size_t i = 1; i < xl; i++)
+    {
+      if (x[i] != 0)
+        return false;
+    }
+  }
+  return x[0] == 1 ? true : false;
+}
+
+bool __is_odd(const number_t &x)
+{
+  return __is_odd(num_ptr(num_const_cast(x)));
+}
+
+bool __is_odd(const number_ptr_t &x)
+{
+  return (x[0] & 1);
+}
+
 /*
  * 这里此函数借鉴了Openssl的代码，在VS的编译器会之前会引发一个编译器优化
  * 错误，这里如果遇到微软的编译器则将其优化关闭。
@@ -113,10 +161,15 @@ size_t __count_bits(unit_t l)
  */
 size_t __number_bits(const number_t &x)
 {
-  if (__is_zero(x))
+  return __number_bits(num_ptr(num_const_cast(x)), num_size(x));
+}
+
+size_t __number_bits(const number_ptr_t &x, size_t xl)
+{
+  if (__is_zero(x, xl))
     return 0;
 
-  size_t i = num_size(x) - 1;
+  size_t i = xl - 1;
   return ((i * UNIT_BITS) + __count_bits(x[i]));
 }
 
@@ -130,6 +183,20 @@ void __set_bit(number_t &x, size_t n)
   if (xl <= i)
   {
     num_resize(x, i + 1);
+  }
+
+  x[i] |= (((unit_t)1) << j);
+  return;
+}
+
+void __set_bit(number_ptr_t &x, size_t xl, size_t n)
+{
+  size_t i = n / UNIT_BITS;
+  size_t j = n % UNIT_BITS;
+
+  if (xl <= i)
+  {
+    mympz_out_of_range(i);
   }
 
   x[i] |= (((unit_t)1) << j);
@@ -150,6 +217,20 @@ void __clear_bit(number_t &x, size_t n)
   return;
 }
 
+void __clear_bit(number_ptr_t &x, size_t xl, size_t n)
+{
+  size_t i = n / UNIT_BITS;
+  size_t j = n % UNIT_BITS;
+
+  if (xl <= i)
+  {
+    mympz_out_of_range(i);
+  }
+
+  x[i] &= (~(((unit_t)1) << j));
+  return;
+}
+
 // 检查某位是否被设置
 int __is_bit_set(const number_t &x, size_t n)
 {
@@ -157,6 +238,16 @@ int __is_bit_set(const number_t &x, size_t n)
   size_t j = n % UNIT_BITS;
 
   size_t xl = num_size(x);
+  if (xl <= i)
+    return 0;
+  return (int)(((x[i]) >> j) & ((unit_t)1));
+}
+
+int __is_bit_set(const number_ptr_t &x, size_t xl, size_t n)
+{
+  size_t i = n / UNIT_BITS;
+  size_t j = n % UNIT_BITS;
+
   if (xl <= i)
     return 0;
   return (int)(((x[i]) >> j) & ((unit_t)1));
@@ -181,6 +272,38 @@ void __mask_bits(number_t &x, size_t n)
   {
     num_resize(x, w + 1);
     x[w] &= ~(CALC_MASK << b);
+  }
+  return;
+}
+
+void __mask_bits(number_ptr_t &x, size_t xl, size_t n)
+{
+  size_t w = n / UNIT_BITS;
+  size_t b = n % UNIT_BITS;
+
+  if (w >= xl)
+  {
+    mympz_out_of_range(w);
+  }
+
+  if (b == 0)
+  {
+    for (size_t i = w; i < xl; i++)
+    {
+      x[i] = 0;
+    }
+  }
+  else
+  {
+    x[w] &= ~(CALC_MASK << b);
+    // 避免w等于x-1的情况，造成溢出。
+    if (w < xl - 1)
+    {
+      for (size_t i = w + 1; i < xl; i++)
+      {
+        x[i] = 0;
+      }
+    }
   }
   return;
 }
@@ -214,8 +337,8 @@ size_t __left_align(const number_ptr_t &x, size_t xl)
  * 假设x和y中至少分配了n个字。
  * 假设x或y使用的字不超过n个。
  */
-void __consttime_swap(unit_t condition, const number_ptr_t &x, size_t* xl, int* xneg,
-                      const number_ptr_t &y, size_t* yl, int* yneg,
+void __consttime_swap(unit_t condition, const number_ptr_t &x, size_t *xl, int *xneg,
+                      const number_ptr_t &y, size_t *yl, int *yneg,
                       size_t nwords)
 {
   my_assert(xneg && yneg, "%s", "pointer \'xneg\' | \'yneg\' is nullptr.");

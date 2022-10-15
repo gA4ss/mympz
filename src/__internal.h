@@ -91,20 +91,35 @@ namespace mympz
   bool __is_zero(const number_t &x);
   bool __is_zero(const number_ptr_t &x, size_t xl);
 
+  void __one(number_t &x);
+  void __one(const number_ptr_t &x, size_t xl);
+  bool __is_one(const number_t &x);
+  bool __is_one(const number_ptr_t &x, size_t xl);
+
+  bool __is_odd(const number_t &x);
+  bool __is_odd(const number_ptr_t &x);
+
   size_t __count_bits(unit_t l);
   size_t __number_bits(const number_t &x);
+  size_t __number_bits(const number_ptr_t &x, size_t xl);
 #define __number_bytes(x) ((__number_bits(x) + 7) / 8)
 
   void __set_bit(number_t &x, size_t n);
+  void __set_bit(number_ptr_t &x, size_t xl, size_t n);
+
   int __is_bit_set(const number_t &x, size_t n);
+  int __is_bit_set(const number_ptr_t &x, size_t xl, size_t n);
   void __clear_bit(number_t &x, size_t n);
+  void __clear_bit(number_ptr_t &x, size_t xl, size_t n);
   void __mask_bits(number_t &x, size_t n);
+  void __mask_bits(number_ptr_t &x, size_t xl, size_t n);
 
   size_t __left_align(const number_ptr_t &x, size_t xl);
   void __consttime_swap(unit_t condition,
                         const number_ptr_t &x, size_t *xl, int *xneg,
                         const number_ptr_t &y, size_t *yl, int *yneg,
                         size_t nwords);
+  int __cmp(const number_t &x, const number_t &y);
   int __cmp(const number_ptr_t &x, const number_ptr_t &y, int n);
   int __cmp_part(const number_ptr_t &x, const number_ptr_t &y, int cl, int dl);
 
@@ -150,6 +165,8 @@ namespace mympz
                      const number_ptr_t &m, size_t ml);
   number_t __mod_sub(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
                      const number_ptr_t &m, size_t ml);
+  number_t __mod_inverse(const number_ptr_t &x, size_t xl,
+                         const number_ptr_t &n, size_t nl);
 
   number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl);
 
@@ -162,10 +179,10 @@ namespace mympz
     unit_t n0[2]; /* Ni的最低有效字 */
   } montgomery_ctx_t;
 
-  void __clear_montgomery_ctx(const montgomery_ctx_t &mctx);
-  number_t __montgomery_reduction(const number_ptr_t &x, size_t xl, const montgomery_ctx_t &mctx);
-  number_t __mod_mul_montgomery(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
-                                const montgomery_ctx_t &mctx);
+  // void __clear_montgomery_ctx(const montgomery_ctx_t &mctx);
+  // number_t __montgomery_reduction(const number_ptr_t &x, size_t xl, const montgomery_ctx_t &mctx);
+  // number_t __mod_mul_montgomery(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
+  //                               const montgomery_ctx_t &mctx);
 
   number_t __bin2bn(const unsigned char *s, size_t len, int *oneg = nullptr, bool little = true, bool is_sign = false);
   size_t __bn2bin(const number_t &x, int neg, unsigned char *to, size_t tolen, bool little = true, bool is_sign = false);
