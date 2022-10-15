@@ -69,7 +69,7 @@ namespace mympz
   typedef __uint128_t dunit_t;
 #endif
 
-#define clear_number_head_zero(x)    \
+#define __clear_number_head_zero(x)  \
   {                                  \
     size_t __l = (x).size();         \
     while (__l && (x)[__l - 1] == 0) \

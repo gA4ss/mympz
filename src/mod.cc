@@ -1,226 +1,256 @@
 #include <mympz/mympz.h>
 #include "__internal.h"
 
-namespace mympz {
+namespace mympz
+{
+  /**
+   * @brief         一个大数与一个字取模数
+   * @param[in]     x 大数
+   * @param[in]     w 一个字
+   * @return        r = x % w
+   */
+  unit_t mod(const bignum_t &x, unit_t w, int wneg)
+  {
+    unit_t r = 0;
 
-/**
-  * @brief         一个大数与一个字取模数
-  * @param[in]     x 大数
-  * @param[in]     w 一个字
-  * @return        r = x % w
-  */
-unit_t mod(const bignum_t& x, unit_t w, int wneg) {
-  unit_t r = 0;
+    if (w == 0)
+    {
+      mympz_divide_by_zero(w);
+    }
 
-  if (w == 0)
-    mympz_exception("%s", "division is zero.");
+    if (w > ((unit_t)1 << UNIT_HALF_BITS))
+    {
+      div(x, w, wneg, &r);
+      return r;
+    }
 
-  if (w > ((unit_t)1 << UNIT_HALF_BITS)) {
-    div(x, w, wneg, &r);
+    size_t xl = bn_size(x);
+    w &= CALC_MASK;
+    for (int i = static_cast<int>(xl) - 1; i >= 0; i--)
+    {
+      r = ((r << UNIT_HALF_BITS) | ((x.number[i] >> UNIT_HALF_BITS) & CALC_MASKl)) % w;
+      r = ((r << UNIT_HALF_BITS) | (x.number[i] & CALC_MASKl)) % w;
+    }
     return r;
   }
 
-  size_t xl = bn_size(x);
-  w &= CALC_MASK;
-  for (int i = static_cast<int>(xl) - 1; i >= 0; i--) {
-    r = ((r << UNIT_HALF_BITS) | ((x.number[i] >> UNIT_HALF_BITS) & CALC_MASKl)) % w;
-    r = ((r << UNIT_HALF_BITS) | (x.number[i] & CALC_MASKl)) % w;
-  }
-  return r;
-}
-
-/**
-  * @brief         有符号的两个大数的模数
-  * @param[in]     x
-  * @param[in]     y
-  * @return        r = x % y
-  */
-// bignum_t mod(const bignum_t& x, const bignum_t& y) {
-//   division_result_t z = div(x, y);
-//   return z.second;
-// }
-bignum_t mod(const bignum_t& x, const bignum_t& y) {
-  bignum_t r; r.neg = 0;
-  r.number = __mod(bn_ptr(bn_const_cast(x)), bn_size(x), bn_ptr(bn_const_cast(y)), bn_size(y));
-
-  //  异号
-  if (x.neg ^ y.neg)
+  /**
+   * @brief         有符号的两个大数的模数
+   * @param[in]     x
+   * @param[in]     y
+   * @return        r = x % y
+   */
+  // bignum_t mod(const bignum_t& x, const bignum_t& y) {
+  //   division_result_t z = div(x, y);
+  //   return z.second;
+  // }
+  bignum_t mod(const bignum_t &x, const bignum_t &y)
   {
-    r = sub(y, r);
-  }
-  else
-  {
-    r.neg = y.neg;
-  }
-  return r;
-}
+    bignum_t r;
+    r.neg = 0;
 
-/**
-  * @brief         有符号的两个大数去与模|y|
-  * @param[in]     x
-  * @param[in]     y
-  * @return        r = x % |y|
-  * @note 与mod运算一致，但是返回非负的余数。
-  *       $0 <= r < |y|$
-  */
-static bignum_t __nnmod(const bignum_t& x, const bignum_t& y) {
-  bignum_t r = mod(x, y);
-  if (!r.neg)   // 如果为正数
+    if (is_zero(y))
+    {
+      mympz_divide_by_zero(y);
+    }
+
+    r.number = __mod(bn_ptr(bn_const_cast(x)), bn_size(x), bn_ptr(bn_const_cast(y)), bn_size(y));
+
+    //  异号
+    if (x.neg ^ y.neg)
+    {
+      r = sub(y, r);
+    }
+    else
+    {
+      r.neg = y.neg;
+    }
     return r;
-  /* 现在 -|y| < r < 0, 因此我们需要设置 r = r + |y| */
-  // return (y.neg ? sub : add) (r, y);
-  if (y.neg)
-    return sub(r, y);
-  return add(r, y);
-}
+  }
 
-/**
-  * @brief         有符号的两个大数的模数相加取模后取绝对值
-  * @param[in]     x
-  * @param[in]     y
-  * @return        r = (x + y) % |m|
-  */
-bignum_t mod_add(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
-  bignum_t z;
-  // x,y > 0 && x,y <= m
-  if ((cmp(x, m) <= 0) && (cmp(y, m) <= 0) &&
-      (x.neg == 0) && (y.neg == 0))
+  /**
+   * @brief         有符号的两个大数去与模|y|
+   * @param[in]     x
+   * @param[in]     y
+   * @return        r = x % |y|
+   * @note 与mod运算一致，但是返回非负的余数。
+   *       $0 <= r < |y|$
+   */
+  static bignum_t __nnmod(const bignum_t &x, const bignum_t &y)
   {
-    bignum_t _x = bn_const_cast(x);
-    bignum_t _y = bn_const_cast(y);
-    bignum_t _m = bn_const_cast(m);
-    z.number = __mod_add(bn_ptr(_x), bn_size(_x), bn_ptr(_y), bn_size(_y),
-                         bn_ptr(_m), bn_size(_m));
-    z.neg = 0;
-    return z;
+    bignum_t r = mod(x, y);
+    if (!r.neg) // 如果为正数
+      return r;
+    /* 现在 -|y| < r < 0, 因此我们需要设置 r = r + |y| */
+    // return (y.neg ? sub : add) (r, y);
+    if (y.neg)
+      return sub(r, y);
+    return add(r, y);
   }
-  z = add(x, y);
-  return __nnmod(z, m);
-}
 
-/**
-  * @brief         有符号的两个大数的模数相减取模后取绝对值
-  * @param[in]     x
-  * @param[in]     y
-  * @return        r = (x - y) % |m|
-  */
-bignum_t mod_sub(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
-  bignum_t z;
-  // x,y > 0 && x,y <= m
-  if ((cmp(x, m) <= 0) && (cmp(y, m) <= 0) &&
-      (x.neg == 0) && (y.neg == 0))
+  /**
+   * @brief         有符号的两个大数的模数相加取模后取绝对值
+   * @param[in]     x
+   * @param[in]     y
+   * @return        r = (x + y) % |m|
+   */
+  bignum_t mod_add(const bignum_t &x, const bignum_t &y, const bignum_t &m)
   {
-    bignum_t _x = bn_const_cast(x);
-    bignum_t _y = bn_const_cast(y);
-    bignum_t _m = bn_const_cast(m);
-    z.number = __mod_sub(bn_ptr(_x), bn_size(_x), bn_ptr(_y), bn_size(_y),
-                         bn_ptr(_m), bn_size(_m));
-    z.neg = 0;
-    return z;
-  }
-  z = sub(x, y);
-  return __nnmod(z, m);
-}
-
-/**
-  * @brief         有符号的两个大数的模数相乘取模后取绝对值
-  * @param[in]     x
-  * @param[in]     y
-  * @return        r = (x * y) % |m|
-  */
-bignum_t mod_mul(const bignum_t& x, const bignum_t& y, const bignum_t& m) {
-  bignum_t z;
-
-  if (cmp(x, y) == 0) {
-    z = sqr(x);
-    return z;
+    bignum_t z;
+    // x,y > 0 && x,y <= m
+    if ((cmp(x, m) <= 0) && (cmp(y, m) <= 0) &&
+        (x.neg == 0) && (y.neg == 0))
+    {
+      bignum_t _x = bn_const_cast(x);
+      bignum_t _y = bn_const_cast(y);
+      bignum_t _m = bn_const_cast(m);
+      z.number = __mod_add(bn_ptr(_x), bn_size(_x), bn_ptr(_y), bn_size(_y),
+                           bn_ptr(_m), bn_size(_m));
+      z.neg = 0;
+      return z;
+    }
+    z = add(x, y);
+    return __nnmod(z, m);
   }
 
-  z = mul(x, y);
-  return __nnmod(z, m);
-}
-
-/**
-  * @brief         大数的平方取模后取绝对值
-  * @param[in]     x
-  * @return        r = (x * x) % m
-  */
-bignum_t mod_sqr(const bignum_t& x, const bignum_t& m) {
-  bignum_t y = sqr(x);
-  return mod(y, m);
-}
-
-/**
-  * @brief         大数的左移1位取模|m|
-  * @param[in]     x
-  * @return        r = (x << 1) % |m|
-  */
-bignum_t mod_lshift1(const bignum_t& x, const bignum_t& m) {
-  bignum_t r = lshift1(x);
-  if (cmp(r, m) >= 0) {
-    return sub(r, m);
+  /**
+   * @brief         有符号的两个大数的模数相减取模后取绝对值
+   * @param[in]     x
+   * @param[in]     y
+   * @return        r = (x - y) % |m|
+   */
+  bignum_t mod_sub(const bignum_t &x, const bignum_t &y, const bignum_t &m)
+  {
+    bignum_t z;
+    // x,y > 0 && x,y <= m
+    if ((cmp(x, m) <= 0) && (cmp(y, m) <= 0) &&
+        (x.neg == 0) && (y.neg == 0))
+    {
+      bignum_t _x = bn_const_cast(x);
+      bignum_t _y = bn_const_cast(y);
+      bignum_t _m = bn_const_cast(m);
+      z.number = __mod_sub(bn_ptr(_x), bn_size(_x), bn_ptr(_y), bn_size(_y),
+                           bn_ptr(_m), bn_size(_m));
+      z.neg = 0;
+      return z;
+    }
+    z = sub(x, y);
+    return __nnmod(z, m);
   }
-  return __nnmod(r, m);
-}
 
-/**
-  * @brief         大数的左移n位取模|m|
-  * @param[in]     x x < m && x >= 0
-  * @param[in]     n 要移动的位数
-  * @return        r = x << n
-  */
-bignum_t __mod_lshift(const bignum_t& x, int n, const bignum_t& m) {
-  bignum_t r = x;
+  /**
+   * @brief         有符号的两个大数的模数相乘取模后取绝对值
+   * @param[in]     x
+   * @param[in]     y
+   * @return        r = (x * y) % |m|
+   */
+  bignum_t mod_mul(const bignum_t &x, const bignum_t &y, const bignum_t &m)
+  {
+    bignum_t z;
 
-  while (n > 0) {
-    int max_shift;
-
-    /* 0 < r < m */
-    max_shift = static_cast<int>(__number_bits(m.number) - __number_bits(r.number));
-    /* max_shift >= 0 */
-    if (max_shift < 0) {
-      mympz_exception("%s", "invalid argument : r > m");
+    if (cmp(x, y) == 0)
+    {
+      z = sqr(x);
+      return z;
     }
 
-    if (max_shift > n)
-      max_shift = n;
-
-    // m与x的位数相同
-    if (max_shift) {
-      r = lshift(r, max_shift);
-      n -= max_shift;
-    } else {
-      r = lshift1(r);
-      --n;
-    }
-
-    if (cmp(r, m) >= 0) {
-      r = sub(r, m);
-    }
+    z = mul(x, y);
+    return __nnmod(z, m);
   }
 
-  return r;
-}
-
-/**
-  * @brief         大数的左移n位取模后模|m|
-  * @param[in]     x
-  * @param[in]     n 要移动的位数
-  * @return        r = x % |m| << n
-  */
-bignum_t mod_lshift(const bignum_t& x, size_t n, const bignum_t& m) {
-  bignum_t r, abs_m;
-
-  r = __nnmod(x, m);
-
-  // 如果模数为负数
-  if (m.neg) {
-    abs_m = m;
-    abs_m.neg = 0;
+  /**
+   * @brief         大数的平方取模后取绝对值
+   * @param[in]     x
+   * @return        r = (x * x) % m
+   */
+  bignum_t mod_sqr(const bignum_t &x, const bignum_t &m)
+  {
+    bignum_t y = sqr(x);
+    return mod(y, m);
   }
 
-  return __mod_lshift(r, static_cast<int>(n), (m.neg ? abs_m : m));
-}
+  /**
+   * @brief         大数的左移1位取模|m|
+   * @param[in]     x
+   * @return        r = (x << 1) % |m|
+   */
+  bignum_t mod_lshift1(const bignum_t &x, const bignum_t &m)
+  {
+    bignum_t r = lshift1(x);
+    if (cmp(r, m) >= 0)
+    {
+      return sub(r, m);
+    }
+    return __nnmod(r, m);
+  }
+
+  /**
+   * @brief         大数的左移n位取模|m|
+   * @param[in]     x x < m && x >= 0
+   * @param[in]     n 要移动的位数
+   * @return        r = x << n
+   */
+  bignum_t __mod_lshift(const bignum_t &x, int n, const bignum_t &m)
+  {
+    bignum_t r = x;
+
+    while (n > 0)
+    {
+      int max_shift;
+
+      /* 0 < r < m */
+      max_shift = static_cast<int>(__number_bits(m.number) - __number_bits(r.number));
+      /* max_shift >= 0 */
+      if (max_shift < 0)
+      {
+        mympz_exception("%s", "invalid argument : r > m");
+      }
+
+      if (max_shift > n)
+        max_shift = n;
+
+      // m与x的位数相同
+      if (max_shift)
+      {
+        r = lshift(r, max_shift);
+        n -= max_shift;
+      }
+      else
+      {
+        r = lshift1(r);
+        --n;
+      }
+
+      if (cmp(r, m) >= 0)
+      {
+        r = sub(r, m);
+      }
+    }
+
+    return r;
+  }
+
+  /**
+   * @brief         大数的左移n位取模后模|m|
+   * @param[in]     x
+   * @param[in]     n 要移动的位数
+   * @return        r = x % |m| << n
+   */
+  bignum_t mod_lshift(const bignum_t &x, size_t n, const bignum_t &m)
+  {
+    bignum_t r, abs_m;
+
+    r = __nnmod(x, m);
+
+    // 如果模数为负数
+    if (m.neg)
+    {
+      abs_m = m;
+      abs_m.neg = 0;
+    }
+
+    return __mod_lshift(r, static_cast<int>(n), (m.neg ? abs_m : m));
+  }
 
 #if 0
 
@@ -275,10 +305,10 @@ bignum_t mod_exp_mont_unit(const unit_t& w, const bignum_t& p, const bignum_t& m
     BN_ULONG w, next_w;
     BIGNUM *r, *t;
     BIGNUM *swap_tmp;
-#define BN_MOD_MUL_WORD(r, w, m) \
-                (BN_mul_word(r, (w)) && \
-                (/* BN_ucmp(r, (m)) < 0 ? 1 :*/  \
-                        (BN_mod(t, r, m, ctx) && (swap_tmp = r, r = t, t = swap_tmp, 1))))
+#define BN_MOD_MUL_WORD(r, w, m)   \
+  (BN_mul_word(r, (w)) &&          \
+   (/* BN_ucmp(r, (m)) < 0 ? 1 :*/ \
+    (BN_mod(t, r, m, ctx) && (swap_tmp = r, r = t, t = swap_tmp, 1))))
     /*
      * BN_MOD_MUL_WORD is only used with 'w' large, so the BN_ucmp test is
      * probably more overhead than always using BN_mod (which uses BN_copy if
@@ -290,7 +320,7 @@ bignum_t mod_exp_mont_unit(const unit_t& w, const bignum_t& p, const bignum_t& m
      * the modulus).
      */
 #define BN_TO_MONTGOMERY_WORD(r, w, mont) \
-                (BN_set_word(r, (w)) && BN_to_montgomery(r, r, (mont), ctx))
+  (BN_set_word(r, (w)) && BN_to_montgomery(r, r, (mont), ctx))
 
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
@@ -753,7 +783,7 @@ int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     wstart = bits - 1;          /* The top bit of the window */
     wend = 0;                   /* The bottom bit of the window */
 
-#if 1                           /* by Shay Gueron's suggestion */
+#if 1 /* by Shay Gueron's suggestion */
     j = m->top;                 /* borrow j */
     if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
         if (bn_wexpand(r, j) == NULL)

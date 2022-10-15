@@ -20,7 +20,9 @@ namespace mympz
 
     w &= CALC_MASK;
     if (!w)
-      mympz_exception("%s", "division is zero.");
+    {
+      mympz_divide_by_zero(w);
+    }
 
     //
     // 处理一个特殊情况
@@ -83,7 +85,8 @@ namespace mympz
     }
 
     // 初始化商
-    bignum_t z; init_bignum(z);
+    bignum_t z;
+    init_bignum(z);
     z.neg = x.neg ^ y.neg;
 
     //
@@ -101,6 +104,14 @@ namespace mympz
     mympz_dbgprint_fmt_div("normalize shift = %lu.\n", norm_shift);
 
     bignum_t _x = lshift(x, norm_shift);
+    //
+    // 当norm_shift为0时，需要多分配一个空字节，后面的__div_units
+    // 函数实现有这样做的需求。
+    //
+    if (!norm_shift)
+    {
+      bn_resize(_x, bn_size(_x) + 1);
+    }
     size_t yl = bn_size(_y), xl = bn_size(_x);
     mympz_dbgprint_fmt_div("normalized x = %s.\n", __print_string(_x.number, true).c_str());
     mympz_dbgprint_fmt_div("normalized y = %s.\n", __print_string(_y.number, true).c_str());

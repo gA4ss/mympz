@@ -469,6 +469,6 @@ number_t __mul_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
     num_resize(z, xl + yl + 1);
     __mul_units_loop(num_ptr(z), x, xl, y, yl);
   }
-  clear_number_head_zero(z);
+  __clear_number_head_zero(z);
   return z;
 }

@@ -128,6 +128,7 @@ number_t __div_units_unit(const number_ptr_t &x, size_t xl, unit_t w, unit_t *r)
   unit_t lshfit_bits = UNIT_BITS - __count_bits(w);
   mympz_dbgprint_fmt_div("normalize shift = %lu.\n", lshfit_bits);
   w <<= lshfit_bits;
+
   number_t _x = __lshift(x, xl, lshfit_bits);
   xl = num_size(_x);
   mympz_dbgprint_fmt_div("normalized w = %lu.\n", w);

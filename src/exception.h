@@ -26,9 +26,10 @@ namespace mympz
     throw my::MyException("<mympz>",                                                          \
                           __FILE__, __LINE__, __FUNCTION__, "%s", "pointer " #x " is null."); \
   }
-#define mympz_check_size(x)                                   \
-  {                                                           \
-    my_assert(!(x).number.empty(), "%s", "number is empty."); \
+#define mympz_invalid_argument(x)                                                                  \
+  {                                                                                                \
+    throw my::MyException("<mympz>",                                                               \
+                          __FILE__, __LINE__, __FUNCTION__, "%s", "invalid argument \'" #x "\'."); \
   }
 #define mympz_mod_mul_montgomery_invalid_size(xl, yl, nl)          \
   {                                                                \
@@ -39,6 +40,13 @@ namespace mympz
 #define unknown_mympz_exception()                                                                   \
   {                                                                                                 \
     throw my::MyException("<mympz> Unknown Exception", __FILE__, __LINE__, __FUNCTION__, "%s", ""); \
+  }
+#define mympz_check_number_size(x) \
+  {                                \
+    if ((x).empty())               \
+    {                              \
+      mympz_invalid_argument(x);   \
+    }                              \
   }
 } // namespace mympz
 

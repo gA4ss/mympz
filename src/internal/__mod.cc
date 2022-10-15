@@ -14,11 +14,19 @@ number_t __mod(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t y
   // 左对其除数
   // 左对齐被除数
   //
-  number_t _y;  num_resize(_y, yl);
-  for (size_t i = 0; i < yl; i++) _y[i] = y[i];
+  number_t _y;
+  num_resize(_y, yl);
+  for (size_t i = 0; i < yl; i++)
+    _y[i] = y[i];
 
   size_t norm_shift = __left_align(num_ptr(_y), yl);
+
+  //
+  // 当norm_shift为0时，会多分配一个空字节，后面的__div_units
+  // 函数实现有这样做的需求。
+  //
   number_t _x = __lshift(x, xl, norm_shift);
+  xl = num_size(_x);
 
   //
   // 被除数的长度小于等于除数则扩展被除数
@@ -37,7 +45,6 @@ number_t __mod(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t y
   // 计算余数
   //
   number_t r = __rshift(num_ptr(_x), xl, norm_shift);
-  clear_number_head_zero(r);
   return r;
 }
 

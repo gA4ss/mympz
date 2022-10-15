@@ -13,8 +13,6 @@ number_t __lshift1(const number_ptr_t &x, size_t xl)
     c = t >> (UNIT_BITS - 1);
   }
   *p = c;
-
-  clear_number_head_zero(y);
   return y;
 }
 
@@ -42,8 +40,6 @@ number_t __rshift1(const number_ptr_t &x, size_t xl)
     y[i] = ((t >> 1) & CALC_MASK) | c;
     c = t << (UNIT_BITS - 1);
   }
-
-  clear_number_head_zero(y);
   return y;
 }
 
@@ -80,7 +76,6 @@ number_t __lshift(const number_ptr_t &x, size_t xl, size_t n)
   }
   t[0] = (l << lb) & CALC_MASK;
 
-  // clear_number_head_zero(y);
   return y;
 }
 
@@ -89,6 +84,7 @@ number_t __rshift(const number_ptr_t &x, size_t xl, size_t n)
   number_t y;
   if (n == 0)
   {
+    num_resize(y, xl);
     for (size_t i = 0; i < xl; i++)
       y[i] = x[i];
   }
@@ -120,6 +116,5 @@ number_t __rshift(const number_ptr_t &x, size_t xl, size_t n)
   }
   t[i] = l >> rb;
 
-  clear_number_head_zero(y);
   return y;
 }

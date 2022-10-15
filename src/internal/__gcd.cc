@@ -39,8 +39,10 @@ number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t y
   mympz_dbgprint_gcd("lshift 1 bits.\n");
   number_t r = __lshift1(x, xl);
   xl = num_size(r);
+
   number_t g = __lshift1(y, yl);
   yl = num_size(g);
+
   mympz_dbgprint_fmt_gcd("r = %s.\n", __print_string_hex(num_ptr(r), num_size(r)).c_str());
   mympz_dbgprint_fmt_gcd("g = %s.\n", __print_string_hex(num_ptr(g), num_size(g)).c_str());
 
@@ -178,7 +180,5 @@ number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t y
   r = __rshift1(num_ptr(r), num_size(r));
   mympz_dbgprint_fmt_gcd("r rshift 1 bits = %s.\n",
                          __print_string_hex(num_ptr(r), num_size(r)).c_str());
-
-  clear_number_head_zero(r);
   return r;
 }

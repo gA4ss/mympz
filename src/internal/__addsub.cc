@@ -107,8 +107,6 @@ number_t __add_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
 
   if (carry)
     z[i] = carry;
-
-  clear_number_head_zero(z);
   return z;
 }
 
@@ -122,8 +120,6 @@ number_t __add_units(const number_ptr_t &x, size_t xl, const number_ptr_t &y, si
   */
 unit_t __sub_units(const number_ptr_t& z, const number_ptr_t &x, const number_ptr_t &y, size_t n) {
   unit_t c = 0;
-
-  if (n == 0) return 0;
 
 #if defined(CALC_ASM_OPTIMIZE)
 

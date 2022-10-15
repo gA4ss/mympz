@@ -66,8 +66,8 @@ bignum_t add(const bignum_t& x, const bignum_t& y) {
   bignum_t z;
   int r_neg, cmp_res;
 
-  mympz_check_size(x);
-  mympz_check_size(y);
+  mympz_check_number_size(x.number);
+  mympz_check_number_size(y.number);
 
   if (x.neg == y.neg) {
     r_neg = x.neg;
@@ -160,8 +160,8 @@ bignum_t sub(const bignum_t& x, const bignum_t& y) {
   bignum_t z;
   int r_neg, cmp_res;
 
-  mympz_check_size(x);
-  mympz_check_size(y);
+  mympz_check_number_size(x.number);
+  mympz_check_number_size(y.number);
 
   if (x.neg != y.neg) {
     r_neg = x.neg;
@@ -200,8 +200,8 @@ bignum_t sub(const bignum_t& x, const bignum_t& y) {
 bignum_t uadd(const bignum_t& x, const bignum_t& y) {
   bignum_t z;
 
-  mympz_check_size(x);
-  mympz_check_size(y);
+  mympz_check_number_size(x.number);
+  mympz_check_number_size(y.number);
 
   //
   // 交换两个数
@@ -238,8 +238,8 @@ bignum_t uadd(const bignum_t& x, const bignum_t& y) {
 bignum_t usub(const bignum_t& x, const bignum_t& y) {
   bignum_t z;
 
-  mympz_check_size(x);
-  mympz_check_size(y);
+  mympz_check_number_size(x.number);
+  mympz_check_number_size(y.number);
 
   //
   // 交换两个数

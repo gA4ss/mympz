@@ -36,11 +36,10 @@
 
 # Directories
 .vscode/
+reference/
 backup/
 build/
 data/
-#lib/
-# reference/
 
 # Special Files
 .DS_Store
