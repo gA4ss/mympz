@@ -11,6 +11,12 @@ TEST(Mympz, Add) {
   bignum_t x,y,z;
   std::string z_str;
 
+  x = create("2");
+  y = create("2");
+  z = sub(x, y);
+  z_str = print_string(z);
+  EXPECT_STREQ(z_str.c_str(), "0");
+
   x = create("123");
   y = create("456");
   z = add(x, y);

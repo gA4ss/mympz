@@ -175,6 +175,7 @@ bignum_t sub(const bignum_t& x, const bignum_t& y) {
       r_neg = !y.neg;
       z = usub(y, x);
     } else {
+      z.number.push_back(0);
       r_neg = 0;
     }
   }
@@ -217,6 +218,7 @@ bignum_t uadd(const bignum_t& x, const bignum_t& y) {
   // 进行运算
   z.number = __add_units(bn_ptr(_x), bn_size(_x), bn_ptr(_y), bn_size(_y));
   z.neg = 0;
+  clear_head_zero(z);
   return z;
 }
 
@@ -254,6 +256,7 @@ bignum_t usub(const bignum_t& x, const bignum_t& y) {
 
   z.number = __sub_units(bn_ptr(_x), bn_size(_x), bn_ptr(_y), bn_size(_y));
   z.neg = 0;
+  clear_head_zero(z);
   return z;
 }
 

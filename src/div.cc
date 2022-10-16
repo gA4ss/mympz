@@ -63,8 +63,11 @@ namespace mympz
       y.neg = 0;
     }
     if (r)
+    {
       *r = rm;
+    }
 
+    clear_head_zero(y);
     return y;
   }
 

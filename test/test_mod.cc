@@ -7,7 +7,73 @@
 
 using namespace mympz;
 
-TEST(Mympz, UnPass) {
+TEST(Mympz, ModInv) {
+  bignum_t x,m,xi;
+  std::string xi_str;
+
+  x = create(
+    "AACCCCCCC"
+  ,true);
+  std::cout << "x = " << print_string(x) << std::endl;
+  m = create(
+    "FFFFFFFFFFFFF5"
+  ,true);
+  std::cout << "m = " << print_string(m) << std::endl;
+  xi = mod_inverse(x, m);
+  xi_str = print_string(xi);
+  EXPECT_STREQ(xi_str.c_str(), "32877684082645637");
+
+  x = create(
+    "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223AAF"
+    "44FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
+    "4DDCAADD11223344FFBCDEA1234DDCDDCCAABB1289232CCAABB1289232CCAABB"
+    "4DDCAADD11223344FFBCDEA1234DDCDDCCAABB1289232CCAABB1289232CCAABB"
+    "44FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
+    "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
+    "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
+    "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
+  ,true);
+  std::cout << "x = " << print_string(x) << std::endl;
+  m = create(
+    "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223333"
+    "44FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
+    "4DDCAADD11223344FFBCDEA1234DDCDDCCAABB1289232CCAABB1289232CCAABB"
+  ,true);
+  std::cout << "m = " << print_string(m) << std::endl;
+  xi = mod_inverse(x, m);
+  xi_str = print_string(xi);
+  EXPECT_STREQ(xi_str.c_str(), "593907798222081907713519753568228587079077485424183140027845937692085970600993276044519953050220485652630892297068317920189808685646552294391932005896301266928262193839152923181064782576060385683621098621712938601668490927613979911");
+
+  x = create(
+    "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223AAF"
+  ,true);
+  std::cout << "x = " << print_string(x) << std::endl;
+  m = create(
+    "FFFFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
+  ,true);
+  std::cout << "m = " << print_string(m) << std::endl;
+  xi = mod_inverse(x, m);
+  xi_str = print_string(xi);
+  EXPECT_STREQ(xi_str.c_str(), "");
+
+  x = create("5");
+  // std::cout << "x = " << print_string(x) << std::endl;
+  m = create("8");
+  // std::cout << "m = " << print_string(m) << std::endl;
+  xi = mod_inverse(x, m);
+  xi_str = print_string(xi);
+  EXPECT_STREQ(xi_str.c_str(), "5");
+
+  x = create("13");
+  // std::cout << "x = " << print_string(x) << std::endl;
+  m = create("7");
+  // std::cout << "m = " << print_string(m) << std::endl;
+  xi = mod_inverse(x, m);
+  xi_str = print_string(xi);
+  EXPECT_STREQ(xi_str.c_str(), "6");
+}
+
+TEST(Mympz, UnPass2Pass) {
   bignum_t y,r,m;
   std::string r_str;
 

@@ -91,10 +91,10 @@ namespace mympz
   bool __is_zero(const number_t &x);
   bool __is_zero(const number_ptr_t &x, size_t xl);
 
-  void __one(number_t &x);
   void __one(const number_ptr_t &x, size_t xl);
-  bool __is_one(const number_t &x);
+  void __one(number_t &x);
   bool __is_one(const number_ptr_t &x, size_t xl);
+  bool __is_one(const number_t &x);
 
   bool __is_odd(const number_t &x);
   bool __is_odd(const number_ptr_t &x);
@@ -165,8 +165,6 @@ namespace mympz
                      const number_ptr_t &m, size_t ml);
   number_t __mod_sub(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
                      const number_ptr_t &m, size_t ml);
-  number_t __mod_inverse(const number_ptr_t &x, size_t xl,
-                         const number_ptr_t &n, size_t nl);
 
   number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl);
 

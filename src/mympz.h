@@ -119,6 +119,8 @@ namespace mympz
   bool is_zero(const bignum_t &x);
   bool is_one(const bignum_t &x);
   bool is_odd(const bignum_t &x);
+  bool is_abs_word(const bignum_t &x, unit_t w);
+  bool is_word(const bignum_t &x, unit_t w);
 
   void zero(bignum_t &x);
   void one(bignum_t &x, int neg = 0);
@@ -130,6 +132,8 @@ namespace mympz
   void clear_bit(bignum_t &x, size_t n);
   int is_bit_set(const bignum_t &x, size_t n);
   void mask_bits(bignum_t &x, size_t n);
+
+  size_t bignum_bits(const bignum_t &x);
 
   int cmp(const bignum_t &x, const bignum_t &y);
   int ucmp(const bignum_t &x, const bignum_t &y);

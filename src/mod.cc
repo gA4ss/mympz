@@ -46,25 +46,12 @@ namespace mympz
   // }
   bignum_t mod(const bignum_t &x, const bignum_t &y)
   {
-    bignum_t r;
-    r.neg = 0;
+    bignum_t r; r.neg = 0;
 
-    if (is_zero(y))
-    {
-      mympz_divide_by_zero(y);
-    }
+    division_result_t res = div(x, y);
+    r = res.second;
 
-    r.number = __mod(bn_ptr(bn_const_cast(x)), bn_size(x), bn_ptr(bn_const_cast(y)), bn_size(y));
-
-    //  异号
-    if (x.neg ^ y.neg)
-    {
-      r = sub(y, r);
-    }
-    else
-    {
-      r.neg = y.neg;
-    }
+    // r.number = __mod(bn_ptr(bn_const_cast(x)), bn_size(x), bn_ptr(bn_const_cast(y)), bn_size(y));
     return r;
   }
 
@@ -253,126 +240,132 @@ namespace mympz
   }
 
   /**
-   * @brief         大数的左移n位取模后模|m|
+   * @brief         求模逆
    * @param[in]     x
-   * @param[in]     n 要移动的位数
-   * @return        x^{-1}x = 1 mod m
+   * @param[in]     m 要移动的位数
+   * @return        x^{-1}x = 1 (mod m)
    */
   bignum_t mod_inverse(const bignum_t &x, const bignum_t &m)
   {
-    bignum_t xi;
+    mympz_dbgprint_fmt_modinv("x = %s.\n", print_string(x).c_str());
+    mympz_dbgprint_fmt_modinv("m = %s.\n", print_string(m).c_str());
+
+    bignum_t A, B, X, Y, M, D, T, R;
+
     /* 如果模数为1或者0，则直接返回空值。 */
     if (is_zero(m) || is_one(m))
     {
-      set_null(xi);
-      return xi;
+      mympz_dbgprint_modinv("modulo is 0 or 1.\n");
+      set_null(R);
+      return R;
     }
 
     /* 如果被除数与模数相等则无模逆 */
     if (cmp(x, m) == 0)
     {
-      set_null(xi);
-      return xi;
+      mympz_dbgprint_modinv("dividend equal to modulo.\n");
+      set_null(R);
+      return R;
     }
 
+    one(X);
+    zero(Y);
+
+    B = x;
+    A = m;
+    A.neg = 0;
     //
     // 如果被除数的符号为负号，或者比模数大，则进行约减。
     //
-    if (x.neg || (__cmp(x, m) > 0))
+    if (B.neg || (ucmp(B, A) > 0))
     {
-      bignum_t r = __nnmod(x, m);
-      xi.number = mod_inverse(bn_ptr(r), bn_ptr(bn_const_cast(m)));
+      mympz_dbgprint_modinv("dividend greater than modulo.\n");
+      B = __nnmod(B, A);
+      mympz_dbgprint_fmt_modinv("after reduce:\ndividend = %s.\nmodulo = %s.\n",
+                                print_string(B).c_str(),
+                                print_string(A).c_str());
     }
-    else
-    {
-      xi.number = mod_inverse(bn_ptr(bn_const_cast(x)), bn_ptr(bn_const_cast(m)));
-    }
-
-    return xi;
-  }
-
-  /* 求 x^{-1}x == 1 (mod n) */
-  number_t mod_inverse(const bignum_t &a, const bignum_t &n)
-  {
-    number_t A, B, X, Y;
-    number_t xi;
-    int sign;
-
-    __one(X);
-    _zero(Y);
-
-    num_resize(B, xl);
-    for (size_t i = 0; i < xl, i++)
-      B[i] = x[i];
-
-    num_resize(A, nl);
-    for (size_t i = 0; i < nl, i++)
-      A[i] = n[i];
-
-    sign = -1;
+    int sign = -1;
 
     //
-    // B = a mod |n|,  A = |n| 得到
+    // B = x mod |m|,  A = |m| 得到
     // 0 <= B < A,
-    // -sign*X*a  ==  B   (mod |n|),
-    // sign*Y*a  ==  A   (mod |n|).
+    // -sign*X*x  ==  B   (mod |m|),
+    // sign*Y*x  ==  A   (mod |m|).
     //
-    if (__is_odd(n) && (__number_bits(n, nl) <= 2048))
+    if (is_odd(m) && (bignum_bits(m) <= 2048))
     {
+      mympz_dbgprint_fmt_modinv("modulo is odd and bits(%lu) less then 2048.\n", bignum_bits(m));
       //
       // 二进制模逆算法；需要奇数的模数。如果模数充分小这比一般的模算法更快。
       // 在32位系统上大概400 - 500位，在64位系统上更多些。
       //
       int shift;
 
-      while (!__is_zero(B))
+      while (!is_zero(B))
       {
+        mympz_dbgprint_fmt_modinv("B = %s.\n", print_string(B).c_str());
         //
-        //      0 < B < |n|,
-        //      0 < A <= |n|,
-        // (1) -sign*X*a  ==  B   (mod |n|),
-        // (2)  sign*Y*a  ==  A   (mod |n|)
+        //      0 < B < |m|,
+        //      0 < A <= |m|,
+        // (1) -sign*X*x  ==  B   (mod |m|),
+        // (2)  sign*Y*x  ==  A   (mod |m|)
         //
         //
         // 现在用整数的最大的2次幂除以B，并且使用同样数模|n|再除以X。
         // 当所有的完成后，(1)式成立。
         //
         shift = 0;
-        while (!__is_bit_set(B, shift))
+        while (!is_bit_set(B, shift))
         { /* 0 < B */
+          mympz_dbgprint_fmt_modinv("B(%lu) = %s.\n", shift, print_string(B).c_str());
           shift++;
 
-          if (_is_odd(X))
+          if (is_odd(X))
           {
-            X = __add_units(num_ptr(X), num_size(X), n, nl);
+            mympz_dbgprint_fmt_modinv("X is odd.\nX = %s.\n", print_string(X).c_str());
+            X = uadd(X, m);
+            mympz_dbgprint_fmt_modinv("B(%lu) = %s.\n", shift, print_string(B).c_str());
           }
 
           // 现在X是偶数，因此我们能简单的将它除以2。
-          X = __rshift1(num_ptr(X), num_size(X));
+          X = rshift1(X);
+          mympz_dbgprint_fmt_modinv("X >> 1.\nX = %s.\n", print_string(X).c_str());
         }
         if (shift > 0)
         {
-          B = __rshift(num_ptr(B), num_size(B), shift);
+          mympz_dbgprint_fmt_modinv("shift(%lu) > 0.\n", shift);
+          B = rshift(B, shift);
+          mympz_dbgprint_fmt_modinv("B >> %lu.\nB = %s.\n", shift, print_string(B).c_str());
         }
 
         //
         // 同样对于A与Y，运行以下代码后，式(2)成立。
         //
         shift = 0;
-        while (!_is_bit_set(A, shift))
+        mympz_dbgprint_modinv("shift <- 0.\n");
+        while (!is_bit_set(A, shift))
         { /* 0 < A */
+          mympz_dbgprint_fmt_modinv("A(%lu) = %s.\n", shift, print_string(A).c_str());
           shift++;
 
-          if (_is_odd(Y))
+          if (is_odd(Y))
           {
-            Y = __add_units(num_ptr(Y), num_size(Y), n, nl);
+            mympz_dbgprint_fmt_modinv("Y is odd.\nY = %s.\n", print_string(Y).c_str());
+            Y = uadd(Y, m);
+            mympz_dbgprint_fmt_modinv("Y = Y + m.\nY = %s.\nm = %s.\n",
+                                      print_string(Y).c_str(),
+                                      print_string(m).c_str());
           }
           /* Y是偶数 */
-          Y = __rshift1(num_ptr(Y), num_size(Y));
+          Y = rshift1(Y);
+          mympz_dbgprint_fmt_modinv("Y >> 1.\nY = %s.\n", print_string(Y).c_str());
         }
         if (shift > 0)
         {
-          A = __rshift(num_ptr(A), num_size(A), shift);
+          mympz_dbgprint_fmt_modinv("shift = %lu > 0.\n", shift);
+          A = rshift(A, shift);
+          mympz_dbgprint_fmt_modinv("A >> %lu.\nA = %s.\n", shift, print_string(A).c_str());
         }
 
         //
@@ -388,200 +381,276 @@ namespace mympz
         // 下面的迭代要么A是偶数要么B是偶数。
         //
         //
-        if (__cmp(B, A) >= 0)
+        if (ucmp(B, A) >= 0)
         {
+          mympz_dbgprint_fmt_modinv("B >= A.\nB = %s.\nA = %s.\n",
+                                    print_string(B).c_str(),
+                                    print_string(A).c_str());
           /* -sign*(X + Y)*a == B - A  (mod |n|) */
-          X = __add_units(num_ptr(X), num_size(X), num_ptr(Y), num_size(Y));
-          B = __sub_units(num_ptr(B), num_size(B), num_ptr(A), num_size(A));
+          X = uadd(X, Y);
+          mympz_dbgprint_fmt_modinv("X = X + Y.\nX = %s.\nY = %s\n",
+                                    print_string(X).c_str(),
+                                    print_string(Y).c_str());
+          B = usub(B, A);
+          mympz_dbgprint_fmt_modinv("B = B - A.\nB = %s.\nA = %s\n",
+                                    print_string(B).c_str(),
+                                    print_string(A).c_str());
         }
         else
         {
           /*  sign*(X + Y)*a == A - B  (mod |n|) */
-          Y = __add_units(num_ptr(Y), num_size(Y), num_ptr(X), num_size(X));
-          A = __sub_units(num_ptr(A), num_size(A), num_ptr(B), num_size(B));
+          Y = uadd(Y, X);
+          mympz_dbgprint_fmt_modinv("Y = Y + X.\nY = %s.\nX = %s\n",
+                                    print_string(Y).c_str(),
+                                    print_string(X).c_str());
+          A = usub(A, B);
+          mympz_dbgprint_fmt_modinv("A = A - B.\nA = %s.\nB = %s\n",
+                                    print_string(A).c_str(),
+                                    print_string(B).c_str());
         }
       }
     }
     else
     {
+      mympz_dbgprint_modinv("general modulo inverse.\n");
       /* 一般的模逆算法 */
-      while (!__is_zero(B))
+      while (!is_zero(B))
       {
-        number_t tmp;
-        number_t M, D, T, R;
-
+        bignum_t tmp;
         //
         //      0 < B < A,
-        // (*) -sign*X*a  ==  B   (mod |n|),
-        //      sign*Y*a  ==  A   (mod |n|)
+        // (*) -sign*X*x  ==  B   (mod |m|),
+        //      sign*Y*x  ==  A   (mod |m|)
         //
 
         /* (D, M) := (A/B, A%B) ... */
-        if (__number_bits(A) == __number_bits(B))
+        if (bignum_bits(A) == bignum_bits(B))
         {
-          __one(D);
-          M = __sub_units(num_ptr(A), num_size(A), num_ptr(B), num_size(B));
+          mympz_dbgprint_fmt_modinv("A bits(%lu) == B bits(%lu).\n",
+                                    bignum_bits(A), bignum_bits(B));
+          mympz_dbgprint_fmt_modinv("A = %s.\nB = %s",
+                                    print_string(A).c_str(),
+                                    print_string(B).c_str());
+          one(D);
+          M = sub(A, B);
+          mympz_dbgprint_fmt_modinv("M = %s.\n", print_string(M).c_str());
         }
-        else if (__number_bits(A) == __number_bits(B) + 1)
+        else if (bignum_bits(A) == bignum_bits(B) + 1)
         {
+          mympz_dbgprint_fmt_modinv("A bits(%lu) == B bits(%lu) + 1.\n",
+                                    bignum_bits(A), bignum_bits(B));
           /* A/B 是 1, 2, 或者 3 */
-          T = __lshift1(num_ptr(B), num_size(B));
-          if (BN_ucmp(A, T) < 0)
+          T = lshift1(B);
+          mympz_dbgprint_fmt_modinv("T == %s.\n",
+                                    print_string(T).c_str());
+          if (ucmp(A, T) < 0)
           {
+            mympz_dbgprint_fmt_modinv("A < T.\nA = %s.\n",
+                                      print_string(A).c_str());
             /* A < 2*B, 因此 D=1 */
-            __one(D);
-            M = __sub_units(num_ptr(A), num_size(A), num_ptr(B), num_size(B));
+            one(D);
+            M = sub(A, B);
+            mympz_dbgprint_fmt_modinv("T = A - B.\nB = %s.\nT = %s.\n",
+                                      print_string(B).c_str(),
+                                      print_string(T).c_str());
           }
           else
           {
+            mympz_dbgprint_fmt_modinv("A >= T.\nA = %s.\nT = %s.\n",
+                                      print_string(A).c_str(),
+                                      print_string(T).c_str());
             /* A >= 2*B, 因此 D=2 或者 D=3 */
-            M = __sub_units(num_ptr(A), num_size(A), num_ptr(T), num_size(T));
-            D = __add_units(num_ptr(T), num_size(T), num_ptr(B), num_size(B));
-            if (__cmp(A, D) < 0)
+            M = sub(A, T);
+            mympz_dbgprint_fmt_modinv("M = A - T.\nM = %s.\nA = %s.\nT = %s.\n",
+                                      print_string(M).c_str(),
+                                      print_string(A).c_str(),
+                                      print_string(T).c_str());
+            D = add(T, B);
+            mympz_dbgprint_fmt_modinv("D = T + B.\nD = %s.\nT = %s.\nB = %s.\n",
+                                      print_string(D).c_str(),
+                                      print_string(T).c_str(),
+                                      print_string(B).c_str());
+            if (ucmp(A, D) < 0)
             {
+              mympz_dbgprint_fmt_modinv("A < D.\nA = %s.\nD = %s.\n",
+                                        print_string(A).c_str(),
+                                        print_string(D).c_str());
               /* A < 3*B, 因此 D=2 */
-              D.clear();
-              D.push_back(2);
+              set_word(D, 2);
+              mympz_dbgprint_fmt_modinv("D <- 2.\nD = %s.\n",
+                                        print_string(D).c_str());
               //
               // M (= A - 2*B) 已经有了正确的值。
               //
             }
             else
             {
+              mympz_dbgprint_fmt_modinv("A >= D.\nA = %s.\nD = %s.\n",
+                                        print_string(A).c_str(),
+                                        print_string(D).c_str());
               /* 仅仅 D=3 剩余 */
-              D.clear();
-              D.push_back(3);
+              set_word(D, 3);
+              mympz_dbgprint_fmt_modinv("D <- 3.\nD = %s.\n",
+                                        print_string(D).c_str());
               //
               // 当前 M = A - 2*B，但是我们需要 M = A - 3*B
               //
-              M = __add_units(num_ptr(M), num_size(M), num_ptr(B), num_size(B));
+              M = sub(M, B);
+              mympz_dbgprint_fmt_modinv("M = M - B.\nM = %s.\nB = %s.\n",
+                                        print_string(M).c_str(),
+                                        print_string(B).c_str());
             }
           }
         }
         else
         {
-          if (!BN_div(D, M, A, B, ctx))
-            goto err;
+          mympz_dbgprint_fmt_modinv("A bits(%lu), B bits(%lu).\n",
+                                    bignum_bits(A), bignum_bits(B));
+          division_result_t res = div(A, B);
+          D = res.first;
+          M = res.second;
+          mympz_dbgprint_fmt_modinv("D, M = A / B.\nD = %s.\nM = %s.\nA = %s.\nB = %s.\n",
+                                    print_string(D).c_str(),
+                                    print_string(M).c_str(),
+                                    print_string(A).c_str(),
+                                    print_string(B).c_str());
         }
 
-        /*-
-         * Now
-         *      A = D*B + M;
-         * thus we have
-         * (**)  sign*Y*a  ==  D*B + M   (mod |n|).
-         */
+        //
+        // 运算到当前
+        //      A = D*B + M;
+        // 因此，我们有
+        //      sign*Y*x  ==  D*B + M   (mod |m|).
+        //
 
-        tmp = A; /* keep the BIGNUM object, the value does not matter */
+        tmp = A; /* 值无关紧要 */
 
-        /* (A, B) := (B, A mod B) ... */
+        // (A, B) := (B, A mod B)
         A = B;
         B = M;
-        /* ... so we have  0 <= B < A  again */
+        mympz_dbgprint_fmt_modinv("A, B = B, M.\nA = %s.\nB = %s.\n",
+                                  print_string(A).c_str(),
+                                  print_string(B).c_str());
+        // 因此我们再次得到 0 <= B < A
 
-        /*-
-         * Since the former  M  is now  B  and the former  B  is now  A,
-         * (**) translates into
-         *       sign*Y*a  ==  D*A + B    (mod |n|),
-         * i.e.
-         *       sign*Y*a - D*A  ==  B    (mod |n|).
-         * Similarly, (*) translates into
-         *      -sign*X*a  ==  A          (mod |n|).
-         *
-         * Thus,
-         *   sign*Y*a + D*sign*X*a  ==  B  (mod |n|),
-         * i.e.
-         *        sign*(Y + D*X)*a  ==  B  (mod |n|).
-         *
-         * So if we set  (X, Y, sign) := (Y + D*X, X, -sign), we arrive back at
-         *      -sign*X*a  ==  B   (mod |n|),
-         *       sign*Y*a  ==  A   (mod |n|).
-         * Note that  X  and  Y  stay non-negative all the time.
-         */
+        //
+        // 因此旧的 M 是现在的B并且之前的B是现在的A，
+        // 也就是说
+        //      sign*Y*x  ==  D*A + B    (mod |m|),
+        // 既
+        //      sign*Y*x - D*A  ==  B    (mod |m|).
+        //
+        // 因此
+        //      sign*Y*x + D*sign*X*x  ==  B  (mod |m|),
+        // 既
+        //      sign*(Y + D*X)*x  ==  B  (mod |m|).
+        //
+        // 因此如果我们设 (X, Y, sign) := (Y + D*X, X, -sign)，我们回到
+        //      -sign*X*x  ==  B   (mod |m|),
+        //      sign*Y*x  ==  A   (mod |m|).
+        //
+        // 注：X与Y在所有的情况下都保持非负。
+        //
 
-        /*
-         * most of the time D is very small, so we can optimize tmp := D*X+Y
-         */
-        if (BN_is_one(D))
+        //
+        // 大多数情况下 D 是非常小的, 因此我们能优化 tmp = D*X+Y
+        //
+        if (is_one(D))
         {
-          if (!BN_add(tmp, X, Y))
-            goto err;
+          mympz_dbgprint_modinv("D == 1.\n");
+          tmp = add(X, Y);
+          mympz_dbgprint_fmt_modinv("tmp = X * Y.\ntmp = %s.\nA = %s.\nB = %s.\n",
+                                    print_string(tmp).c_str(),
+                                    print_string(A).c_str(),
+                                    print_string(B).c_str());
         }
         else
         {
-          if (BN_is_word(D, 2))
+          if (is_word(D, 2))
           {
-            if (!BN_lshift1(tmp, X))
-              goto err;
+            mympz_dbgprint_modinv("D == 2.\n");
+            tmp = lshift1(X);
+            mympz_dbgprint_fmt_modinv("tmp = X << 1.\ntmp = %s.\nX = %s.\n",
+                                      print_string(tmp).c_str(),
+                                      print_string(X).c_str());
           }
-          else if (BN_is_word(D, 4))
+          else if (is_word(D, 4))
           {
-            if (!BN_lshift(tmp, X, 2))
-              goto err;
+            mympz_dbgprint_modinv("D == 4.\n");
+            tmp = lshift(X, 2);
+            mympz_dbgprint_fmt_modinv("tmp = X << 2.\ntmp = %s.\nX = %s.\n",
+                                      print_string(tmp).c_str(),
+                                      print_string(X).c_str());
           }
-          else if (D->top == 1)
+          else if (bn_size(D) == 1)
           {
-            if (!BN_copy(tmp, X))
-              goto err;
-            if (!BN_mul_word(tmp, D->d[0]))
-              goto err;
+            tmp = mul(X, D.number[0]);
           }
           else
           {
-            if (!BN_mul(tmp, D, X, ctx))
-              goto err;
+            tmp = mul(D, X);
           }
-          if (!BN_add(tmp, tmp, Y))
-            goto err;
+          tmp = add(tmp, Y);
+          mympz_dbgprint_fmt_modinv("tmp = D * X + Y << 2.\ntmp = %s.\nX = %s.\nY = %s.\n",
+                                    print_string(tmp).c_str(),
+                                    print_string(X).c_str(),
+                                    print_string(Y).c_str());
         }
 
-        M = Y; /* keep the BIGNUM object, the value does not matter */
+        M = Y;
         Y = X;
         X = tmp;
         sign = -sign;
+        mympz_dbgprint_fmt_modinv("M, Y, X = Y, X, tmp.\nM = %s.\nY = %s.\nX = %s.\n",
+                                  print_string(M).c_str(),
+                                  print_string(Y).c_str(),
+                                  print_string(X).c_str());
+        mympz_dbgprint_fmt_modinv("sign = %d.\n", sign);
       }
     }
 
-    /*-
-     * The while loop (Euclid's algorithm) ends when
-     *      A == gcd(a,n);
-     * we have
-     *       sign*Y*a  ==  A  (mod |n|),
-     * where  Y  is non-negative.
-     */
+    //
+    // 当循环结束（欧几里得算法）
+    //      A == gcd(x,m);
+    //
+    // 我们有
+    //      sign*Y*x  ==  A  (mod |m|),
+    // Y是非负的。
+    //
 
     if (sign < 0)
     {
-      if (!BN_sub(Y, n, Y))
-        goto err;
+      mympz_dbgprint_modinv("sign is negative.\n");
+      Y = sub(m, Y);
+      mympz_dbgprint_fmt_modinv("Y = m - Y.\nY = %s.\n",
+                                print_string(Y).c_str());
     }
-    /* Now  Y*a  ==  A  (mod |n|).  */
+    // 现在 Y*x  ==  A  (mod |m|)
 
-    if (BN_is_one(A))
+    if (is_one(A))
     {
-      /* Y*a == 1  (mod |n|) */
-      if (!Y->neg && BN_ucmp(Y, n) < 0)
+      mympz_dbgprint_modinv("A == 1.\n");
+      // Y*x == 1  (mod |m|)
+      if (!Y.neg && ucmp(Y, m) < 0)
       {
-        if (!BN_copy(R, Y))
-          goto err;
+        mympz_dbgprint_modinv("Y < m.\n");
+        R = Y;
+        mympz_dbgprint_fmt_modinv("R = %s.\n", print_string(R).c_str());
       }
       else
       {
-        if (!BN_nnmod(R, Y, n, ctx))
-          goto err;
+        mympz_dbgprint_modinv("Y >= m.\n");
+        R = __nnmod(Y, m);
+        mympz_dbgprint_fmt_modinv("R = %s.\n", print_string(R).c_str());
       }
     }
     else
     {
-      *pnoinv = 1;
-      goto err;
+      // 没有模逆
+      mympz_dbgprint_modinv("no modular inversion.\n");
+      set_null(R);
     }
-    ret = R;
-  err:
-    if ((ret == NULL) && (in == NULL))
-      BN_free(R);
-    BN_CTX_end(ctx);
-    bn_check_top(ret);
-    return ret;
+    return R;
   }
 
 #if 0

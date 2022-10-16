@@ -61,12 +61,12 @@ void __one(const number_ptr_t &x, size_t xl)
 
 bool __is_one(const number_t &x)
 {
-  return __is_one(num_ptr(x), num_size(x));
+  return __is_one(num_ptr(num_const_cast(x)), num_size(x));
 }
 
 bool __is_one(const number_ptr_t &x, size_t xl)
 {
-  if (x == 0)
+  if (xl == 0)
     return false; // null不是0
   if (xl > 1)
   {
