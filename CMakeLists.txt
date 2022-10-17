@@ -3,6 +3,7 @@ project(mympz VERSION 1.0)
 
 # -g allows for gdb debugging
 # turn on -03 for best performance
+# add_definitions(-std=c++11 -g -O0 -Wunused-variable)
 # add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
 add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
 # add_definitions(-std=c++11 -O3 -Wunused-variable)
@@ -33,7 +34,10 @@ link_directories(/usr/local/lib)
 #
 set(MYMPZ_HEADERS
   ${SRC_DIRECTORY}/mympz.h
+  ${SRC_DIRECTORY}/config.h
+  ${SRC_DIRECTORY}/compile.h
   ${SRC_DIRECTORY}/exception.h
+  ${SRC_DIRECTORY}/debug.h
 )
 
 #

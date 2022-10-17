@@ -47,11 +47,8 @@ namespace mympz
   bignum_t mod(const bignum_t &x, const bignum_t &y)
   {
     bignum_t r; r.neg = 0;
-
     division_result_t res = div(x, y);
     r = res.second;
-
-    // r.number = __mod(bn_ptr(bn_const_cast(x)), bn_size(x), bn_ptr(bn_const_cast(y)), bn_size(y));
     return r;
   }
 
@@ -69,7 +66,6 @@ namespace mympz
     if (!r.neg) // 如果为正数
       return r;
     /* 现在 -|y| < r < 0, 因此我们需要设置 r = r + |y| */
-    // return (y.neg ? sub : add) (r, y);
     if (y.neg)
       return sub(r, y);
     return add(r, y);
@@ -301,7 +297,6 @@ namespace mympz
       // 在32位系统上大概400 - 500位，在64位系统上更多些。
       //
       int shift;
-
       while (!is_zero(B))
       {
         mympz_dbgprint_fmt_modinv("B = %s.\n", print_string(B).c_str());

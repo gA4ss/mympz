@@ -82,6 +82,12 @@ namespace mympz
 
 #endif
 
+//
+// 除法计算的商与余数是上取整还是下取整
+// 默认是上去整
+//
+// #define DIVISION_QUOTIENT_FLOOR
+
   //
   // 调试信息
   //
@@ -97,7 +103,7 @@ namespace mympz
 #define DEBUG_MOD
 #define DEBUG_MODMUL
 #define DEBUG_MODEXP
-#define DEBUG_MODINV
+// #define DEBUG_MODINV
 // #define DEBUG_GCD
 #define DEBUG_SHIFT
 #define DEBUG_RANDOM

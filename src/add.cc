@@ -207,12 +207,13 @@ bignum_t uadd(const bignum_t& x, const bignum_t& y) {
   //
   // 交换两个数
   //
-  bignum_t& _x = bn_const_cast(x);
-  bignum_t& _y = bn_const_cast(y);
-  if (bn_size(_x) < bn_size(_y)) {
-    bignum_t& tmp = _x;
-    _x = _y;
-    _y = tmp;
+  bignum_t _x, _y;
+  if (bn_size(x) < bn_size(y)) {
+    _x = bn_const_cast(y);
+    _y = bn_const_cast(x);
+  } else {
+    _x = bn_const_cast(x);
+    _y = bn_const_cast(y);
   }
 
   // 进行运算
@@ -246,12 +247,13 @@ bignum_t usub(const bignum_t& x, const bignum_t& y) {
   //
   // 交换两个数
   //
-  bignum_t& _x = bn_const_cast(x);
-  bignum_t& _y = bn_const_cast(y);
-  if (bn_size(_x) < bn_size(_y)) {
-    bignum_t& tmp = _x;
-    _x = _y;
-    _y = tmp;
+  bignum_t _x, _y;
+  if (bn_size(x) < bn_size(y)) {
+    _x = bn_const_cast(y);
+    _y = bn_const_cast(x);
+  } else {
+    _x = bn_const_cast(x);
+    _y = bn_const_cast(y);
   }
 
   z.number = __sub_units(bn_ptr(_x), bn_size(_x), bn_ptr(_y), bn_size(_y));

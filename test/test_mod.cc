@@ -12,16 +12,17 @@ TEST(Mympz, ModInv) {
   std::string xi_str;
 
   x = create(
-    "AACCCCCCC"
+    "CCDD1122"
   ,true);
-  std::cout << "x = " << print_string(x) << std::endl;
+  // std::cout << "x = " << print_string(x) << std::endl;
   m = create(
-    "FFFFFFFFFFFFF5"
+    "E1234567FFFFFFF1"
+    // "E1234567FFFFFFFFFFFFFFFFFF1"
   ,true);
-  std::cout << "m = " << print_string(m) << std::endl;
+  // std::cout << "m = " << print_string(m) << std::endl;
   xi = mod_inverse(x, m);
-  xi_str = print_string(xi);
-  EXPECT_STREQ(xi_str.c_str(), "32877684082645637");
+  xi_str = print_string(xi, true);
+  EXPECT_STREQ(xi_str.c_str(), "A9079A630495AE72");
 
   x = create(
     "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223AAF"
@@ -33,13 +34,13 @@ TEST(Mympz, ModInv) {
     "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
     "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
   ,true);
-  std::cout << "x = " << print_string(x) << std::endl;
+  // std::cout << "x = " << print_string(x) << std::endl;
   m = create(
     "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223333"
     "44FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
     "4DDCAADD11223344FFBCDEA1234DDCDDCCAABB1289232CCAABB1289232CCAABB"
   ,true);
-  std::cout << "m = " << print_string(m) << std::endl;
+  // std::cout << "m = " << print_string(m) << std::endl;
   xi = mod_inverse(x, m);
   xi_str = print_string(xi);
   EXPECT_STREQ(xi_str.c_str(), "593907798222081907713519753568228587079077485424183140027845937692085970600993276044519953050220485652630892297068317920189808685646552294391932005896301266928262193839152923181064782576060385683621098621712938601668490927613979911");
@@ -47,11 +48,11 @@ TEST(Mympz, ModInv) {
   x = create(
     "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223AAF"
   ,true);
-  std::cout << "x = " << print_string(x) << std::endl;
+  // std::cout << "x = " << print_string(x) << std::endl;
   m = create(
     "FFFFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
   ,true);
-  std::cout << "m = " << print_string(m) << std::endl;
+  // std::cout << "m = " << print_string(m) << std::endl;
   xi = mod_inverse(x, m);
   xi_str = print_string(xi);
   EXPECT_STREQ(xi_str.c_str(), "");

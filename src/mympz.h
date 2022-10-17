@@ -26,6 +26,7 @@
 #include <mympz/compile.h>
 #include <mympz/exception.h>
 #include <mympz/debug.h>
+#include <mympz/config.h>
 
 namespace mympz
 {
@@ -151,7 +152,7 @@ namespace mympz
   bignum_t sqr(const bignum_t &x);
   bignum_t exp(const bignum_t &x, const bignum_t &p);
 
-  bignum_t div(const bignum_t &x, unit_t w, int wneg = 0, unit_t *r = nullptr);
+  bignum_t div(const bignum_t &x, unit_t w, int wneg = 0, unit_t *r = nullptr, int *rneg = nullptr);
   division_result_t div(const bignum_t &x, const bignum_t &y);
   bignum_t idiv(const bignum_t &x, const bignum_t &y);
 
@@ -169,7 +170,7 @@ namespace mympz
   bignum_t mod_lshift1(const bignum_t &x, const bignum_t &m);
   bignum_t mod_lshift(const bignum_t &x, size_t n, const bignum_t &m);
   bignum_t mod_exp(const bignum_t &x, const bignum_t &p, const bignum_t &m);
-  bignum_t mod_inverse(const bignum_t& x, const bignum_t& m);
+  bignum_t mod_inverse(const bignum_t &x, const bignum_t &m);
 
   bignum_t gcd(const bignum_t &x, const bignum_t &y);
 

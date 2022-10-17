@@ -12,7 +12,7 @@ namespace mympz
    * @param[out]    r 输出余数，这里余数并非真正的余数。全部是按照正数计算的余数。
    * @return        余数与商
    */
-  bignum_t div(const bignum_t &x, unit_t w, int wneg, unit_t *r)
+  bignum_t div(const bignum_t &x, unit_t w, int wneg, unit_t *r, int *rneg)
   {
     bignum_t y;
     unit_t rm = 0;
@@ -43,6 +43,8 @@ namespace mympz
       y.number = __div_units_unit(bn_ptr(_x), xl, w, &rm);
     }
 
+    int _rneg = 0;
+#if defined(DIVISION_QUOTIENT_FLOOR)
     //
     // 余数与符号
     //
@@ -57,14 +59,35 @@ namespace mympz
       bignum_t rr = create(rm);
       rr = sub(y, rr);
       rm = rr.number[0];
+      _rneg = rr.neg;
+    }
+    else
+    {
+      y.neg = 0;
+      _rneg = x.neg;
+    }
+#else
+    if (x.neg ^ wneg)
+    {
+      y.neg = 1;
     }
     else
     {
       y.neg = 0;
     }
+    _rneg = x.neg;
+#endif
+
+    //
+    // 设置余数与商
+    //
     if (r)
     {
       *r = rm;
+      if (rneg)
+      {
+        *rneg = _rneg;
+      }
     }
 
     clear_head_zero(y);
@@ -157,15 +180,17 @@ namespace mympz
     //
     if (bn_size(y) == 1)
     {
+      int rneg = 0;
       unit_t r = 0;
-      bignum_t q = div(x, y.number[0], y.neg, &r);
-      bignum_t rm = create(r);
+      bignum_t q = div(x, y.number[0], y.neg, &r, &rneg);
+      bignum_t rm = create(r, rneg);
       res = {q, rm};
     }
     else
     {
       res = __div(x, y);
 
+#if defined(DIVISION_QUOTIENT_FLOOR)
       //  异号
       if (x.neg ^ y.neg)
       {
@@ -181,6 +206,11 @@ namespace mympz
         res.first.neg = 0;
         res.second.neg = y.neg;
       }
+#else
+      //
+      // 在__div中已经设定好了符号。
+      //
+#endif
     }
 
     return res;

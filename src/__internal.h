@@ -160,7 +160,6 @@ namespace mympz
   number_t __lshift(const number_ptr_t &x, size_t xl, size_t n);
   number_t __rshift(const number_ptr_t &x, size_t xl, size_t n);
 
-  number_t __mod(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl);
   number_t __mod_add(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
                      const number_ptr_t &m, size_t ml);
   number_t __mod_sub(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
