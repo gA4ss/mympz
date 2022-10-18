@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <iostream>
+#include <gtest/gtest.h>
+#include <mympz/mympz.h>
+
+using namespace mympz;
+
+TEST(Mympz, MontgomeryCtx) {
+  bignum_t m;
+  std::string rr_str;
+  montgomery_ctx_t mctx;
+
+  m = create(
+    "AADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223AAF"
+    "44FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
+    "4DDCAADD11223344FFBCDEA1234DDCDDCCAABB1289232CCAABB1289232CCAABB"
+    "4DDCAADD11223344FFBCDEA1234DDCDDCCAABB1289232CCAABB1289232CCAABB"
+    "44FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA123"
+    "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
+    "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
+    "FFAADD11223344FFBCDEA1234DDCAADD11223344FFBCDEA1234DDCAADD112233"
+  ,true);
+
+  mctx = montgomery_ctx_create(m);
+  rr_str = print_string(mctx.RR, true);
+  std::cout << "RR = " << rr_str << std::endl;
+}
+
+int main(int argc, char* argv[]) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

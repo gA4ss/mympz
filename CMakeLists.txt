@@ -51,8 +51,10 @@ add_library(${PROJECT_NAME} STATIC
   ${SRC_DIRECTORY}/mul.cc
   ${SRC_DIRECTORY}/sqr.cc
   ${SRC_DIRECTORY}/div.cc
-  ${SRC_DIRECTORY}/mod.cc
   ${SRC_DIRECTORY}/gcd.cc
+  ${SRC_DIRECTORY}/mod.cc
+  ${SRC_DIRECTORY}/mod_inverse.cc
+  ${SRC_DIRECTORY}/montgomery_mod.cc
   ${SRC_DIRECTORY}/shift.cc
   ${SRC_DIRECTORY}/exp.cc
   ${SRC_DIRECTORY}/cmp.cc
@@ -94,6 +96,8 @@ add_test(NAME test_exp COMMAND test_exp)
 set_tests_properties(test_exp PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 add_test(NAME test_gcd COMMAND test_gcd)
 set_tests_properties(test_gcd PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
+add_test(NAME test_montgomery COMMAND test_montgomery)
+set_tests_properties(test_montgomery PROPERTIES FAIL_REGULAR_EXPRESSION "FAILED")
 
 #
 # Auto Test

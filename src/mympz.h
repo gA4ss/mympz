@@ -161,6 +161,9 @@ namespace mympz
   bignum_t lshift(const bignum_t &x, size_t n);
   bignum_t rshift(const bignum_t &x, size_t n);
 
+  bignum_t gcd(const bignum_t &x, const bignum_t &y);
+
+  bignum_t nnmod(const bignum_t &x, const bignum_t &y);
   unit_t mod(const bignum_t &x, unit_t w, int wneg = 0);
   bignum_t mod(const bignum_t &x, const bignum_t &y);
   bignum_t mod_add(const bignum_t &x, const bignum_t &y, const bignum_t &m);
@@ -172,7 +175,36 @@ namespace mympz
   bignum_t mod_exp(const bignum_t &x, const bignum_t &p, const bignum_t &m);
   bignum_t mod_inverse(const bignum_t &x, const bignum_t &m);
 
-  bignum_t gcd(const bignum_t &x, const bignum_t &y);
+  typedef struct
+  {
+    size_t ri;    /* R的位数 */
+    bignum_t RR;  /* 用来转换成蒙哥马利形式，可能是零填充 */
+    bignum_t N;   /* 模数 */
+    bignum_t Ni;  /* R*(1/R mod N) - N*Ni = 1) */
+    unit_t n0[2]; /* Ni的最低有效字 */
+  } montgomery_ctx_t;
+
+#define init_montgomery_ctx(mctx) \
+  {                               \
+    (mctx).ri = 0;                \
+    (mctx).n0[0] = 0;             \
+    (mctx).n0[1] = 0;             \
+    init_bignum((mctx).RR);       \
+    init_bignum((mctx).N);        \
+    init_bignum((mctx).RR);       \
+  }
+
+#define clear_montgomery_ctx(mctx)                    \
+  {                                                   \
+    (mctx).ri = 0;                                    \
+    (mctx).n0[0] = mctx.n0[1] = 0;                    \
+    (mctx).N.clear();                                 \
+    (mctx).Ni.clear();                                \
+    (mctx).RR.clear();                                \
+    (mctx).N.neg = (mctx).Ni.neg = (mctx).RR.neg = 0; \
+  }
+
+  montgomery_ctx_t montgomery_ctx_create(const bignum_t &m);
 
   std::string print_string(const bignum_t &x, bool hex = false, bool low_case = false);
   size_t print_buffer(const bignum_t &x, unsigned char *to, size_t tolen,

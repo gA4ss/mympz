@@ -50,6 +50,8 @@ add_executable(test_exp ${SRC_DIRECTORY}/test_exp.cc)
 target_link_libraries(test_exp mympz gtest pthread)
 add_executable(test_gcd ${SRC_DIRECTORY}/test_gcd.cc)
 target_link_libraries(test_gcd mympz gtest pthread)
+add_executable(test_montgomery ${SRC_DIRECTORY}/test_montgomery.cc)
+target_link_libraries(test_montgomery mympz gtest pthread)
 
 #
 # Optimize Test

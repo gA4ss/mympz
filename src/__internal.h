@@ -167,15 +167,6 @@ namespace mympz
 
   number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl);
 
-  typedef struct
-  {
-    size_t ri;    /* R的位数 */
-    number_t RR;  /* 用来转换成蒙哥马利形式，可能是零填充 */
-    number_t N;   /* 模数 */
-    number_t Ni;  /* R*(1/R mod N) - N*Ni = 1) */
-    unit_t n0[2]; /* Ni的最低有效字 */
-  } montgomery_ctx_t;
-
   // void __clear_montgomery_ctx(const montgomery_ctx_t &mctx);
   // number_t __montgomery_reduction(const number_ptr_t &x, size_t xl, const montgomery_ctx_t &mctx);
   // number_t __mod_mul_montgomery(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,

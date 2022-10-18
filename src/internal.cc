@@ -42,6 +42,5 @@ namespace mympz
 #include "./internal/__div.cc"
 #include "./internal/__gcd.cc"
 #include "./internal/__mod.cc"
-#include "./internal/__exp.cc"
 
 } // namespace mympz
