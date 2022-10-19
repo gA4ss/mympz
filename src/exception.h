@@ -31,11 +31,11 @@ namespace mympz
     throw my::MyException("<mympz>",                                                               \
                           __FILE__, __LINE__, __FUNCTION__, "%s", "invalid argument \'" #x "\'."); \
   }
-#define mympz_mod_mul_montgomery_invalid_size(xl, yl, nl)          \
-  {                                                                \
-    throw my::MyException("<mympz>",                               \
-                          __FILE__, __LINE__, __FUNCTION__,        \
-                          "xl(%d) + yl(%d) > nl(%d)", xl, yl, nl); \
+#define mympz_mod_mul_montgomery_invalid_size(xl, yl, nl)              \
+  {                                                                    \
+    throw my::MyException("<mympz>",                                   \
+                          __FILE__, __LINE__, __FUNCTION__,            \
+                          "xl(%d) + yl(%d) > 2 * nl(%d)", xl, yl, nl); \
   }
 #define unknown_mympz_exception()                                                                   \
   {                                                                                                 \

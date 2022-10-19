@@ -152,7 +152,8 @@ namespace mympz
   bignum_t sqr(const bignum_t &x);
   bignum_t exp(const bignum_t &x, const bignum_t &p);
 
-  bignum_t div(const bignum_t &x, unit_t w, int wneg = 0, unit_t *r = nullptr, int *rneg = nullptr);
+  bignum_t div(const bignum_t &x, unit_t w, int wneg = 0,
+               unit_t *r = nullptr, int *rneg = nullptr);
   division_result_t div(const bignum_t &x, const bignum_t &y);
   bignum_t idiv(const bignum_t &x, const bignum_t &y);
 
@@ -198,13 +199,15 @@ namespace mympz
   {                                                   \
     (mctx).ri = 0;                                    \
     (mctx).n0[0] = mctx.n0[1] = 0;                    \
-    (mctx).N.clear();                                 \
-    (mctx).Ni.clear();                                \
-    (mctx).RR.clear();                                \
+    (mctx).N.number.clear();                          \
+    (mctx).Ni.number.clear();                         \
+    (mctx).RR.number.clear();                         \
     (mctx).N.neg = (mctx).Ni.neg = (mctx).RR.neg = 0; \
   }
 
   montgomery_ctx_t montgomery_ctx_create(const bignum_t &m);
+  bignum_t montgomery_reduction(const bignum_t &x, const montgomery_ctx_t &mctx);
+  bignum_t montgomery_mod_mul(const bignum_t &x, const bignum_t &y, const montgomery_ctx_t &mctx);
 
   std::string print_string(const bignum_t &x, bool hex = false, bool low_case = false);
   size_t print_buffer(const bignum_t &x, unsigned char *to, size_t tolen,

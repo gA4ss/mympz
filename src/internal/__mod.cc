@@ -97,10 +97,3 @@ number_t __mod_sub(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size
 
   return r;
 }
-
-// //
-// // 蒙哥马利模算法
-// //
-// #include "__montgomery_ctx.cc"
-// #include "__montgomery_reduction.cc"
-// #include "__montgomery_mod.cc"

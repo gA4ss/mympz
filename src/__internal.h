@@ -167,11 +167,6 @@ namespace mympz
 
   number_t __gcd(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl);
 
-  // void __clear_montgomery_ctx(const montgomery_ctx_t &mctx);
-  // number_t __montgomery_reduction(const number_ptr_t &x, size_t xl, const montgomery_ctx_t &mctx);
-  // number_t __mod_mul_montgomery(const number_ptr_t &x, size_t xl, const number_ptr_t &y, size_t yl,
-  //                               const montgomery_ctx_t &mctx);
-
   number_t __bin2bn(const unsigned char *s, size_t len, int *oneg = nullptr, bool little = true, bool is_sign = false);
   size_t __bn2bin(const number_t &x, int neg, unsigned char *to, size_t tolen, bool little = true, bool is_sign = false);
   number_t __create_hex_str(const char *str);

@@ -113,7 +113,7 @@ namespace mympz
   bool is_abs_word(const bignum_t &x, unit_t w)
   {
     return ((bn_size(x) == 1) && (x.number[0] == w));
-    // return ((bn_size(x) == 1) && (x.number[0] == w)) || 
+    // return ((bn_size(x) == 1) && (x.number[0] == w)) ||
     //         ((w == 0) && (bn_size(x) == 0));
   }
 
