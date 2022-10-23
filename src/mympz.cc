@@ -146,7 +146,7 @@ namespace mympz
   // 第n位置位
   void set_bit(bignum_t &x, size_t n)
   {
-    if (is_null(x) || !n)
+    if (!n)
       return;
 
     size_t i = n / UNIT_BITS;

@@ -60,6 +60,11 @@ namespace mympz
     return mctx;
   }
 
+  bignum_t bignum_to_montnum(const bignum_t &x, const montgomery_ctx_t &mctx)
+  {
+    return montgomery_mod_mul(x, mctx.RR, mctx);
+  }
+
   bignum_t montgomery_reduction(const bignum_t &x, const montgomery_ctx_t &mctx)
   {
     bignum_t t1 = x;
@@ -103,144 +108,115 @@ namespace mympz
     return z;
   }
 
-#if 0
   bignum_t montgomery_mod_exp(const bignum_t &x, const bignum_t &p,
-                              const bignum_t &m, const montgomery_ctx_t &mctx)
+                              const bignum_t &m, const montgomery_ctx_t *pmctx)
   {
-    int i, j, bits, ret = 0, wstart, wend, window, wvalue;
-    int start = 1;
-    BIGNUM *d, *r;
-    const BIGNUM *aa;
-    /* Table of variables obtained from 'ctx' */
-    BIGNUM *val[TABLE_SIZE];
-    BN_MONT_CTX *mont = NULL;
+    bignum_t r;
+    bignum_t val[MODEXP_TABLE_SIZE];
 
-    if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0 || BN_get_flags(a, BN_FLG_CONSTTIME) != 0 || BN_get_flags(m, BN_FLG_CONSTTIME) != 0)
+    if (!is_odd(m))
     {
-      return BN_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
+      mympz_mod_exp_montgomery_modulo_is_even(m);
     }
 
-    bn_check_top(a);
-    bn_check_top(p);
-    bn_check_top(m);
-
-    if (!BN_is_odd(m))
-    {
-      ERR_raise(ERR_LIB_BN, BN_R_CALLED_WITH_EVEN_MODULUS);
-      return 0;
-    }
-    bits = BN_num_bits(p);
+    //
+    // 指数为0的情况。
+    //
+    size_t bits = bignum_bits(p);
     if (bits == 0)
     {
-      /* x**0 mod 1, or x**0 mod -1 is still zero. */
-      if (BN_abs_is_word(m, 1))
+      /* x**0 mod 1, 或者 x**0 mod -1 仍然是0. */
+      if (is_abs_word(m, 1))
       {
-        ret = 1;
-        BN_zero(rr);
+        return const_zero;
       }
       else
       {
-        ret = BN_one(rr);
+        return const_one;
       }
-      return ret;
+      return r;
     }
 
-    BN_CTX_start(ctx);
-    d = BN_CTX_get(ctx);
-    r = BN_CTX_get(ctx);
-    val[0] = BN_CTX_get(ctx);
-    if (val[0] == NULL)
-      goto err;
-
-    /*
-     * If this is not done, things will break in the montgomery part
-     */
-
-    if (in_mont != NULL)
-      mont = in_mont;
+    //
+    // 构建蒙哥马利模数
+    //
+    montgomery_ctx_t mctx;
+    if (pmctx)
+    {
+      mctx = *pmctx;
+    }
     else
     {
-      if ((mont = BN_MONT_CTX_new()) == NULL)
-        goto err;
-      if (!BN_MONT_CTX_set(mont, m, ctx))
-        goto err;
+      mctx = montgomery_ctx_create(m);
     }
 
-    if (a->neg || BN_ucmp(a, m) >= 0)
+    //
+    // 缩减x
+    //
+    if (x.neg || ucmp(x, m) >= 0)
     {
-      if (!BN_nnmod(val[0], a, m, ctx))
-        goto err;
-      aa = val[0];
+      val[0] = nnmod(x, m);
+      val[0] = bignum_to_montnum(val[0], mctx);
     }
     else
-      aa = a;
-    if (!bn_to_mont_fixed_top(val[0], aa, mont, ctx))
-      goto err; /* 1 */
+    {
+      val[0] = bignum_to_montnum(x, mctx);
+    }
 
-    window = BN_window_bits_for_exponent_size(bits);
+    size_t window = window_bits_for_exponent_size(bits);
     if (window > 1)
     {
-      if (!bn_mul_mont_fixed_top(d, val[0], val[0], mont, ctx))
-        goto err; /* 2 */
-      j = 1 << (window - 1);
-      for (i = 1; i < j; i++)
+      bignum_t d = montgomery_mod_mul(val[0], val[0], mctx);
+      size_t j = 1 << (window - 1);
+      for (size_t i = 1; i < j; i++)
       {
-        if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-            !bn_mul_mont_fixed_top(val[i], val[i - 1], d, mont, ctx))
-          goto err;
+        val[i] = montgomery_mod_mul(val[i - 1], d, mctx);
       }
     }
 
-    start = 1;         /* This is used to avoid multiplication etc
-                        * when there is only the value '1' in the
-                        * buffer. */
-    wvalue = 0;        /* The 'value' of the window */
-    wstart = bits - 1; /* The top bit of the window */
-    wend = 0;          /* The bottom bit of the window */
+    size_t start = 1;
+    size_t wvalue = 0, wend = 0;
+    int wstart = static_cast<int>(bits - 1);
 
-#if 1           /* by Shay Gueron's suggestion */
-    j = m->top; /* borrow j */
-    if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1)))
+    size_t j = bn_size(m);
+    if (m.number[j - 1] & (((UNIT_ULONG)1) << (UNIT_BITS - 1)))
     {
-      if (bn_wexpand(r, j) == NULL)
-        goto err;
-      /* 2^(top*BN_BITS2) - m */
-      r->d[0] = (0 - m->d[0]) & BN_MASK2;
-      for (i = 1; i < j; i++)
-        r->d[i] = (~m->d[i]) & BN_MASK2;
-      r->top = j;
-      r->flags |= BN_FLG_FIXED_TOP;
+      bn_resize(r, j);
+
+      /* 2^(top*UNIT_BITS) - m */
+      r.number[0] = (0 - m.number[0]) & CALC_MASK;
+      for (size_t i = 1; i < j; i++)
+        r.number[i] = (~m.number[i]) & CALC_MASK;
     }
     else
-#endif
-        if (!bn_to_mont_fixed_top(r, BN_value_one(), mont, ctx))
-      goto err;
+    {
+      r = bignum_to_montnum(const_one, mctx);
+    }
+
     for (;;)
     {
-      if (BN_is_bit_set(p, wstart) == 0)
+      if (is_bit_set(p, wstart) == 0)
       {
         if (!start)
         {
-          if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))
-            goto err;
+          r = montgomery_mod_mul(r, r, mctx);
         }
         if (wstart == 0)
           break;
         wstart--;
         continue;
       }
-      /*
-       * We now have wstart on a 'set' bit, we now need to work out how bit
-       * a window to do.  To do this we need to scan forward until the last
-       * set bit before the end of the window
-       */
+
+      // 我们现在有wstart在'set'位上，我们现在需要计算出是多少位
+      // 一个可以做的窗口。要做到这一点，我们需要向前扫描到最后
+      // 设置窗口结束前的位
       wvalue = 1;
       wend = 0;
-      for (i = 1; i < window; i++)
+      for (size_t i = 1; i < window; i++)
       {
         if (wstart - i < 0)
           break;
-        if (BN_is_bit_set(p, wstart - i))
+        if (is_bit_set(p, wstart - i))
         {
           wvalue <<= (i - wend);
           wvalue |= 1;
@@ -248,56 +224,28 @@ namespace mympz
         }
       }
 
-      /* wend is the size of the current window */
+      // wend是当前窗口的长度
       j = wend + 1;
-      /* add the 'bytes above' */
+      // 增加以上的字节
       if (!start)
-        for (i = 0; i < j; i++)
+        for (size_t i = 0; i < j; i++)
         {
-          if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))
-            goto err;
+          r = montgomery_mod_mul(r, r, mctx);
         }
 
-      /* wvalue will be an odd number < 2^window */
-      if (!bn_mul_mont_fixed_top(r, r, val[wvalue >> 1], mont, ctx))
-        goto err;
+      // wvalue将是一个奇数 < 2^window
+      r = montgomery_mod_mul(r, val[wvalue >> 1], mctx);
 
-      /* move the 'window' down further */
-      wstart -= wend + 1;
+      // 将“窗口”进一步向下移动
+      wstart -= static_cast<int>(wend + 1);
       wvalue = 0;
       start = 0;
       if (wstart < 0)
         break;
     }
-    /*
-     * Done with zero-padded intermediate BIGNUMs. Final BN_from_montgomery
-     * removes padding [if any] and makes return value suitable for public
-     * API consumer.
-     */
-#if defined(SPARC_T4_MONT)
-    if (OPENSSL_sparcv9cap_P[0] & (SPARCV9_VIS3 | SPARCV9_PREFER_FPU))
-    {
-      j = mont->N.top;  /* borrow j */
-      val[0]->d[0] = 1; /* borrow val[0] */
-      for (i = 1; i < j; i++)
-        val[0]->d[i] = 0;
-      val[0]->top = j;
-      if (!BN_mod_mul_montgomery(rr, r, val[0], mont, ctx))
-        goto err;
-    }
-    else
-#endif
-        if (!BN_from_montgomery(rr, r, mont, ctx))
-      goto err;
-    ret = 1;
-  err:
-    if (in_mont == NULL)
-      BN_MONT_CTX_free(mont);
-    BN_CTX_end(ctx);
-    bn_check_top(rr);
-    return ret;
-  }
 
-#endif
+    r = montgomery_reduction(r, mctx);
+    return r;
+  }
 
 } // namespace mympz

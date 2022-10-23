@@ -81,9 +81,6 @@ namespace mympz
     (x).resize(__l);                 \
   }
 
-//
-// 内部大数的支持
-//
 #include "__internal_bn.h"
 
   void __zero(number_t &x);
@@ -176,6 +173,11 @@ namespace mympz
   std::string __print_string_hex(const number_ptr_t &x, size_t xl, bool low_case = false);
   std::string __print_string(const number_ptr_t &x, size_t xl, bool hex = false, bool low_case = false);
   std::string __print_string(const number_t &x, bool hex = false, bool low_case = false);
+
+//
+// mod_exp
+//
+#include "./internal/__mod_exp.h"
 
 } // namespace mympz
 

@@ -37,6 +37,20 @@ namespace mympz
                           __FILE__, __LINE__, __FUNCTION__,            \
                           "xl(%d) + yl(%d) > 2 * nl(%d)", xl, yl, nl); \
   }
+#define mympz_mod_exp_montgomery_modulo_is_even(m)          \
+  {                                                         \
+    throw my::MyException("<mympz>",                        \
+                          __FILE__, __LINE__, __FUNCTION__, \
+                          "modulo " #m " is even.");        \
+  }
+
+#define mympz_reciprocal_is_bad(r)                          \
+  {                                                         \
+    throw my::MyException("<mympz>",                        \
+                          __FILE__, __LINE__, __FUNCTION__, \
+                          "reciprocal " #r " is bad.");     \
+  }
+
 #define unknown_mympz_exception()                                                                   \
   {                                                                                                 \
     throw my::MyException("<mympz> Unknown Exception", __FILE__, __LINE__, __FUNCTION__, "%s", ""); \

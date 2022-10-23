@@ -25,10 +25,15 @@ static bignum_t __bignum_bin2bn(const unsigned char *s, size_t len,
   * @return        大数结构
   */
 bignum_t create(std::string str, bool hex) {
-  bignum_t x;
+  bignum_t x; init_bignum(x);
   const char* ptr = str.c_str();
   size_t i = 0;
   int neg = 0;
+
+  if ((str.empty()) || (str == "null") || (str == "NULL"))
+  {
+    return x;
+  }
 
   //
   // FIXME: 这里没有做str的长度验证，存在风险。
