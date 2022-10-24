@@ -22,6 +22,29 @@ make
 
 在`compile.h`中定义了一组*DEBUG_XXX*的调试输出，按照不同运算定了不同的宏，可以通过注释关闭或开启在调试中的运算日志打印。
 
+## CMakeList.txt
+
+在`src`目录下的`CMakeList.txt`的开头，可以进行开启关闭注释编译不同的版本。
+
+```
+cmake_minimum_required (VERSION 3.5)
+project(mympz VERSION 1.0)
+
+# -g allows for gdb debugging
+# turn on -03 for best performance
+
+#
+# 带调试编译带汇编优化的库
+#
+# add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
+# add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
+
+#
+# 编译发布版本
+#
+add_definitions(-std=c++11 -O3 -Wunused-variable)
+```
+
 # 使用说明
 
 在使用时，仅需包含头文件`#include <mympz/mympz.h>`即可使用。下面分别介绍大数结构以及相关功能函数列表。随后进行链接库文件`libmympz.a`即可。
