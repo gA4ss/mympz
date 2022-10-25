@@ -127,7 +127,8 @@ add_definitions(-std=c++11 -O3 -Wunused-variable)
 |`mod_lshift`|左移n位然后去模|
 |`mod_exp`|模幂|
 |`mod_inverse`|模逆|
-|`print_string`|打印大数为字符串或者到缓冲区中|
+|`print_string`|打印大数为字符串|
+|`print_buffer`|打印大数到缓冲区|
 |`const_null`|*常数变量*，大数结构的空值|
 |`const_zero`|*常数变量*，大数结构的零值|
 |`const_one`|*常数变量*，大数结构的一值|
