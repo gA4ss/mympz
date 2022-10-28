@@ -181,8 +181,9 @@ namespace mympz
                       bool little = true, bool is_sign = false);
 
   extern const bignum_t const_null;
-  extern const bignum_t const_zero;
-  extern const bignum_t const_one;
+  extern const bignum_t const_0;
+  extern const bignum_t const_1;
+  extern const bignum_t const_10;
 
 } // namespace mympz
 

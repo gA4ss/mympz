@@ -125,11 +125,11 @@ namespace mympz
       /* x**0 mod 1, 或者 x**0 mod -1 仍然为0。 */
       if (is_abs_word(m, 1))
       {
-        return const_zero;
+        return const_0;
       }
       else
       {
-        return const_one;
+        return const_1;
       }
     }
 
@@ -148,7 +148,7 @@ namespace mympz
     val[0] = nnmod(x, m);
     if (is_zero(val[0]))
     {
-      return const_zero;
+      return const_0;
     }
 
     size_t window = window_bits_for_exponent_size(bits);

@@ -128,11 +128,11 @@ namespace mympz
       /* x**0 mod 1, 或者 x**0 mod -1 仍然是0. */
       if (is_abs_word(m, 1))
       {
-        return const_zero;
+        return const_0;
       }
       else
       {
-        return const_one;
+        return const_1;
       }
       return r;
     }
@@ -190,7 +190,7 @@ namespace mympz
     }
     else
     {
-      r = bignum_to_montnum(const_one, mctx);
+      r = bignum_to_montnum(const_1, mctx);
     }
 
     for (;;)
