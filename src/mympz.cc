@@ -123,14 +123,12 @@ namespace mympz
     return is_abs_word(x, w) && (!w || !x.neg);
   }
 
-  unit_t get_word(const bignum_t &x)
+  unit_t get_word(const bignum_t &x, size_t i)
   {
     size_t xl = bn_size(x);
-    if (xl > 1)
+    if (xl <= i)
       return CALC_MASK;
-    else if (xl > 1)
-      return x.number[0];
-    return 0;
+    return x.number[i];
   }
 
   void set_word(bignum_t &x, unit_t w)

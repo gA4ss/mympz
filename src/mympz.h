@@ -126,7 +126,7 @@ namespace mympz
   void zero(bignum_t &x);
   void one(bignum_t &x, int neg = 0);
 
-  unit_t get_word(const bignum_t &x);
+  unit_t get_word(const bignum_t &x, size_t i = 0);
   void set_word(bignum_t &x, unit_t w);
 
   void set_bit(bignum_t &x, size_t n);
