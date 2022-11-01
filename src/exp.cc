@@ -4,14 +4,16 @@
 namespace mympz {
 
 /**
-  * @brief         有符号的两个大数的模数
+  * @brief         指数函数
   * @param[in]     x
   * @param[in]     y
   * @return        r = x^p
   */
 bignum_t exp(const bignum_t& x, const bignum_t& p) {
-  size_t bits = __number_bits(p.number);
+  if (is_zero(p))
+    return const_0;
 
+  size_t bits = __number_bits(p.number);
   bignum_t r;
   if (is_odd(p)) {
     r = x;
