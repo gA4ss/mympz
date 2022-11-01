@@ -11,6 +11,10 @@ TEST(Mympz, Create) {
   bignum_t x;
   std::string x_str;
 
+  x = create("0");
+  x_str = print_string(x);
+  EXPECT_STREQ(x_str.c_str(), "0");
+
   x = create("b", true);
   x_str = print_string(x, true);
   EXPECT_STREQ(x_str.c_str(), "B");
