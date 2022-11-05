@@ -10,6 +10,7 @@ namespace mympz
     init_bignum(r);
     r.number = __gcd(bn_ptr(bn_const_cast(x)), bn_size(x),
                      bn_ptr(bn_const_cast(y)), bn_size(y));
+    clear_head_zero(r);
     return r;
   }
 

@@ -7,6 +7,17 @@
 
 using namespace mympz;
 
+TEST(Mympz, iDiv) {
+  bignum_t x,y;
+  bignum_t z;
+  std::string d_str, r_str;
+
+  x = create(1);
+  y = create(1);
+  z = idiv(x, y);
+  std::cout << "z = " << print_string(z) << std::endl;
+}
+
 TEST(Mympz, Div) {
   bignum_t x,y;
   division_result_t z;

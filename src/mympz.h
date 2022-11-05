@@ -180,10 +180,11 @@ namespace mympz
   size_t print_buffer(const bignum_t &x, unsigned char *to, size_t tolen,
                       bool little = true, bool is_sign = false);
 
-  extern const bignum_t const_null;
-  extern const bignum_t const_0;
-  extern const bignum_t const_1;
-  extern const bignum_t const_10;
+  void init();
+  extern bignum_t const_null;
+  extern bignum_t const_0;
+  extern bignum_t const_1;
+  extern bignum_t const_10;
 
 } // namespace mympz
 
