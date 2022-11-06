@@ -113,6 +113,8 @@ namespace mympz
   {
     bignum_t r;
     bignum_t val[MODEXP_TABLE_SIZE];
+    const bignum_t const_0 = create(0);
+    const bignum_t const_1 = create(1);
 
     if (!is_odd(m))
     {

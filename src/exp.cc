@@ -11,7 +11,7 @@ namespace mympz {
   */
 bignum_t exp(const bignum_t& x, const bignum_t& p) {
   if (is_zero(p))
-    return const_1;
+    return create(1);
 
   size_t bits = __number_bits(p.number);
   bignum_t r;

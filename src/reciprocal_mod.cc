@@ -118,6 +118,8 @@ namespace mympz
     bignum_t val[MODEXP_TABLE_SIZE];
     reciprocal_ctx_t rctx;
     init_reciprocal_ctx(rctx);
+    const bignum_t const_0 = create(0);
+    const bignum_t const_1 = create(1);
 
     size_t bits = bignum_bits(p);
     if (bits == 0)
