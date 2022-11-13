@@ -24,26 +24,18 @@ make
 
 ## CMakeList.txt
 
-在`src`目录下的`CMakeList.txt`的开头，可以进行开启关闭注释编译不同的版本。
+|选项|说明|
+|---|----|
+|`DEBUG`|生成调试版本|
+|`DIS_OPT`|禁用汇编优化|
 
+例如生成调试版本，
+
+```cmake
+  cmake -DDEBUG=1 ..
 ```
-cmake_minimum_required (VERSION 3.5)
-project(mympz VERSION 1.0)
 
-# -g allows for gdb debugging
-# turn on -03 for best performance
-
-#
-# 带调试编译带汇编优化的库
-#
-# add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
-# add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
-
-#
-# 编译发布版本
-#
-add_definitions(-std=c++11 -O3 -Wunused-variable)
-```
+以上两个选项可以叠加使用，但是仅在调试选项下才可以开启对汇编优化的禁用。
 
 # 使用说明
 
@@ -129,9 +121,6 @@ add_definitions(-std=c++11 -O3 -Wunused-variable)
 |`mod_inverse`|模逆|
 |`print_string`|打印大数为字符串|
 |`print_buffer`|打印大数到缓冲区|
-|`const_null`|*常数变量*，大数结构的空值|
-|`const_zero`|*常数变量*，大数结构的零值|
-|`const_one`|*常数变量*，大数结构的一值|
 
 # 异常说明
 
