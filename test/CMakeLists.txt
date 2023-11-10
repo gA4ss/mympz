@@ -3,13 +3,21 @@ project(mympz_test VERSION 1.0)
 
 # -g allows for gdb debugging
 # turn on -03 for best performance
-add_definitions(-std=c++11 -g -O0 -Wunused-variable)
+# add_definitions(-std=c++11 -g -O0 -Wunused-variable)
 # add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
 # add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
-# add_definitions(-std=c++11 -O3 -Wunused-variable)
+# set(DEBUG 1)
+if(DEBUG)
+message(STATUS "compile debug version.")
+add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
+else()
+message(STATUS "compile release version.")
+add_definitions(-std=c++11 -O3 -Wunused-variable)
+endif(DEBUG)
 
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
+#set(X86_64 1)
 
 #
 # Sub modules directories
@@ -54,6 +62,7 @@ target_link_libraries(test_gcd mympz gtest pthread)
 #
 # Optimize Test
 #
+if(X86_64)
 add_executable(test_x86_64_add ${SRC_DIRECTORY}/opt/test_x86_64_add.cc)
 target_link_libraries(test_x86_64_add)
 add_executable(test_x86_64_sub ${SRC_DIRECTORY}/opt/test_x86_64_sub.cc)
@@ -64,6 +73,7 @@ add_executable(test_x86_64_div ${SRC_DIRECTORY}/opt/test_x86_64_div.cc)
 target_link_libraries(test_x86_64_div)
 add_executable(test_x86_64_sqr ${SRC_DIRECTORY}/opt/test_x86_64_sqr.cc)
 target_link_libraries(test_x86_64_sqr)
+endif(X86_64)
 
 #
 # Misc Test
