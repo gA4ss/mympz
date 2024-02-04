@@ -1,18 +1,12 @@
 cmake_minimum_required (VERSION 3.5)
 project(mympz_test VERSION 1.0)
 
-# -g allows for gdb debugging
-# turn on -03 for best performance
-# add_definitions(-std=c++11 -g -O0 -Wunused-variable)
-# add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
-# add_definitions(-std=c++11 -g -O0 -DDEBUG -DDISABLE_OPTIMIZE -Wunused-variable)
-# set(DEBUG 1)
 if(DEBUG)
 message(STATUS "compile debug version.")
-add_definitions(-std=c++11 -g -O0 -DDEBUG -Wunused-variable)
+add_definitions(-std=c++14 -g -O0 -DDEBUG -Wunused-variable)
 else()
 message(STATUS "compile release version.")
-add_definitions(-std=c++11 -O3 -Wunused-variable)
+add_definitions(-std=c++14 -O3 -Wunused-variable)
 endif(DEBUG)
 
 set(CXX_FLAGS "-Wall")
